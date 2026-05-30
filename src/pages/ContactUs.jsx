@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { MapPin, Phone, Mail } from 'lucide-react';
+import contactBg from '../assets/contact.png';
 
 export default function ContactUs({ setInquiries, triggerToast, addLog }) {
     const [name, setName] = useState('');
@@ -33,12 +34,16 @@ export default function ContactUs({ setInquiries, triggerToast, addLog }) {
     };
 
     return (
-        <div className="container section-gap">
-            <div className="section-header">
+        <>
+        <section className="page-hero" style={{ backgroundImage: `url(${contactBg})` }}>
+            <div className="page-hero-inner">
                 <div className="badge-mint" style={{ marginBottom: '16px' }}>GET IN TOUCH</div>
                 <h1 className="display-lg">CONTACT US</h1>
-                <p className="section-subtitle">Reach out for corporate partnerships, data queries, or job applications.</p>
+                <p className="page-hero-sub">Reach out for corporate partnerships, data queries, or job applications.</p>
             </div>
+        </section>
+        <div className="container section-gap">
+
 
             <div className="grid-2">
                 {/* Contact Form */}
@@ -137,5 +142,6 @@ export default function ContactUs({ setInquiries, triggerToast, addLog }) {
                 </div>
             </div>
         </div>
+        </>
     );
 }

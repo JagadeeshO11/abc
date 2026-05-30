@@ -25,3 +25,14 @@
   border-color: var(--color-sky-blue);
   box-shadow: 0 4px 12px rgba(2, 27, 88, 0.2);
 }
+
+
+@media (max-width: 768px) {
+  .module-nav {
+    gap: var(--spacing-8);
+  }
+  .module-tab-btn {
+    padding: 10px 14px;
+    font-size: 13px;
+  }
+}

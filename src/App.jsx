@@ -2,9 +2,11 @@ import { useState } from 'react';
 import {
   HashRouter as Router,
   Routes,
-  Route
+  Route,
+  useLocation
 } from 'react-router-dom';
 import { CheckCircle } from 'lucide-react';
+import { useEffect } from 'react';
 
 import AuthPage from './pages/Auth.jsx';
 import { getAuthUser, clearAuthUser } from './utils/auth.js';
@@ -13,6 +15,18 @@ import { getAuthUser, clearAuthUser } from './utils/auth.js';
 import NavBar from './components/NavBar.jsx';
 import Footer from './components/Footer.jsx';
 import ChatWidget from './components/ChatWidget.jsx';
+
+function ScrollToTop() {
+  const { pathname, search } = useLocation();
+  useEffect(() => { window.scrollTo({ top: 0, behavior: 'instant' }); }, [pathname, search]);
+  return null;
+}
+
+function PageWrapper({ children }) {
+  const { pathname, search } = useLocation();
+  // key forces full remount → triggers CSS animation fresh on every navigation
+  return <div key={pathname + search} className="page-fade">{children}</div>;
+}
 
 // Pages
 import Home from './pages/Home.jsx';
@@ -127,7 +141,9 @@ export default function App() {
         <NavBar />
 
         {/* Main Routing Container */}
+        <ScrollToTop />
         <main style={{ flex: 1 }}>
+          <PageWrapper>
           <Routes>
             <Route path="/" element={<Home setInquiries={setInquiries} triggerToast={triggerToast} addLog={addLog} />} />
             <Route path="/about" element={<AboutUs />} />
@@ -137,8 +153,7 @@ export default function App() {
             <Route path="/contact" element={<ContactUs setInquiries={setInquiries} triggerToast={triggerToast} addLog={addLog} />} />
 
             {/* Auth Routes */}
-            <Route path="/login" element={<AuthPage role="user" />} />
-            <Route path="/admin/login" element={<AuthPage role="admin" />} />
+            <Route path="/login" element={<AuthPage />} />
 
             {/* Admin Panel Layout */}
             <Route path="/admin/*" element={
@@ -157,6 +172,7 @@ export default function App() {
               />
             } />
           </Routes>
+          </PageWrapper>
         </main>
 
         {/* Footer */}

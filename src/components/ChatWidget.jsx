@@ -1,63 +1,97 @@
 import { useState, useEffect, useRef } from 'react';
 import { X, MessageSquare, Send } from 'lucide-react';
 
+const QUICK_REPLIES = [
+    { label: '📊 Data & BI',        prompt: 'data automation and BI services' },
+    { label: '🎓 Training',          prompt: 'corporate training courses' },
+    { label: '👥 HR Staffing',       prompt: 'HR staffing and recruitment' },
+    { label: '💼 Careers',           prompt: 'job openings and careers' },
+    { label: '📞 Contact',           prompt: 'contact and office address' },
+];
+
+const BOT_RESPONSES = [
+    {
+        match: ['data', 'bi', 'automation', 'dashboard', 'analytics', 'powerbi', 'erp', 'cloud', 'database'],
+        reply: `📊 **Data Automation & BI**\n\nWe build custom PowerBI dashboards, automate data pipelines, and handle SQL/PostgreSQL migrations.\n\n✅ Real-time metric pipelines\n✅ Custom BI visualizations\n✅ ERP system integration\n\nVisit our Services page → Data Automation tab for a live demo tool.`
+    },
+    {
+        match: ['training', 'course', 'learn', 'excel', 'python', 'vba', 'power query', 'enroll', 'certification'],
+        reply: `🎓 **Corporate Training Programs**\n\nWe offer instructor-led courses:\n\n• Excel Basic & Advanced\n• Power Query & VBA Automation\n• Python for Data Analytics\n• Power BI Dashboards\n\nAll courses include quizzes and certificates. Check our Training page to enroll.`
+    },
+    {
+        match: ['hr', 'staffing', 'recruitment', 'hire', 'talent', 'staff'],
+        reply: `👥 **HR Staffing & Recruitment**\n\nWe source, screen, and place top engineering talent for your teams.\n\n✅ Resume screening & skills assessment\n✅ Frontend, Data & ERP specialists\n✅ Contract and full-time placements\n\nContact us to discuss your hiring needs.`
+    },
+    {
+        match: ['career', 'job', 'apply', 'opening', 'vacancy', 'position', 'role'],
+        reply: `💼 **Open Positions**\n\nCurrent openings at ITBEES Global:\n\n• Senior React Developer — Hyderabad\n• Data Scientist & BI Analyst — Gachibowli\n• ERP Solutions Consultant — Remote\n• HR Talent Acquisition Specialist\n\nVisit our Careers page to apply and upload your resume.`
+    },
+    {
+        match: ['contact', 'phone', 'address', 'email', 'office', 'location', 'whatsapp', 'call'],
+        reply: `📞 **Contact ITBEES Global**\n\n📍 3rd Floor, KNR Square, Gachibowli, Hyderabad\n📱 +91 9963186067 (Call / WhatsApp)\n✉️ support@itbeesglobal.com\n\nOffice hours: Mon–Sat, 9 AM – 6 PM IST`
+    },
+    {
+        match: ['price', 'cost', 'fee', 'pricing', 'charge', 'rate'],
+        reply: `💰 **Pricing**\n\nOur course fees start from ₹4,999. Consulting and staffing packages are custom-quoted based on scope.\n\nContact us at +91 9963186067 or schedule a free demo for a tailored quote.`
+    },
+    {
+        match: ['hello', 'hi', 'hey', 'good morning', 'good evening', 'namaste'],
+        reply: `👋 Hello! Welcome to **ITBEES Global**.\n\nI can help you with:\n• Our services (Data BI, Training, HR Staffing)\n• Job openings & applications\n• Course enrollment\n• Contact & office details\n\nWhat would you like to know?`
+    },
+];
+
+function formatBotText(text) {
+    return text.split('\n').map((line, i) => {
+        const bold = line.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+        return <p key={i} style={{ margin: '2px 0' }} dangerouslySetInnerHTML={{ __html: bold }} />;
+    });
+}
+
 export default function ChatWidget() {
     const [isOpen, setIsOpen] = useState(false);
     const [messages, setMessages] = useState([
-        { id: 1, text: 'Hello! Welcome to ITBEES GLOBAL. I can guide you through our Smart Cloud, BI Analytics, or training modules. What can I help you with?', agent: true }
+        { id: 1, text: 'Hello! Welcome to **ITBEES GLOBAL**.\n\nHow can I help you today? Use the quick options below or type your question.', agent: true }
     ]);
     const [inputValue, setInputValue] = useState('');
+    const [typing, setTyping] = useState(false);
     const messagesEndRef = useRef(null);
 
     useEffect(() => {
-        if (messagesEndRef.current) {
-            messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
-        }
-    }, [messages]);
+        messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    }, [messages, typing]);
 
-    const handleSendMessage = (e) => {
-        e.preventDefault();
-        if (!inputValue.trim()) return;
-
-        const userMsg = { id: Date.now(), text: inputValue, agent: false };
+    const sendMessage = (text) => {
+        if (!text.trim()) return;
+        const userMsg = { id: Date.now(), text, agent: false };
         setMessages(prev => [...prev, userMsg]);
-        const prompt = inputValue.toLowerCase();
         setInputValue('');
+        setTyping(true);
 
-        // Predefined AI responses simulating AI Chatbot integration
         setTimeout(() => {
-            let botResponse = "I'm sorry, I didn't quite get that. You can ask about our 'services', 'careers', 'training', or 'contact' details.";
-
-            if (prompt.includes('service') || prompt.includes('cloud') || prompt.includes('erp') || prompt.includes('bi')) {
-                botResponse = "ITBEES Global specializes in Data Automation, Smart Cloud setups, and custom ERP management dashboards. Check our 'Services' page to run data simulation tools.";
-            } else if (prompt.includes('career') || prompt.includes('job') || prompt.includes('apply')) {
-                botResponse = "We have open roles like Senior React Developer and Data Scientist in Gachibowli, Hyderabad! Navigate to our 'Careers' page to upload your resume.";
-            } else if (prompt.includes('training') || prompt.includes('course') || prompt.includes('learn')) {
-                botResponse = "We offer structured courses in PowerBI, ERP architecture, and React frameworks. Check our 'Training' catalog to test your skills and clear certifications.";
-            } else if (prompt.includes('contact') || prompt.includes('phone') || prompt.includes('address') || prompt.includes('email')) {
-                botResponse = "Call or WhatsApp us at +91 9963186067, or email support@itbeesglobal.com. Our office is on the 3rd Floor, KNR Square, Gachibowli, Hyderabad.";
-            } else if (prompt.includes('hello') || prompt.includes('hi')) {
-                botResponse = "Hello! Ask me about our courses, active career listings, or client inquiries.";
-            }
-
-            setMessages(prev => [...prev, { id: Date.now() + 1, text: botResponse, agent: true }]);
-        }, 800);
+            const prompt = text.toLowerCase();
+            const match = BOT_RESPONSES.find(r => r.match.some(k => prompt.includes(k)));
+            const reply = match
+                ? match.reply
+                : `I'm not sure about that. You can ask me about our **services**, **training courses**, **job openings**, or **contact details**. Or call us at +91 9963186067.`;
+            setTyping(false);
+            setMessages(prev => [...prev, { id: Date.now() + 1, text: reply, agent: true }]);
+        }, 900);
     };
+
+    const handleSubmit = (e) => { e.preventDefault(); sendMessage(inputValue); };
 
     return (
         <>
-            {/* Floating Chat Trigger button */}
-            <button className="chatbot-trigger" onClick={() => setIsOpen(!isOpen)}>
+            <button className="chatbot-trigger" onClick={() => setIsOpen(o => !o)} aria-label="Chat">
                 {isOpen ? <X size={24} /> : <MessageSquare size={24} />}
             </button>
 
-            {/* Floating chat panel */}
             {isOpen && (
                 <div className="chatbot-panel">
                     <div className="chatbot-header">
                         <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                            <div style={{ width: '8px', height: '8px', borderRadius: '50%', backgroundColor: 'var(--color-ai-lime)', boxShadow: '0 0 8px var(--color-ai-lime)' }}></div>
-                            <strong style={{ fontSize: '14px', fontFamily: 'var(--font-aeonik)' }}>ITBEES Support AI</strong>
+                            <div style={{ width: '8px', height: '8px', borderRadius: '50%', backgroundColor: 'var(--color-ai-lime)', boxShadow: '0 0 8px var(--color-ai-lime)' }} />
+                            <strong style={{ fontSize: '14px', fontFamily: 'var(--font-aeonik)' }}>ITBEES Support</strong>
                         </div>
                         <button style={{ background: 'transparent', border: 'none', color: 'var(--color-white)', cursor: 'pointer' }} onClick={() => setIsOpen(false)}>
                             <X size={16} />
@@ -67,23 +101,35 @@ export default function ChatWidget() {
                     <div className="chatbot-messages">
                         {messages.map(msg => (
                             <div key={msg.id} className={`chat-bubble ${msg.agent ? 'chat-bubble-agent' : 'chat-bubble-user'}`}>
-                                {msg.text}
+                                {msg.agent ? formatBotText(msg.text) : msg.text}
                             </div>
                         ))}
+                        {typing && (
+                            <div className="chat-bubble chat-bubble-agent" style={{ display: 'flex', gap: '4px', alignItems: 'center', padding: '10px 14px' }}>
+                                <span className="chat-dot" /><span className="chat-dot" style={{ animationDelay: '0.2s' }} /><span className="chat-dot" style={{ animationDelay: '0.4s' }} />
+                            </div>
+                        )}
                         <div ref={messagesEndRef} />
                     </div>
 
-                    <form onSubmit={handleSendMessage} className="chatbot-input-container">
+                    {/* Quick reply chips */}
+                    <div className="chatbot-chips">
+                        {QUICK_REPLIES.map(q => (
+                            <button key={q.label} className="chat-chip" onClick={() => sendMessage(q.prompt)}>
+                                {q.label}
+                            </button>
+                        ))}
+                    </div>
+
+                    <form onSubmit={handleSubmit} className="chatbot-input-container">
                         <input
                             type="text"
                             className="chatbot-input"
-                            placeholder="Ask about jobs, courses, consulting..."
+                            placeholder="Type a message..."
                             value={inputValue}
-                            onChange={(e) => setInputValue(e.target.value)}
+                            onChange={e => setInputValue(e.target.value)}
                         />
-                        <button type="submit" className="chatbot-send-btn">
-                            <Send size={14} />
-                        </button>
+                        <button type="submit" className="chatbot-send-btn"><Send size={14} /></button>
                     </form>
                 </div>
             )}

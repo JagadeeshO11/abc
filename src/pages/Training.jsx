@@ -1,6 +1,7 @@
 
 import { useState } from 'react';
 import { BookOpen, X, Lock, CheckCircle } from 'lucide-react';
+import trainingBg from '../assets/training.png';
 
 export default function Training({ courses, setEnrollments, setPayments, triggerToast, addLog }) {
     const [selectedCourse, setSelectedCourse] = useState(null);
@@ -109,12 +110,16 @@ export default function Training({ courses, setEnrollments, setPayments, trigger
     };
 
     return (
-        <div className="container section-gap">
-            <div className="section-header">
+        <>
+        <section className="page-hero" style={{ backgroundImage: `url(${trainingBg})` }}>
+            <div className="page-hero-inner">
                 <div className="badge-mint" style={{ marginBottom: '16px' }}>LEARN &amp; SCALE</div>
                 <h1 className="display-lg">CORPORATE TRAINING PROGRAMS</h1>
-                <p className="section-subtitle">Enroll teams in database automation, React frontend layouts, or cloud dashboards.</p>
+                <p className="page-hero-sub">Enroll teams in database automation, React frontend layouts, or cloud dashboards.</p>
             </div>
+        </section>
+        <div className="container section-gap">
+
 
             {/* Course Catalog list */}
             <div className="grid-3" style={{ marginBottom: '64px' }}>
@@ -318,5 +323,6 @@ export default function Training({ courses, setEnrollments, setPayments, trigger
                 </div>
             )}
         </div>
+        </>
     );
 }

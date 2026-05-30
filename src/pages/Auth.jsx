@@ -1,16 +1,16 @@
 import { useState, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import {
-  Mail, Eye, EyeOff, User, CheckCircle,
-  ShieldCheck, AlertCircle, ArrowRight, RefreshCw
+  Mail, Eye, EyeOff, CheckCircle,
+  AlertCircle, ArrowRight, RefreshCw
 } from 'lucide-react';
 import './Auth.css';
 import logoImg from '../assets/logo.png';
 import { getAuthUser, setAuthUser } from '../utils/auth.js';
 
-/* ─── DUMMY CREDENTIALS (replace with real BE later) ─── */
-const DUMMY_USERS = {
-  admin: {
+/* ─── CREDENTIALS (hardcoded, not exposed in UI) ─── */
+const ACCOUNTS = [
+  {
     email: 'admin@itbeesglobal.com',
     password: 'Admin@123',
     name: 'ITBEES Admin',
@@ -18,7 +18,7 @@ const DUMMY_USERS = {
     token: 'eyJhbGciOiJIUzI1NiJ9.ADMIN.DUMMY_JWT_TOKEN',
     verificationCode: '123456'
   },
-  user: {
+  {
     email: 'user@itbeesglobal.com',
     password: 'User@123',
     name: 'Demo User',
@@ -26,13 +26,12 @@ const DUMMY_USERS = {
     token: 'eyJhbGciOiJIUzI1NiJ9.USER.DUMMY_JWT_TOKEN',
     verificationCode: '654321'
   }
-};
+];
 
-// ─── Login / Signup Page (role = 'admin' | 'user') ─────
-export default function AuthPage({ role = 'user' }) {
+export default function AuthPage() {
   const navigate = useNavigate();
-  const [tab, setTab] = useState('login');          // 'login' | 'signup'
-  const [step, setStep] = useState('form');         // 'form' | 'verify'
+  const [tab, setTab] = useState('login');   // 'login' | 'signup'
+  const [step, setStep] = useState('form');  // 'form' | 'verify'
   const [showPw, setShowPw] = useState(false);
 
   const [email, setEmail] = useState('');
@@ -44,12 +43,10 @@ export default function AuthPage({ role = 'user' }) {
   const [success, setSuccess] = useState('');
   const [loading, setLoading] = useState(false);
 
-  // redirect if already logged in
+  // Redirect if already logged in
   useEffect(() => {
     const user = getAuthUser();
-    if (user) {
-      navigate(user.role === 'admin' ? '/admin' : '/', { replace: true });
-    }
+    if (user) navigate(user.role === 'admin' ? '/admin' : '/', { replace: true });
   }, [navigate]);
 
   const resetState = () => {
@@ -57,24 +54,21 @@ export default function AuthPage({ role = 'user' }) {
     setEmail(''); setPassword(''); setName(''); setVerifyCode('');
   };
 
-  // ── Login handler ──
   const handleLogin = (e) => {
     e.preventDefault();
     setError(''); setLoading(true);
     setTimeout(() => {
-      const cred = DUMMY_USERS[role];
-      if (email === cred.email && password === cred.password) {
-        setAuthUser({ name: cred.name, email: cred.email, role: cred.role, token: cred.token });
-        setLoading(false);
-        navigate(role === 'admin' ? '/admin' : '/', { replace: true });
+      const match = ACCOUNTS.find(a => a.email === email && a.password === password);
+      if (match) {
+        setAuthUser({ name: match.name, email: match.email, role: match.role, token: match.token });
+        navigate(match.role === 'admin' ? '/admin' : '/', { replace: true });
       } else {
-        setError('Invalid email or password. Check the demo credentials above.');
-        setLoading(false);
+        setError('Invalid email or password.');
       }
+      setLoading(false);
     }, 900);
   };
 
-  // ── Signup handler (sends "verification email") ──
   const handleSignup = (e) => {
     e.preventDefault();
     setError('');
@@ -82,102 +76,59 @@ export default function AuthPage({ role = 'user' }) {
     if (password.length < 6) { setError('Password must be at least 6 characters.'); return; }
     setLoading(true);
     setTimeout(() => {
-      // Simulate sending verification code
       setLoading(false);
       setStep('verify');
-      setSuccess(`A verification code has been sent to ${email}. (Demo code: ${DUMMY_USERS[role].verificationCode})`);
+      setSuccess(`A verification code has been sent to ${email}. (Demo code: 654321)`);
     }, 1000);
   };
 
-  // ── Verify OTP handler ──
   const handleVerify = (e) => {
     e.preventDefault();
-    setError('');
-    setLoading(true);
+    setError(''); setLoading(true);
     setTimeout(() => {
-      if (verifyCode === DUMMY_USERS[role].verificationCode) {
+      if (verifyCode === '654321') {
         const token = `eyJhbGciOiJIUzI1NiJ9.${name.replace(' ', '_').toUpperCase()}.DUMMY_JWT_TOKEN`;
-        setAuthUser({ name, email, role, token });
-        setLoading(false);
-        navigate(role === 'admin' ? '/admin' : '/', { replace: true });
+        setAuthUser({ name, email, role: 'user', token });
+        navigate('/', { replace: true });
       } else {
-        setError('Invalid verification code. Try: ' + DUMMY_USERS[role].verificationCode);
-        setLoading(false);
+        setError('Invalid verification code. Try: 654321');
       }
+      setLoading(false);
     }, 800);
   };
-
-  const isAdmin = role === 'admin';
-  const demoCredentials = DUMMY_USERS[role];
 
   return (
     <div className="auth-page">
       <div className="auth-card">
 
-        {/* Logo */}
         <div className="auth-logo">
           <img src={logoImg} alt="ITBEES Global" />
         </div>
 
-        {/* Role badge */}
-        <div style={{ textAlign: 'center' }}>
-          <span className={`auth-role-badge ${isAdmin ? 'admin' : 'user'}`}>
-            {isAdmin ? <ShieldCheck size={13} /> : <User size={13} />}
-            {isAdmin ? 'Admin Portal' : 'Student Portal'}
-          </span>
-        </div>
-
-        {/* Demo credentials banner */}
-        <div className="auth-demo-banner">
-          <strong>🔑 Demo Credentials</strong>
-          Email: <b>{demoCredentials.email}</b> &nbsp;|&nbsp; Password: <b>{demoCredentials.password}</b>
-        </div>
-
-        {/* Login / Signup tabs */}
         <div className="auth-tabs">
-          <button
-            className={`auth-tab-btn ${tab === 'login' ? 'active' : ''}`}
-            onClick={() => { setTab('login'); resetState(); }}
-          >Sign In</button>
-          <button
-            className={`auth-tab-btn ${tab === 'signup' ? 'active' : ''}`}
-            onClick={() => { setTab('signup'); resetState(); }}
-          >Create Account</button>
+          <button className={`auth-tab-btn ${tab === 'login' ? 'active' : ''}`}
+            onClick={() => { setTab('login'); resetState(); }}>Sign In</button>
+          <button className={`auth-tab-btn ${tab === 'signup' ? 'active' : ''}`}
+            onClick={() => { setTab('signup'); resetState(); }}>Create Account</button>
         </div>
 
-        {/* ───── LOGIN FORM ───── */}
+        {/* ── LOGIN ── */}
         {tab === 'login' && (
           <>
             <h2 className="auth-title">Welcome back</h2>
-            <p className="auth-subtitle">Sign in to your {isAdmin ? 'admin' : ''} account to continue.</p>
+            <p className="auth-subtitle">Sign in to your account to continue.</p>
             {error && <div className="auth-error"><AlertCircle size={14} />{error}</div>}
             <form className="auth-form" onSubmit={handleLogin}>
               <div className="auth-field-group">
                 <label className="auth-label">Email Address</label>
-                <input
-                  id="auth-email-login"
-                  type="email"
-                  className="auth-input"
-                  placeholder="you@company.com"
-                  value={email}
-                  onChange={e => setEmail(e.target.value)}
-                  required
-                  autoComplete="email"
-                />
+                <input type="email" className="auth-input" placeholder="you@company.com"
+                  value={email} onChange={e => setEmail(e.target.value)} required autoComplete="email" />
               </div>
               <div className="auth-field-group">
                 <label className="auth-label">Password</label>
                 <div className="auth-password-wrap">
-                  <input
-                    id="auth-password-login"
-                    type={showPw ? 'text' : 'password'}
-                    className="auth-input"
-                    placeholder="••••••••"
-                    value={password}
-                    onChange={e => setPassword(e.target.value)}
-                    required
-                    autoComplete="current-password"
-                  />
+                  <input type={showPw ? 'text' : 'password'} className="auth-input" placeholder="••••••••"
+                    value={password} onChange={e => setPassword(e.target.value)} required autoComplete="current-password" />
                   <button type="button" className="auth-eye-btn" onClick={() => setShowPw(!showPw)}>
                     {showPw ? <EyeOff size={16} /> : <Eye size={16} />}
                   </button>
@@ -187,58 +138,31 @@ export default function AuthPage({ role = 'user' }) {
                 {loading ? <span className="auth-spinner" /> : <><ArrowRight size={16} /> Sign In</>}
               </button>
             </form>
-            <div className="auth-link-row">
-              {isAdmin
-                ? <Link to="/login" className="auth-link">← Back to user login</Link>
-                : <Link to="/admin/login" className="auth-link">Admin login →</Link>
-              }
-            </div>
           </>
         )}
 
-        {/* ───── SIGNUP FORM ───── */}
+        {/* ── SIGNUP ── */}
         {tab === 'signup' && step === 'form' && (
           <>
             <h2 className="auth-title">Create account</h2>
-            <p className="auth-subtitle">Join ITBEES Global. We'll send you a verification code.</p>
+            <p className="auth-subtitle">Join ITBEES Global. We&apos;ll send you a verification code.</p>
             {error && <div className="auth-error"><AlertCircle size={14} />{error}</div>}
             <form className="auth-form" onSubmit={handleSignup}>
               <div className="auth-field-group">
                 <label className="auth-label">Full Name</label>
-                <input
-                  id="auth-name-signup"
-                  type="text"
-                  className="auth-input"
-                  placeholder="Vikram Seth"
-                  value={name}
-                  onChange={e => setName(e.target.value)}
-                  required
-                />
+                <input type="text" className="auth-input" placeholder="Your Name"
+                  value={name} onChange={e => setName(e.target.value)} required />
               </div>
               <div className="auth-field-group">
                 <label className="auth-label">Email Address</label>
-                <input
-                  id="auth-email-signup"
-                  type="email"
-                  className="auth-input"
-                  placeholder="you@company.com"
-                  value={email}
-                  onChange={e => setEmail(e.target.value)}
-                  required
-                />
+                <input type="email" className="auth-input" placeholder="you@company.com"
+                  value={email} onChange={e => setEmail(e.target.value)} required />
               </div>
               <div className="auth-field-group">
                 <label className="auth-label">Password</label>
                 <div className="auth-password-wrap">
-                  <input
-                    id="auth-password-signup"
-                    type={showPw ? 'text' : 'password'}
-                    className="auth-input"
-                    placeholder="Min. 6 characters"
-                    value={password}
-                    onChange={e => setPassword(e.target.value)}
-                    required
-                  />
+                  <input type={showPw ? 'text' : 'password'} className="auth-input" placeholder="Min. 6 characters"
+                    value={password} onChange={e => setPassword(e.target.value)} required />
                   <button type="button" className="auth-eye-btn" onClick={() => setShowPw(!showPw)}>
                     {showPw ? <EyeOff size={16} /> : <Eye size={16} />}
                   </button>
@@ -251,7 +175,7 @@ export default function AuthPage({ role = 'user' }) {
           </>
         )}
 
-        {/* ───── EMAIL VERIFICATION STEP ───── */}
+        {/* ── VERIFY ── */}
         {tab === 'signup' && step === 'verify' && (
           <>
             <div className="auth-verify-icon"><Mail size={28} /></div>
@@ -261,31 +185,22 @@ export default function AuthPage({ role = 'user' }) {
             <form className="auth-form" onSubmit={handleVerify} style={{ marginTop: '16px' }}>
               <div className="auth-field-group">
                 <label className="auth-label">Enter 6-digit code</label>
-                <input
-                  id="auth-verify-code"
-                  type="text"
-                  className="auth-input auth-otp-input"
-                  placeholder="_ _ _ _ _ _"
-                  maxLength={6}
-                  value={verifyCode}
-                  onChange={e => setVerifyCode(e.target.value.replace(/\D/g, ''))}
-                  required
-                />
+                <input type="text" className="auth-input auth-otp-input" placeholder="_ _ _ _ _ _"
+                  maxLength={6} value={verifyCode}
+                  onChange={e => setVerifyCode(e.target.value.replace(/\D/g, ''))} required />
               </div>
               <button type="submit" className="auth-submit-btn" disabled={loading}>
-                {loading ? <span className="auth-spinner" /> : <><CheckCircle size={15} /> Verify & Create Account</>}
+                {loading ? <span className="auth-spinner" /> : <><CheckCircle size={15} /> Verify &amp; Create Account</>}
               </button>
-              <button
-                type="button"
-                className="auth-submit-btn"
+              <button type="button" className="auth-submit-btn"
                 style={{ background: 'transparent', color: 'rgba(255,255,255,0.5)', border: '1px solid rgba(255,255,255,0.1)', marginTop: 0 }}
-                onClick={() => { setStep('form'); setError(''); setSuccess(''); }}
-              >
+                onClick={() => { setStep('form'); setError(''); setSuccess(''); }}>
                 <RefreshCw size={14} /> Change Email
               </button>
             </form>
           </>
         )}
+
       </div>
     </div>
   );

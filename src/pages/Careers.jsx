@@ -1,6 +1,7 @@
 
 import { useState } from 'react';
 import { Search, X, Upload, Check } from 'lucide-react';
+import careersBg from '../assets/carrier.png';
 
 export default function Careers({ jobs, setApplications, triggerToast, addLog }) {
     const [searchTerm, setSearchTerm] = useState('');
@@ -66,12 +67,16 @@ export default function Careers({ jobs, setApplications, triggerToast, addLog })
     };
 
     return (
-        <div className="container section-gap">
-            <div className="section-header">
+        <>
+        <section className="page-hero" style={{ backgroundImage: `url(${careersBg})` }}>
+            <div className="page-hero-inner">
                 <div className="badge-mint" style={{ marginBottom: '16px' }}>JOIN OUR TEAM</div>
                 <h1 className="display-lg">CAREERS &amp; OPPORTUNITIES</h1>
-                <p className="section-subtitle">Accelerate your technical career. Apply to our Gachibowli engineering teams.</p>
+                <p className="page-hero-sub">Accelerate your technical career. Apply to our Gachibowli engineering teams.</p>
             </div>
+        </section>
+        <div className="container section-gap">
+
 
             {/* Search & Filters */}
             <div className="card-white" style={{ padding: '24px', marginBottom: '32px' }}>
@@ -224,5 +229,6 @@ export default function Careers({ jobs, setApplications, triggerToast, addLog })
                 </div>
             )}
         </div>
+        </>
     );
 }

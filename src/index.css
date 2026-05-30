@@ -277,6 +277,20 @@ h3.display-sm {
     padding-top: 48px;
     padding-bottom: 48px;
   }
+  .container {
+    padding: 0 var(--spacing-16);
+  }
+  .page-hero {
+    min-height: 280px;
+  }
+  .page-hero .page-hero-inner {
+    padding: 56px var(--spacing-16);
+  }
+  .hero-btns {
+    flex-direction: column;
+    align-items: center;
+    gap: var(--spacing-16);
+  }
 }
 
 /* Global Buttons & Badges (Favoring flat design, no drop shadows) */
@@ -453,6 +467,107 @@ h3.display-sm {
   font-size: var(--text-caption);
   font-weight: 500;
   display: inline-block;
+}
+
+/* Page Hero — shared across all pages */
+.page-hero {
+  position: relative;
+  min-height: 420px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  overflow: hidden;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.page-hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgba(2, 14, 49, 0.62);
+  z-index: 1;
+}
+
+.page-hero .page-hero-inner {
+  position: relative;
+  z-index: 2;
+  padding: 80px var(--spacing-24);
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* Transparent text — image shows through the letters */
+.page-hero h1.display-lg {
+  background-image: inherit;
+  background-size: cover;
+  background-position: center;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+  filter: brightness(1.6) contrast(1.1);
+  -webkit-text-stroke: 1.5px rgba(255, 255, 255, 0.55);
+  paint-order: stroke fill;
+}
+
+.page-hero .page-hero-sub {
+  font-family: var(--font-aeonik);
+  font-size: var(--text-heading-sm);
+  color: rgba(255, 255, 255, 0.82);
+  margin-top: var(--spacing-16);
+  font-weight: 400;
+  line-height: var(--leading-heading-sm);
+}
+
+/* ── Page transition ── */
+.page-fade {
+  animation: page-fade-in 0.25s cubic-bezier(0.22, 1, 0.36, 1) both;
+  will-change: opacity, transform;
+}
+
+@keyframes page-fade-in {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── Scroll-reveal: add class="reveal" to any section/card ── */
+.reveal {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.5s cubic-bezier(0.22, 1, 0.36, 1),
+              transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: opacity, transform;
+}
+
+.reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Auto-reveal grids and section headers without adding classes to JSX */
+.section-gap .section-header,
+.section-gap .grid-3,
+.section-gap .grid-2,
+.section-gap .card-floating,
+.section-gap .analytics-grid {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+              transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: opacity, transform;
+}
+
+.section-gap .section-header.visible,
+.section-gap .grid-3.visible,
+.section-gap .grid-2.visible,
+.section-gap .card-floating.visible,
+.section-gap .analytics-grid.visible {
+  opacity: 1;
+  transform: translateY(0);
 }
 
 /* Stats Dashboard widgets */

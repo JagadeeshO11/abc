@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Database, ChevronRight, BookOpen, BarChart2, Phone, MessageSquare } from 'lucide-react';
+import homeBg from '../assets/home.png';
 
 export default function Home({ setInquiries, triggerToast, addLog }) {
     const [inqName, setInqName] = useState('');
@@ -35,20 +36,19 @@ export default function Home({ setInquiries, triggerToast, addLog }) {
     return (
         <div>
             {/* Hero Section */}
-            <section className="hero-section">
-                <div className="hero-glow"></div>
-                <div className="container" style={{ position: 'relative', zIndex: 2 }}>
+            <section className="page-hero" style={{ backgroundImage: `url(${homeBg})` }}>
+                <div className="page-hero-inner">
                     <div className="hero-badge">
                         <span className="hero-badge-dot"></span>
                         MANAGING SYSTEMS IN THE AGE OF AI
                     </div>
-                    <h1 className="display-lg hero-title" style={{ color: 'var(--color-white)' }}>
+                    <h1 className="display-lg hero-title">
                         ACCELERATE BUSINESS WITH SMART CLOUD &amp; DATA ANALYTICS
                     </h1>
-                    <p className="hero-subtitle">
+                    <p className="page-hero-sub">
                         Integrate next-gen ERP Solutions, automate critical pipelines, and build visual dashboards with ITBEES Global's smart infrastructure.
                     </p>
-                    <div className="hero-btns">
+                    <div className="hero-btns" style={{ marginTop: 'var(--spacing-40)' }}>
                         <Link to="/contact" className="btn-primary">
                             Schedule a Free Demo
                         </Link>
@@ -267,22 +267,24 @@ export default function Home({ setInquiries, triggerToast, addLog }) {
             </section>
 
             {/* Direct CTAs */}
-            <div className="container">
-                <div className="cta-banner">
-                    <div>
-                        <h3 className="heading-lg" style={{ color: 'var(--color-white)' }}>HAVE URGENT BUSINESS CONSULTATIONS?</h3>
-                        <p style={{ color: 'var(--color-light-text)', fontSize: '14px', marginTop: '6px' }}>Click to call our Gachibowli office directly or reach out on WhatsApp.</p>
-                    </div>
-                    <div style={{ display: 'flex', gap: '16px' }}>
-                        <a href="tel:9963186067" className="btn-ghost-dark">
-                            <Phone size={16} /> Call Now
-                        </a>
-                        <a href="https://wa.me/9963186067" className="btn-primary">
-                            <MessageSquare size={16} /> WhatsApp Us
-                        </a>
+            <section style={{ background: 'var(--color-navy-dark)', padding: 'var(--spacing-48) 0', borderTop: '1px solid rgba(35,149,238,0.12)' }}>
+                <div className="container">
+                    <div className="cta-banner">
+                        <div>
+                            <h3 className="heading-lg" style={{ color: 'var(--color-white)' }}>HAVE URGENT BUSINESS CONSULTATIONS?</h3>
+                            <p style={{ color: 'rgba(255,255,255,0.65)', fontSize: '14px', marginTop: '6px' }}>Click to call our Gachibowli office directly or reach out on WhatsApp.</p>
+                        </div>
+                        <div style={{ display: 'flex', gap: '16px' }}>
+                            <a href="tel:9963186067" className="btn-ghost-dark">
+                                <Phone size={16} /> Call Now
+                            </a>
+                            <a href="https://wa.me/9963186067" className="btn-primary">
+                                <MessageSquare size={16} /> WhatsApp Us
+                            </a>
+                        </div>
                     </div>
                 </div>
-            </div>
+            </section>
         </div>
     );
 }
