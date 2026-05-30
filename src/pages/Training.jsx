@@ -138,17 +138,21 @@ export default function Training({ courses, setEnrollments, setPayments, trigger
             </div>
         </section>
 
-        {/* Training Image Banner */}
-        <section style={{ position: 'relative', overflow: 'hidden', height: '280px' }}>
-            <img src={trainingBg} alt="Training Programs" style={{ width: '100%', height: '100%', objectFit: 'cover', filter: 'brightness(0.4)' }} />
-            <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'column', gap: '12px' }}>
-                <MdSchool size={48} color="var(--color-ai-lime)" />
-                <h2 style={{ color: 'var(--color-white)', fontFamily: 'var(--font-ozik)', fontSize: '28px', textAlign: 'center' }}>
-                    WORLD-CLASS TRAINING FOR MODERN ENTERPRISES
-                </h2>
-                <p style={{ color: 'rgba(255,255,255,0.75)', fontSize: '14px', textAlign: 'center', maxWidth: '500px' }}>
-                    Industry-aligned curriculum designed by practitioners with 10+ years of enterprise experience.
-                </p>
+        {/* Training Image Banner Card */}
+        <section style={{ padding: '48px 0' }}>
+            <div className="container">
+                <div style={{ position: 'relative', overflow: 'hidden', height: '280px', borderRadius: 'var(--radius-containers)', boxShadow: 'var(--shadow-md)' }}>
+                    <img src={trainingBg} alt="Training Programs" style={{ width: '100%', height: '100%', objectFit: 'cover', filter: 'brightness(0.4)' }} />
+                    <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'column', gap: '12px', padding: '24px' }}>
+                        <MdSchool size={48} color="var(--color-ai-lime)" />
+                        <h2 style={{ color: 'var(--color-white)', fontFamily: 'var(--font-ozik)', fontSize: '28px', textAlign: 'center' }}>
+                            WORLD-CLASS TRAINING FOR MODERN ENTERPRISES
+                        </h2>
+                        <p style={{ color: 'rgba(255,255,255,0.75)', fontSize: '14px', textAlign: 'center', maxWidth: '500px' }}>
+                            Industry-aligned curriculum designed by practitioners with 10+ years of enterprise experience.
+                        </p>
+                    </div>
+                </div>
             </div>
         </section>
 
@@ -180,9 +184,13 @@ export default function Training({ courses, setEnrollments, setPayments, trigger
                 <div className="grid-3">
                     {courses.map(course => (
                         <div key={course.id} className="card-white" style={{ textAlign: 'left' }}>
-                            <div className="course-card-img-placeholder" style={{ position: 'relative' }}>
-                                <BookOpen size={36} />
-                                <div style={{ position: 'absolute', top: '8px', right: '8px' }}>
+                            <div className="course-card-img-placeholder" style={{ position: 'relative', overflow: 'hidden', backgroundColor: 'var(--color-light-canvas)' }}>
+                                {course.image ? (
+                                    <img src={course.image} alt={course.title} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                                ) : (
+                                    <BookOpen size={36} />
+                                )}
+                                <div style={{ position: 'absolute', top: '8px', right: '8px', zIndex: 2 }}>
                                     <MdVerified size={20} color="var(--color-corporate-blue)" />
                                 </div>
                             </div>

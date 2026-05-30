@@ -384,9 +384,14 @@ export default function AdminPanel({
                                     {courses.map(course => (
                                         <div key={course.id} className="card-white" style={{ padding: '16px' }}>
                                             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                                                <div>
-                                                    <strong style={{ fontSize: '15px' }}>{course.title}</strong>
-                                                    <div style={{ fontSize: '12px', color: 'var(--color-muted-text)' }}>{course.category} &bull; ₹{course.price.toLocaleString('en-IN')}</div>
+                                                <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                                                    {course.image && (
+                                                        <img src={course.image} alt="" style={{ width: '40px', height: '40px', borderRadius: '4px', objectFit: 'cover' }} />
+                                                    )}
+                                                    <div>
+                                                        <strong style={{ fontSize: '15px' }}>{course.title}</strong>
+                                                        <div style={{ fontSize: '12px', color: 'var(--color-muted-text)' }}>{course.category} &bull; ₹{course.price.toLocaleString('en-IN')}</div>
+                                                    </div>
                                                 </div>
                                                 <button className="btn-mini" style={{ color: '#d93838' }} onClick={() => {
                                                     setCourses(prev => prev.filter(c => c.id !== course.id));

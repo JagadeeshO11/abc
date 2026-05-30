@@ -139,8 +139,8 @@ export default function Services() {
                                 <MdAnalytics size={18} /> Data Automation Pipeline Output
                             </h4>
                             {formattedData ? (
-                                <div style={{ overflowX: 'auto' }}>
-                                    <table style={{ width: '100%', fontSize: '12px', borderCollapse: 'collapse', color: 'var(--color-white)' }}>
+                                <div className="table-responsive">
+                                    <table style={{ width: '100%', minWidth: '400px', fontSize: '12px', borderCollapse: 'collapse', color: 'var(--color-white)' }}>
                                         <thead>
                                             <tr style={{ borderBottom: '1px solid rgba(255,255,255,0.2)' }}>
                                                 <th style={{ textAlign: 'left', paddingBottom: '8px' }}>Client</th>

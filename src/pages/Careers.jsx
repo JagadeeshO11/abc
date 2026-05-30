@@ -106,17 +106,21 @@ export default function Careers({ jobs, setApplications, triggerToast, addLog })
             </div>
         </section>
 
-        {/* Culture Image Banner */}
-        <section style={{ position: 'relative', overflow: 'hidden', height: '220px' }}>
-            <img src={aboutBg} alt="Team Culture" style={{ width: '100%', height: '100%', objectFit: 'cover', filter: 'brightness(0.35)' }} />
-            <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'column', gap: '12px' }}>
-                <FaHeart size={36} color="#e05c5c" />
-                <h2 style={{ color: 'var(--color-white)', fontFamily: 'var(--font-ozik)', fontSize: '24px', textAlign: 'center' }}>
-                    BUILD YOUR CAREER AT ITBEES GLOBAL
-                </h2>
-                <p style={{ color: 'rgba(255,255,255,0.7)', fontSize: '14px', textAlign: 'center', maxWidth: '500px' }}>
-                    Join a team of 200+ passionate engineers, analysts, and consultants shaping the future of enterprise technology.
-                </p>
+        {/* Culture Image Banner Card */}
+        <section style={{ padding: '40px 0' }}>
+            <div className="container">
+                <div style={{ position: 'relative', overflow: 'hidden', height: '240px', borderRadius: 'var(--radius-containers)', boxShadow: 'var(--shadow-md)' }}>
+                    <img src={aboutBg} alt="Team Culture" style={{ width: '100%', height: '100%', objectFit: 'cover', filter: 'brightness(0.35)' }} />
+                    <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'column', gap: '12px', padding: '24px' }}>
+                        <FaHeart size={36} color="#e05c5c" />
+                        <h2 style={{ color: 'var(--color-white)', fontFamily: 'var(--font-ozik)', fontSize: '24px', textAlign: 'center' }}>
+                            BUILD YOUR CAREER AT ITBEES GLOBAL
+                        </h2>
+                        <p style={{ color: 'rgba(255,255,255,0.7)', fontSize: '14px', textAlign: 'center', maxWidth: '500px' }}>
+                            Join a team of 200+ passionate engineers, analysts, and consultants shaping the future of enterprise technology.
+                        </p>
+                    </div>
+                </div>
             </div>
         </section>
 

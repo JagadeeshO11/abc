@@ -13,3 +13,201 @@
     padding: 32px 24px;
   }
 }
+
+/* Journey Timeline Enhancements - Zig-Zag Redesign */
+.journey-timeline {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  padding: 40px 0;
+}
+
+.journey-timeline::before {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: linear-gradient(to bottom, transparent, var(--color-corporate-blue), var(--color-evergreen-glow), transparent);
+  transform: translateX(-50%);
+}
+
+.journey-item {
+  display: flex;
+  justify-content: flex-end;
+  padding-right: 50%;
+  position: relative;
+  margin-bottom: 40px;
+  width: 100%;
+}
+
+.journey-item:nth-child(even) {
+  justify-content: flex-start;
+  padding-right: 0;
+  padding-left: 50%;
+}
+
+.journey-dot {
+  position: absolute;
+  left: 50%;
+  top: 10px;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background-color: var(--color-white);
+  border: 3px solid var(--color-corporate-blue);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-corporate-blue);
+  transform: translateX(-50%);
+  z-index: 2;
+  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+
+.journey-item:nth-child(even) .journey-dot {
+  border-color: var(--color-evergreen-glow);
+  color: var(--color-evergreen-glow);
+}
+
+.journey-content {
+  background-color: var(--color-white);
+  padding: 40px 48px;
+  border-radius: 16px;
+  border: 1px solid var(--color-soft-gray);
+  box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+  width: 90%;
+  margin-right: 40px;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.journey-item {
+  display: flex;
+  justify-content: flex-end;
+  padding-right: 50%;
+  position: relative;
+  margin-bottom: 64px;
+  width: 100%;
+}
+
+.journey-item:nth-child(even) .journey-content {
+  margin-right: 0;
+  margin-left: 40px;
+}
+
+.journey-content:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 12px 30px rgba(0,0,0,0.12);
+  border-color: var(--color-corporate-blue);
+}
+
+.journey-item:nth-child(even) .journey-content:hover {
+  border-color: var(--color-evergreen-glow);
+}
+
+/* Leadership Card - Horizontal Profile Style */
+.leadership-card {
+  text-align: left;
+  padding: 32px;
+  background-color: var(--color-white);
+  border-radius: 12px;
+  border: 1px solid var(--color-soft-gray);
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 24px;
+  height: 100%;
+}
+
+.leadership-card::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 4px;
+  background-color: var(--accent-color, var(--color-corporate-blue));
+  transition: width 0.3s ease;
+}
+
+.leadership-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 32px rgba(0,0,0,0.1);
+}
+
+.leadership-card:hover::after {
+  width: 8px;
+}
+
+.leadership-icon-wrapper {
+  width: 64px;
+  height: 64px;
+  border-radius: 12px;
+  background-color: var(--color-light-canvas);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  color: var(--accent-color, var(--color-corporate-blue));
+}
+
+.leadership-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+@media (max-width: 1024px) {
+  .leadership-card {
+    padding: 24px;
+    gap: 16px;
+  }
+}
+
+@media (max-width: 768px) {
+  .journey-timeline::before {
+    left: 20px;
+    transform: none;
+  }
+  .journey-item, .journey-item:nth-child(even) {
+    justify-content: flex-start;
+    padding-left: 45px;
+    padding-right: 0;
+    margin-bottom: 40px;
+  }
+  .journey-dot {
+    left: 20px;
+    transform: translateX(-50%);
+  }
+  .journey-content {
+    width: 100%;
+    margin-left: 0 !important;
+    padding: 24px 20px;
+  }
+
+  .leadership-card {
+    flex-direction: column;
+    text-align: center;
+    padding: 32px 24px;
+  }
+  .leadership-card::after {
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: auto;
+    width: 100%;
+    height: 4px;
+  }
+  .leadership-card:hover::after {
+    height: 6px;
+    width: 100%;
+  }
+  .leadership-icon-wrapper {
+    margin-bottom: 8px;
+  }
+}

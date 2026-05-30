@@ -142,7 +142,7 @@ export default function Home({ setInquiries, triggerToast, addLog }) {
                 <div className="container">
                     <div className="grid-2" style={{ alignItems: 'center', gap: '48px' }}>
                         <div style={{ borderRadius: '16px', overflow: 'hidden', boxShadow: '0 8px 32px rgba(0,0,0,0.12)' }}>
-                            <img src={aboutImg} alt="ITBEES Global Office" style={{ width: '100%', height: '320px', objectFit: 'cover' }} />
+                            <img src={aboutImg} alt="ITBEES Global Office" className="img-responsive" style={{ height: 'auto', minHeight: '320px' }} />
                         </div>
                         <div>
                             <div className="badge-mint" style={{ marginBottom: '16px' }}>ABOUT ITBEES GLOBAL</div>
@@ -188,14 +188,14 @@ export default function Home({ setInquiries, triggerToast, addLog }) {
             {/* Featured Statistics */}
             <section className="section-gap" style={{ backgroundColor: 'var(--color-light-canvas)', borderTop: '1px solid var(--color-soft-gray)', borderBottom: '1px solid var(--color-soft-gray)' }}>
                 <div className="container">
-                    <div className="grid-2" style={{ alignItems: 'center' }}>
+                    <div className="grid-2" style={{ alignItems: 'center', gap: '48px' }}>
                         <div>
                             <div className="badge-mint" style={{ marginBottom: '16px' }}>REAL-TIME ANALYTICS DEMONSTRATION</div>
                             <h2 className="display-md" style={{ marginBottom: '24px', textAlign: 'left' }}>LIVE INSIGHTS WITH INTERACTIVE GRAPHS</h2>
                             <p style={{ color: 'var(--color-ink)', marginBottom: '24px', fontSize: '15px', lineHeight: '1.7' }}>
                                 Our modern business intelligence tools represent complex server operations in absolute clean visuals. Observe database sync speeds, payment processing volumes, and cloud instance statuses instantly.
                             </p>
-                            <div style={{ display: 'flex', gap: '24px' }}>
+                            <div className="grid-3" style={{ gap: '24px' }}>
                                 <div>
                                     <h4 style={{ fontSize: '32px', fontFamily: 'var(--font-ozik)', color: 'var(--color-corporate-blue)' }}>99.98%</h4>
                                     <p style={{ fontSize: '12px', textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--color-muted-text)' }}>Cloud Uptime</p>

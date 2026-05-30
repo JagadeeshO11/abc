@@ -43,9 +43,12 @@ export default function NavBar() {
     return (
         <nav className="header-nav">
             <div className="container header-container">
-                <Link to="/" className="logo" style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: 0 }}>
-                    <img src={logoImg} alt="ITBEES Global"
-                        style={{ height: '56px', width: 'auto', objectFit: 'contain', filter: 'brightness(0) invert(1)' }} />
+                <Link to="/" className="logo" style={{ display: 'flex', alignItems: 'center', gap: '14px', padding: 0 }}>
+                    <img src={logoImg} alt="ITBEES Global" className="header-logo-img"
+                        style={{ height: '72px', width: 'auto', objectFit: 'contain', filter: 'brightness(0) invert(1)' }} />
+                    <span className="header-logo-text">
+                        ITBEES <span className="logo-accent">GLOBAL</span>
+                    </span>
                 </Link>
 
                 {/* Desktop Links */}

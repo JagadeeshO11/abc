@@ -122,20 +122,20 @@ export default function AboutUs() {
                 </div>
 
                 {/* Timeline */}
-                <div style={{ marginBottom: '64px' }}>
+                <div style={{ marginBottom: '80px' }}>
                     <div className="section-header">
                         <h2 className="display-md">OUR JOURNEY</h2>
                         <p className="section-subtitle">A decade of innovation, growth, and enterprise impact.</p>
                     </div>
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '0' }}>
+                    <div className="journey-timeline">
                         {milestones.map((m, i) => (
-                            <div key={i} style={{ display: 'flex', gap: '24px', alignItems: 'flex-start', paddingBottom: '24px', borderLeft: i < milestones.length - 1 ? '2px solid var(--color-soft-gray)' : 'none', marginLeft: '20px', paddingLeft: '24px', position: 'relative' }}>
-                                <div style={{ position: 'absolute', left: '-12px', top: '0', width: '24px', height: '24px', borderRadius: '50%', backgroundColor: 'var(--color-corporate-blue)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', flexShrink: 0 }}>
+                            <div key={i} className="journey-item">
+                                <div className="journey-dot">
                                     {m.icon}
                                 </div>
-                                <div>
-                                    <div style={{ fontSize: '12px', fontWeight: '700', color: 'var(--color-corporate-blue)', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '4px' }}>{m.year}</div>
-                                    <p style={{ fontSize: '14px', color: 'var(--color-ink)', lineHeight: '1.5' }}>{m.event}</p>
+                                <div className="journey-content">
+                                    <div style={{ fontSize: '13px', fontWeight: '800', color: i % 2 === 0 ? 'var(--color-corporate-blue)' : 'var(--color-evergreen-glow)', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '8px' }}>{m.year}</div>
+                                    <p style={{ fontSize: '15px', color: 'var(--color-ink)', lineHeight: '1.6', fontWeight: '500' }}>{m.event}</p>
                                 </div>
                             </div>
                         ))}
@@ -143,19 +143,24 @@ export default function AboutUs() {
                 </div>
 
                 {/* Leadership Team */}
-                <div style={{ marginBottom: '64px' }}>
+                <div style={{ marginBottom: '100px' }}>
                     <div className="section-header">
                         <h2 className="display-md">LEADERSHIP TEAM</h2>
                         <p className="section-subtitle">Experienced professionals driving innovation at ITBEES Global.</p>
                     </div>
-                    <div className="grid-4">
+                    <div className="grid-2">
                         {team.map((member, i) => (
-                            <div key={i} className="card-neutral" style={{ textAlign: 'center', padding: '32px 20px' }}>
-                                <div style={{ width: '64px', height: '64px', borderRadius: '50%', backgroundColor: 'var(--color-light-canvas)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 16px auto', color: member.color }}>
+                            <div key={i} className="leadership-card" style={{ '--accent-color': member.color }}>
+                                <div className="leadership-icon-wrapper">
                                     {member.icon}
                                 </div>
-                                <h4 className="heading-md" style={{ color: 'var(--color-ink)', marginBottom: '4px' }}>{member.name}</h4>
-                                <p style={{ fontSize: '12px', color: 'var(--color-muted-text)' }}>{member.role}</p>
+                                <div className="leadership-info">
+                                    <h4 className="heading-md" style={{ color: 'var(--color-ink)', marginBottom: '4px', fontWeight: '700' }}>{member.name}</h4>
+                                    <p style={{ fontSize: '12px', color: 'var(--color-muted-text)', fontWeight: '600', textTransform: 'uppercase', letterSpacing: '0.05em' }}>{member.role}</p>
+                                    <div style={{ marginTop: '12px', fontSize: '11px', color: 'var(--color-muted-text)', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                                        <MdVerified size={14} color={member.color} /> Verified Leader
+                                    </div>
+                                </div>
                             </div>
                         ))}
                     </div>

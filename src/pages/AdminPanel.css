@@ -137,12 +137,14 @@
   background: rgba(255, 255, 255, 0.03);
   border: 1px solid rgba(35, 149, 238, 0.15);
   border-radius: var(--radius-containers);
-  overflow: hidden;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
   margin-top: var(--spacing-24);
 }
 
 .admin-table {
   width: 100%;
+  min-width: 800px;
   border-collapse: collapse;
   text-align: left;
 }
