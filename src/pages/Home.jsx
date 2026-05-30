@@ -1,7 +1,12 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Database, ChevronRight, BookOpen, BarChart2, Phone, MessageSquare } from 'lucide-react';
+import { FaCloud, FaShieldAlt, FaRocket, FaHandshake, FaChartLine, FaUsers } from 'react-icons/fa';
+import { MdOutlineSupport, MdIntegrationInstructions, MdVerified } from 'react-icons/md';
+import { BsArrowRight, BsStarFill } from 'react-icons/bs';
+import { HiLightningBolt } from 'react-icons/hi';
 import homeBg from '../assets/home.png';
+import aboutImg from '../assets/about.png';
 
 export default function Home({ setInquiries, triggerToast, addLog }) {
     const [inqName, setInqName] = useState('');
@@ -26,12 +31,17 @@ export default function Home({ setInquiries, triggerToast, addLog }) {
         setInquiries(prev => [newInquiry, ...prev]);
         triggerToast('Thank you! Inquiry submitted successfully.');
         addLog('system', `New business inquiry received from ${inqName}.`);
-
-        // Clear fields
-        setInqName('');
-        setInqEmail('');
-        setInqMessage('');
+        setInqName(''); setInqEmail(''); setInqMessage('');
     };
+
+    const whyUs = [
+        { icon: <FaCloud size={28} />, title: 'Cloud-First Architecture', desc: 'Scalable, secure cloud infrastructure built for enterprise workloads.', color: 'var(--color-corporate-blue)' },
+        { icon: <FaShieldAlt size={28} />, title: 'Enterprise Security', desc: 'End-to-end encryption and compliance with global data standards.', color: 'var(--color-evergreen-glow)' },
+        { icon: <HiLightningBolt size={28} />, title: 'Lightning Fast Delivery', desc: 'Rapid deployment cycles with zero downtime migrations.', color: 'var(--color-gold)' },
+        { icon: <MdOutlineSupport size={28} />, title: '24/7 Expert Support', desc: 'Dedicated support engineers available round the clock.', color: '#e05c5c' },
+        { icon: <MdIntegrationInstructions size={28} />, title: 'Seamless Integration', desc: 'Connect with 100+ enterprise tools and APIs out of the box.', color: '#9b59b6' },
+        { icon: <FaHandshake size={28} />, title: 'Trusted Partnerships', desc: '150+ enterprise clients across India and Southeast Asia.', color: 'var(--color-corporate-blue)' },
+    ];
 
     return (
         <div>
@@ -59,6 +69,26 @@ export default function Home({ setInquiries, triggerToast, addLog }) {
                 </div>
             </section>
 
+            {/* Trust Bar */}
+            <section style={{ backgroundColor: 'var(--color-navy-dark)', padding: '20px 0', borderBottom: '1px solid rgba(255,255,255,0.08)' }}>
+                <div className="container">
+                    <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '48px', flexWrap: 'wrap' }}>
+                        {[
+                            { icon: <MdVerified size={18} />, text: 'ISO Certified' },
+                            { icon: <FaShieldAlt size={16} />, text: 'GDPR Compliant' },
+                            { icon: <FaUsers size={16} />, text: '150+ Enterprise Clients' },
+                            { icon: <BsStarFill size={14} />, text: '4.9/5 Client Rating' },
+                            { icon: <FaRocket size={16} />, text: '99.98% Uptime SLA' },
+                        ].map((item, i) => (
+                            <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '8px', color: 'rgba(255,255,255,0.7)', fontSize: '13px' }}>
+                                <span style={{ color: 'var(--color-ai-lime)' }}>{item.icon}</span>
+                                {item.text}
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            </section>
+
             {/* Services Showcase Cards */}
             <section className="section-gap" style={{ backgroundColor: 'var(--color-white)' }}>
                 <div className="container">
@@ -66,9 +96,7 @@ export default function Home({ setInquiries, triggerToast, addLog }) {
                         <h2 className="display-md">OUR CORE MODULES</h2>
                         <p className="section-subtitle">We deliver premium architecture for your digital transformation goals.</p>
                     </div>
-
                     <div className="grid-3">
-                        {/* Service Card 1 */}
                         <div className="card-neutral">
                             <div style={{ color: 'var(--color-corporate-blue)', marginBottom: '16px' }}>
                                 <Database size={40} />
@@ -81,8 +109,6 @@ export default function Home({ setInquiries, triggerToast, addLog }) {
                                 Learn More <ChevronRight size={16} style={{ display: 'inline', verticalAlign: 'middle' }} />
                             </Link>
                         </div>
-
-                        {/* Service Card 2 */}
                         <div className="card-neutral">
                             <div style={{ color: 'var(--color-evergreen-glow)', marginBottom: '16px' }}>
                                 <BarChart2 size={40} />
@@ -95,8 +121,6 @@ export default function Home({ setInquiries, triggerToast, addLog }) {
                                 Learn More <ChevronRight size={16} style={{ display: 'inline', verticalAlign: 'middle' }} />
                             </Link>
                         </div>
-
-                        {/* Service Card 3 */}
                         <div className="card-neutral">
                             <div style={{ color: 'var(--color-gold)', marginBottom: '16px' }}>
                                 <BookOpen size={40} />
@@ -113,7 +137,55 @@ export default function Home({ setInquiries, triggerToast, addLog }) {
                 </div>
             </section>
 
-            {/* Featured Statistics (BI Demo Teaser) */}
+            {/* About Image + Content Split */}
+            <section className="section-gap" style={{ backgroundColor: 'var(--color-light-canvas)', borderTop: '1px solid var(--color-soft-gray)' }}>
+                <div className="container">
+                    <div className="grid-2" style={{ alignItems: 'center', gap: '48px' }}>
+                        <div style={{ borderRadius: '16px', overflow: 'hidden', boxShadow: '0 8px 32px rgba(0,0,0,0.12)' }}>
+                            <img src={aboutImg} alt="ITBEES Global Office" style={{ width: '100%', height: '320px', objectFit: 'cover' }} />
+                        </div>
+                        <div>
+                            <div className="badge-mint" style={{ marginBottom: '16px' }}>ABOUT ITBEES GLOBAL</div>
+                            <h2 className="display-md" style={{ textAlign: 'left', marginBottom: '20px' }}>POWERING ENTERPRISE DIGITAL TRANSFORMATION</h2>
+                            <p style={{ color: 'var(--color-ink)', lineHeight: '1.8', marginBottom: '20px', fontSize: '15px' }}>
+                                Based in Gachibowli, Hyderabad, ITBEES Global is a premier enterprise technology partner delivering ERP solutions, BI analytics, and corporate training programs to 150+ clients across India.
+                            </p>
+                            <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', marginBottom: '24px' }}>
+                                {['10+ years of enterprise experience', 'Certified cloud architects & data engineers', 'End-to-end project delivery with SLA guarantees'].map((item, i) => (
+                                    <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '10px', fontSize: '14px', color: 'var(--color-ink)' }}>
+                                        <MdVerified size={18} color="var(--color-evergreen-glow)" />
+                                        {item}
+                                    </div>
+                                ))}
+                            </div>
+                            <Link to="/about" className="btn-primary">
+                                Learn More About Us <BsArrowRight style={{ display: 'inline', marginLeft: '6px' }} />
+                            </Link>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            {/* Why Choose Us */}
+            <section className="section-gap" style={{ backgroundColor: 'var(--color-white)' }}>
+                <div className="container">
+                    <div className="section-header">
+                        <h2 className="display-md">WHY CHOOSE ITBEES GLOBAL?</h2>
+                        <p className="section-subtitle">Six reasons why leading enterprises trust us with their digital infrastructure.</p>
+                    </div>
+                    <div className="grid-3">
+                        {whyUs.map((item, i) => (
+                            <div key={i} className="card-neutral" style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                                <div style={{ color: item.color }}>{item.icon}</div>
+                                <h4 className="heading-md" style={{ color: 'var(--color-ink)' }}>{item.title}</h4>
+                                <p style={{ fontSize: '13px', color: 'var(--color-muted-text)', lineHeight: '1.6' }}>{item.desc}</p>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            </section>
+
+            {/* Featured Statistics */}
             <section className="section-gap" style={{ backgroundColor: 'var(--color-light-canvas)', borderTop: '1px solid var(--color-soft-gray)', borderBottom: '1px solid var(--color-soft-gray)' }}>
                 <div className="container">
                     <div className="grid-2" style={{ alignItems: 'center' }}>
@@ -138,47 +210,30 @@ export default function Home({ setInquiries, triggerToast, addLog }) {
                                 </div>
                             </div>
                         </div>
-
-                        {/* Micro Dashboard Preview */}
                         <div className="card-blue-premium">
                             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
                                 <h4 style={{ fontFamily: 'var(--font-aeonik)', fontWeight: '600' }}>Cloud System Monitors</h4>
                                 <span className="badge-dark-accent">LIVE REFRESH</span>
                             </div>
                             <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-                                <div>
-                                    <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '12px', marginBottom: '6px' }}>
-                                        <span>CPU LOAD</span>
-                                        <span style={{ color: 'var(--color-ai-lime)' }}>48% (Optimal)</span>
+                                {[
+                                    { label: 'CPU LOAD', value: '48%', width: '48%', color: 'var(--color-ai-lime)', status: 'Optimal' },
+                                    { label: 'DATABASE SYNC LATENCY', value: '12ms', width: '20%', color: 'var(--color-sky-blue)', status: '' },
+                                    { label: 'API ROUTING LOADS', value: '82% Capacity', width: '82%', color: 'var(--color-gold)', status: '' },
+                                ].map((bar, i) => (
+                                    <div key={i}>
+                                        <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '12px', marginBottom: '6px' }}>
+                                            <span>{bar.label}</span>
+                                            <span style={{ color: bar.color }}>{bar.value}{bar.status ? ` (${bar.status})` : ''}</span>
+                                        </div>
+                                        <div style={{ height: '6px', backgroundColor: 'rgba(255,255,255,0.1)', borderRadius: '3px', overflow: 'hidden' }}>
+                                            <div style={{ width: bar.width, height: '100%', backgroundColor: bar.color }}></div>
+                                        </div>
                                     </div>
-                                    <div style={{ height: '6px', backgroundColor: 'rgba(255,255,255,0.1)', borderRadius: '3px', overflow: 'hidden' }}>
-                                        <div style={{ width: '48%', height: '100%', backgroundColor: 'var(--color-ai-lime)' }}></div>
-                                    </div>
-                                </div>
-
-                                <div>
-                                    <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '12px', marginBottom: '6px' }}>
-                                        <span>DATABASE SYNC LATENCY</span>
-                                        <span style={{ color: 'var(--color-sky-blue)' }}>12ms</span>
-                                    </div>
-                                    <div style={{ height: '6px', backgroundColor: 'rgba(255,255,255,0.1)', borderRadius: '3px', overflow: 'hidden' }}>
-                                        <div style={{ width: '20%', height: '100%', backgroundColor: 'var(--color-sky-blue)' }}></div>
-                                    </div>
-                                </div>
-
-                                <div>
-                                    <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '12px', marginBottom: '6px' }}>
-                                        <span>API ROUTING LOADS</span>
-                                        <span style={{ color: 'var(--color-gold)' }}>82% Capacity</span>
-                                    </div>
-                                    <div style={{ height: '6px', backgroundColor: 'rgba(255,255,255,0.1)', borderRadius: '3px', overflow: 'hidden' }}>
-                                        <div style={{ width: '82%', height: '100%', backgroundColor: 'var(--color-gold)' }}></div>
-                                    </div>
-                                </div>
+                                ))}
                             </div>
-
                             <div style={{ marginTop: '24px', borderTop: '1px solid rgba(255,255,255,0.1)', paddingTop: '16px', display: 'flex', justifyContent: 'space-between', fontSize: '11px', color: 'var(--color-light-text)' }}>
-                                <span>DB Status: Connected</span>
+                                <span style={{ display: 'flex', alignItems: 'center', gap: '6px' }}><FaChartLine size={12} /> DB Status: Connected</span>
                                 <span>Active Transactions: 812/sec</span>
                             </div>
                         </div>
@@ -193,27 +248,22 @@ export default function Home({ setInquiries, triggerToast, addLog }) {
                         <h2 className="display-md">TRUSTED BY INDUSTRY LEADERS</h2>
                         <p className="section-subtitle">Read how our modules have empowered engineering and management operations.</p>
                     </div>
-
                     <div className="grid-2">
-                        <div className="card-neutral" style={{ padding: '32px' }}>
-                            <p className="font-instrument" style={{ fontSize: '18px', color: 'var(--color-dark-olive)', fontStyle: 'italic', marginBottom: '24px', lineHeight: '1.6' }}>
-                                "ITBEES Global transformed our entire client database sync workflow. The new ERP integration resolved legacy latency errors, reducing our client support inquiries by nearly 40%."
-                            </p>
-                            <div style={{ borderTop: '1px solid var(--color-soft-gray)', paddingTop: '16px' }}>
-                                <h5 style={{ fontFamily: 'var(--font-aeonik)', fontWeight: '600' }}>Rajesh Varma</h5>
-                                <p style={{ fontSize: '12px', color: 'var(--color-muted-text)' }}>CTO, Deccan Logistics Ltd.</p>
+                        {[
+                            { quote: '"ITBEES Global transformed our entire client database sync workflow. The new ERP integration resolved legacy latency errors, reducing our client support inquiries by nearly 40%."', name: 'Rajesh Varma', role: 'CTO, Deccan Logistics Ltd.' },
+                            { quote: '"The corporate training module on cloud architecture and PowerBI was spectacular. Our team scaled up rapidly, and we generated live analytics dashboards for our management within just a few weeks."', name: 'Malini Sen', role: 'Director of HR, FinScale Systems' }
+                        ].map((t, i) => (
+                            <div key={i} className="card-neutral" style={{ padding: '32px' }}>
+                                <div style={{ display: 'flex', gap: '4px', marginBottom: '16px' }}>
+                                    {[...Array(5)].map((_, j) => <BsStarFill key={j} size={14} color="var(--color-gold)" />)}
+                                </div>
+                                <p className="font-instrument" style={{ fontSize: '18px', color: 'var(--color-dark-olive)', fontStyle: 'italic', marginBottom: '24px', lineHeight: '1.6' }}>{t.quote}</p>
+                                <div style={{ borderTop: '1px solid var(--color-soft-gray)', paddingTop: '16px' }}>
+                                    <h5 style={{ fontFamily: 'var(--font-aeonik)', fontWeight: '600' }}>{t.name}</h5>
+                                    <p style={{ fontSize: '12px', color: 'var(--color-muted-text)' }}>{t.role}</p>
+                                </div>
                             </div>
-                        </div>
-
-                        <div className="card-neutral" style={{ padding: '32px' }}>
-                            <p className="font-instrument" style={{ fontSize: '18px', color: 'var(--color-dark-olive)', fontStyle: 'italic', marginBottom: '24px', lineHeight: '1.6' }}>
-                                "The corporate training module on cloud architecture and PowerBI was spectacular. Our team scaled up rapidly, and we generated live analytics dashboards for our management within just a few weeks."
-                            </p>
-                            <div style={{ borderTop: '1px solid var(--color-soft-gray)', paddingTop: '16px' }}>
-                                <h5 style={{ fontFamily: 'var(--font-aeonik)', fontWeight: '600' }}>Malini Sen</h5>
-                                <p style={{ fontSize: '12px', color: 'var(--color-muted-text)' }}>Director of HR, FinScale Systems</p>
-                            </div>
-                        </div>
+                        ))}
                     </div>
                 </div>
             </section>
@@ -229,34 +279,15 @@ export default function Home({ setInquiries, triggerToast, addLog }) {
                         <form onSubmit={handleQuickInquiry} style={{ maxWidth: '600px', margin: '0 auto' }}>
                             <div className="form-group">
                                 <label className="form-label">Your Name</label>
-                                <input
-                                    type="text"
-                                    className="input-field"
-                                    placeholder="e.g. Vikram Seth"
-                                    value={inqName}
-                                    onChange={(e) => setInqName(e.target.value)}
-                                />
+                                <input type="text" className="input-field" placeholder="e.g. Vikram Seth" value={inqName} onChange={(e) => setInqName(e.target.value)} />
                             </div>
                             <div className="form-group">
                                 <label className="form-label">Business Email</label>
-                                <input
-                                    type="email"
-                                    className="input-field"
-                                    placeholder="e.g. name@company.com"
-                                    value={inqEmail}
-                                    onChange={(e) => setInqEmail(e.target.value)}
-                                />
+                                <input type="email" className="input-field" placeholder="e.g. name@company.com" value={inqEmail} onChange={(e) => setInqEmail(e.target.value)} />
                             </div>
                             <div className="form-group">
                                 <label className="form-label">Message / Requirements</label>
-                                <textarea
-                                    className="input-field"
-                                    rows="4"
-                                    style={{ borderRadius: '16px', resize: 'vertical' }}
-                                    placeholder="Tell us about your ERP, Cloud, BI, or Corporate training requirements..."
-                                    value={inqMessage}
-                                    onChange={(e) => setInqMessage(e.target.value)}
-                                ></textarea>
+                                <textarea className="input-field" rows="4" style={{ borderRadius: '16px', resize: 'vertical' }} placeholder="Tell us about your ERP, Cloud, BI, or Corporate training requirements..." value={inqMessage} onChange={(e) => setInqMessage(e.target.value)}></textarea>
                             </div>
                             <button type="submit" className="btn-primary" style={{ width: '100%', padding: '14px' }}>
                                 Submit Consultation Request

@@ -1,51 +1,167 @@
-
+import { FaBuilding, FaUsers, FaGlobe, FaAward, FaLightbulb, FaHandshake } from 'react-icons/fa';
+import { MdVerified, MdTimeline, MdSecurity } from 'react-icons/md';
+import { BsStarFill, BsGraphUpArrow } from 'react-icons/bs';
+import { HiOfficeBuilding } from 'react-icons/hi';
 import aboutBg from '../assets/about.png';
+import servicesBg from '../assets/services.png';
 
 export default function AboutUs() {
+    const team = [
+        { name: 'Suresh Babu', role: 'CEO & Founder', icon: <FaBuilding size={28} />, color: 'var(--color-corporate-blue)' },
+        { name: 'Anitha Reddy', role: 'CTO', icon: <MdSecurity size={28} />, color: 'var(--color-evergreen-glow)' },
+        { name: 'Kiran Rao', role: 'Head of Training', icon: <FaAward size={28} />, color: 'var(--color-gold)' },
+        { name: 'Preethi Nair', role: 'Lead Data Architect', icon: <BsGraphUpArrow size={28} />, color: '#9b59b6' },
+    ];
+
+    const milestones = [
+        { year: '2014', event: 'ITBEES Global founded in Hyderabad', icon: <FaBuilding size={16} /> },
+        { year: '2016', event: 'Launched first ERP integration suite for 10 enterprise clients', icon: <MdTimeline size={16} /> },
+        { year: '2018', event: 'Expanded to BI Analytics & PowerBI consulting', icon: <BsGraphUpArrow size={16} /> },
+        { year: '2020', event: 'Corporate Training division launched with 500+ enrollments', icon: <FaAward size={16} /> },
+        { year: '2022', event: 'Crossed 100+ enterprise clients across India & SEA', icon: <FaGlobe size={16} /> },
+        { year: '2024', event: 'ISO certified & expanded to cloud-native architecture services', icon: <MdVerified size={16} /> },
+    ];
+
     return (
         <div>
+            {/* Hero */}
             <section className="page-hero" style={{ backgroundImage: `url(${aboutBg})` }}>
                 <div className="page-hero-inner">
-                    <div className="badge-mint" style={{ marginBottom: '16px' }}>WHO WE ARE</div>
+                    <div className="badge-mint" style={{ marginBottom: '16px' }}>
+                        <HiOfficeBuilding style={{ display: 'inline', marginRight: '6px' }} />
+                        WHO WE ARE
+                    </div>
                     <h1 className="display-lg">ITBEES GLOBAL PVT. LTD.</h1>
                     <p className="page-hero-sub">Delivering robust ERP solutions, customized business intelligence tools, and training pipelines.</p>
                 </div>
             </section>
-        <div className="container section-gap">
 
-            <div className="card-floating" style={{ marginBottom: '64px' }}>
-                <h2 className="display-md" style={{ marginBottom: '16px', textAlign: 'left' }}>COMPANY OVERVIEW</h2>
-                <p style={{ fontSize: '16px', lineHeight: '1.8', color: 'var(--color-ink)', marginBottom: '24px' }}>
-                    Established in Hyderabad&apos;s premier IT hub Gachibowli, ITBEES GLOBAL PVT. LTD. is an enterprise solutions partner designed to solve technical complexity. We specialize in configuring unified databases, deploying scalable smart cloud architectures, and preparing data automation workflows that drive corporate performance.
-                </p>
-                <p style={{ fontSize: '16px', lineHeight: '1.8', color: 'var(--color-ink)' }}>
-                    Whether it is staffing specialized frontend engineering teams, deploying analytics modules, or upgrading student knowledge through corporate training catalogs, ITBEES Global focuses on providing clear results and absolute data security.
-                </p>
+            {/* Stats Bar — horizontal */}
+            <section style={{ backgroundColor: 'var(--color-navy-dark)', padding: '28px 0' }}>
+                <div className="container">
+                    <div style={{ display: 'flex', justifyContent: 'space-around', alignItems: 'center', flexWrap: 'wrap', gap: '24px' }}>
+                        {[
+                            { icon: <FaUsers size={24} />, value: '150+', label: 'Enterprise Clients', color: 'var(--color-ai-lime)' },
+                            { icon: <FaAward size={24} />, value: '10+', label: 'Years Experience', color: 'var(--color-gold)' },
+                            { icon: <FaGlobe size={24} />, value: '5', label: 'Countries Served', color: 'var(--color-sky-blue)' },
+                            { icon: <BsStarFill size={22} />, value: '4.9/5', label: 'Client Rating', color: '#e05c5c' },
+                        ].map((s, i) => (
+                            <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
+                                <div style={{ color: s.color }}>{s.icon}</div>
+                                <div>
+                                    <div style={{ fontSize: '24px', fontWeight: '700', color: 'var(--color-white)', lineHeight: 1 }}>{s.value}</div>
+                                    <div style={{ fontSize: '11px', color: 'rgba(255,255,255,0.55)', textTransform: 'uppercase', letterSpacing: '0.05em', marginTop: '4px' }}>{s.label}</div>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            </section>
+
+            <div className="container section-gap">
+
+                {/* Company Overview with Image */}
+                <div className="grid-2" style={{ alignItems: 'center', gap: '48px', marginBottom: '64px' }}>
+                    <div style={{ borderRadius: '16px', overflow: 'hidden', boxShadow: '0 8px 32px rgba(0,0,0,0.12)' }}>
+                        <img src={aboutBg} alt="ITBEES Global Office" style={{ width: '100%', height: '360px', objectFit: 'cover' }} />
+                    </div>
+                    <div>
+                        <div className="badge-mint" style={{ marginBottom: '16px' }}>COMPANY OVERVIEW</div>
+                        <h2 className="display-md" style={{ marginBottom: '20px', textAlign: 'left' }}>BUILT FOR ENTERPRISE EXCELLENCE</h2>
+                        <p style={{ fontSize: '15px', lineHeight: '1.8', color: 'var(--color-ink)', marginBottom: '20px' }}>
+                            Established in Hyderabad's premier IT hub Gachibowli, ITBEES GLOBAL PVT. LTD. is an enterprise solutions partner designed to solve technical complexity. We specialize in configuring unified databases, deploying scalable smart cloud architectures, and preparing data automation workflows.
+                        </p>
+                        <p style={{ fontSize: '15px', lineHeight: '1.8', color: 'var(--color-ink)', marginBottom: '24px' }}>
+                            Whether it is staffing specialized frontend engineering teams, deploying analytics modules, or upgrading student knowledge through corporate training catalogs, ITBEES Global focuses on providing clear results and absolute data security.
+                        </p>
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                            {['ISO Certified Enterprise Partner', 'GDPR & Data Security Compliant', '24/7 Dedicated Support Teams'].map((item, i) => (
+                                <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '10px', fontSize: '14px', color: 'var(--color-ink)' }}>
+                                    <MdVerified size={18} color="var(--color-evergreen-glow)" /> {item}
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                </div>
+
+                {/* Vision / Mission / Values */}
+                <div className="grid-3" style={{ marginBottom: '64px' }}>
+                    <div className="card-neutral">
+                        <div style={{ color: 'var(--color-corporate-blue)', marginBottom: '12px' }}><FaLightbulb size={28} /></div>
+                        <h3 className="heading-lg" style={{ color: 'var(--color-corporate-blue)', marginBottom: '16px' }}>OUR VISION</h3>
+                        <p style={{ fontSize: '14px', lineHeight: '1.6' }}>
+                            To become the leading global architecture and data systems provider, delivering reliable analytics and ERP tools that help businesses and learners scale effortlessly.
+                        </p>
+                    </div>
+                    <div className="card-neutral">
+                        <div style={{ color: 'var(--color-evergreen-glow)', marginBottom: '12px' }}><FaGlobe size={28} /></div>
+                        <h3 className="heading-lg" style={{ color: 'var(--color-evergreen-glow)', marginBottom: '16px' }}>OUR MISSION</h3>
+                        <p style={{ fontSize: '14px', lineHeight: '1.6' }}>
+                            To simplify database migration, deliver precise BI visualizations, and establish structured training platforms that cultivate modern coding standards and security habits.
+                        </p>
+                    </div>
+                    <div className="card-neutral">
+                        <div style={{ color: 'var(--color-gold)', marginBottom: '12px' }}><FaHandshake size={28} /></div>
+                        <h3 className="heading-lg" style={{ color: 'var(--color-gold)', marginBottom: '16px' }}>CORE VALUES</h3>
+                        <p style={{ fontSize: '14px', lineHeight: '1.6' }}>
+                            Integrity, technical expertise, visual clarity in reports, automated efficiency, and a commitment to helping our engineering talent excel globally.
+                        </p>
+                    </div>
+                </div>
+
+                {/* Services Image Banner */}
+                <div style={{ position: 'relative', borderRadius: '16px', overflow: 'hidden', marginBottom: '64px', height: '240px' }}>
+                    <img src={servicesBg} alt="Our Services" style={{ width: '100%', height: '100%', objectFit: 'cover', filter: 'brightness(0.35)' }} />
+                    <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'column', gap: '12px', padding: '24px' }}>
+                        <FaGlobe size={40} color="var(--color-ai-lime)" />
+                        <h3 style={{ color: 'var(--color-white)', fontFamily: 'var(--font-ozik)', fontSize: '24px', textAlign: 'center' }}>SERVING ENTERPRISES ACROSS INDIA & SOUTHEAST ASIA</h3>
+                        <p style={{ color: 'rgba(255,255,255,0.7)', fontSize: '14px', textAlign: 'center', maxWidth: '500px' }}>
+                            From Hyderabad to Singapore, our solutions power mission-critical operations for 150+ organizations.
+                        </p>
+                    </div>
+                </div>
+
+                {/* Timeline */}
+                <div style={{ marginBottom: '64px' }}>
+                    <div className="section-header">
+                        <h2 className="display-md">OUR JOURNEY</h2>
+                        <p className="section-subtitle">A decade of innovation, growth, and enterprise impact.</p>
+                    </div>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '0' }}>
+                        {milestones.map((m, i) => (
+                            <div key={i} style={{ display: 'flex', gap: '24px', alignItems: 'flex-start', paddingBottom: '24px', borderLeft: i < milestones.length - 1 ? '2px solid var(--color-soft-gray)' : 'none', marginLeft: '20px', paddingLeft: '24px', position: 'relative' }}>
+                                <div style={{ position: 'absolute', left: '-12px', top: '0', width: '24px', height: '24px', borderRadius: '50%', backgroundColor: 'var(--color-corporate-blue)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', flexShrink: 0 }}>
+                                    {m.icon}
+                                </div>
+                                <div>
+                                    <div style={{ fontSize: '12px', fontWeight: '700', color: 'var(--color-corporate-blue)', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '4px' }}>{m.year}</div>
+                                    <p style={{ fontSize: '14px', color: 'var(--color-ink)', lineHeight: '1.5' }}>{m.event}</p>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+
+                {/* Leadership Team */}
+                <div style={{ marginBottom: '64px' }}>
+                    <div className="section-header">
+                        <h2 className="display-md">LEADERSHIP TEAM</h2>
+                        <p className="section-subtitle">Experienced professionals driving innovation at ITBEES Global.</p>
+                    </div>
+                    <div className="grid-4">
+                        {team.map((member, i) => (
+                            <div key={i} className="card-neutral" style={{ textAlign: 'center', padding: '32px 20px' }}>
+                                <div style={{ width: '64px', height: '64px', borderRadius: '50%', backgroundColor: 'var(--color-light-canvas)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 16px auto', color: member.color }}>
+                                    {member.icon}
+                                </div>
+                                <h4 className="heading-md" style={{ color: 'var(--color-ink)', marginBottom: '4px' }}>{member.name}</h4>
+                                <p style={{ fontSize: '12px', color: 'var(--color-muted-text)' }}>{member.role}</p>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+
             </div>
-
-            <div className="grid-3" style={{ marginBottom: '64px' }}>
-                <div className="card-neutral">
-                    <h3 className="heading-lg" style={{ color: 'var(--color-corporate-blue)', marginBottom: '16px' }}>OUR VISION</h3>
-                    <p style={{ fontSize: '14px', lineHeight: '1.6' }}>
-                        To become the leading global architecture and data systems provider, delivering reliable analytics and ERP tools that help businesses and learners scale effortlessly.
-                    </p>
-                </div>
-
-                <div className="card-neutral">
-                    <h3 className="heading-lg" style={{ color: 'var(--color-evergreen-glow)', marginBottom: '16px' }}>OUR MISSION</h3>
-                    <p style={{ fontSize: '14px', lineHeight: '1.6' }}>
-                        To simplify database migration, deliver precise BI visualizations, and establish structured training platforms that cultivate modern coding standards and security habits.
-                    </p>
-                </div>
-
-                <div className="card-neutral">
-                    <h3 className="heading-lg" style={{ color: 'var(--color-gold)', marginBottom: '16px' }}>CORE VALUES</h3>
-                    <p style={{ fontSize: '14px', lineHeight: '1.6' }}>
-                        Integrity, technical expertise, visual clarity in reports, automated efficiency, and a commitment to helping our engineering talent excel globally.
-                    </p>
-                </div>
-            </div>
-        </div>
         </div>
     );
 }
