@@ -1,11 +1,12 @@
-import React, { useState, useEffect } from 'react';
-import { Link, useNavigate, useLocation } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import {
-  Mail, Lock, Eye, EyeOff, User, CheckCircle,
+  Mail, Eye, EyeOff, User, CheckCircle,
   ShieldCheck, AlertCircle, ArrowRight, RefreshCw
 } from 'lucide-react';
 import './Auth.css';
 import logoImg from '../assets/logo.png';
+import { getAuthUser, setAuthUser } from '../utils/auth.js';
 
 /* ─── DUMMY CREDENTIALS (replace with real BE later) ─── */
 const DUMMY_USERS = {
@@ -26,20 +27,6 @@ const DUMMY_USERS = {
     verificationCode: '654321'
   }
 };
-
-// ─── Shared localStorage helpers ───────────────────────
-export const getAuthUser = () => {
-  try {
-    const raw = localStorage.getItem('itbees_auth');
-    return raw ? JSON.parse(raw) : null;
-  } catch { return null; }
-};
-
-const setAuthUser = (payload) => {
-  localStorage.setItem('itbees_auth', JSON.stringify(payload));
-};
-
-export const clearAuthUser = () => localStorage.removeItem('itbees_auth');
 
 // ─── Login / Signup Page (role = 'admin' | 'user') ─────
 export default function AuthPage({ role = 'user' }) {
@@ -63,7 +50,7 @@ export default function AuthPage({ role = 'user' }) {
     if (user) {
       navigate(user.role === 'admin' ? '/admin' : '/', { replace: true });
     }
-  }, []);
+  }, [navigate]);
 
   const resetState = () => {
     setError(''); setSuccess(''); setStep('form');

@@ -1,0 +1,288 @@
+import { useState } from 'react';
+import { Link } from 'react-router-dom';
+import { Database, ChevronRight, BookOpen, BarChart2, Phone, MessageSquare } from 'lucide-react';
+
+export default function Home({ setInquiries, triggerToast, addLog }) {
+    const [inqName, setInqName] = useState('');
+    const [inqEmail, setInqEmail] = useState('');
+    const [inqMessage, setInqMessage] = useState('');
+
+    const handleQuickInquiry = (e) => {
+        e.preventDefault();
+        if (!inqName || !inqEmail || !inqMessage) {
+            alert('Please fill out all fields.');
+            return;
+        }
+        const newInquiry = {
+            id: `inq-${Date.now()}`,
+            name: inqName,
+            email: inqEmail,
+            company: 'Website Visitor',
+            message: inqMessage,
+            status: 'pending',
+            date: new Date().toISOString().split('T')[0]
+        };
+        setInquiries(prev => [newInquiry, ...prev]);
+        triggerToast('Thank you! Inquiry submitted successfully.');
+        addLog('system', `New business inquiry received from ${inqName}.`);
+
+        // Clear fields
+        setInqName('');
+        setInqEmail('');
+        setInqMessage('');
+    };
+
+    return (
+        <div>
+            {/* Hero Section */}
+            <section className="hero-section">
+                <div className="hero-glow"></div>
+                <div className="container" style={{ position: 'relative', zIndex: 2 }}>
+                    <div className="hero-badge">
+                        <span className="hero-badge-dot"></span>
+                        MANAGING SYSTEMS IN THE AGE OF AI
+                    </div>
+                    <h1 className="display-lg hero-title" style={{ color: 'var(--color-white)' }}>
+                        ACCELERATE BUSINESS WITH SMART CLOUD &amp; DATA ANALYTICS
+                    </h1>
+                    <p className="hero-subtitle">
+                        Integrate next-gen ERP Solutions, automate critical pipelines, and build visual dashboards with ITBEES Global's smart infrastructure.
+                    </p>
+                    <div className="hero-btns">
+                        <Link to="/contact" className="btn-primary">
+                            Schedule a Free Demo
+                        </Link>
+                        <Link to="/services" className="btn-ghost-dark">
+                            Explore Our Services
+                        </Link>
+                    </div>
+                </div>
+            </section>
+
+            {/* Services Showcase Cards */}
+            <section className="section-gap" style={{ backgroundColor: 'var(--color-white)' }}>
+                <div className="container">
+                    <div className="section-header">
+                        <h2 className="display-md">OUR CORE MODULES</h2>
+                        <p className="section-subtitle">We deliver premium architecture for your digital transformation goals.</p>
+                    </div>
+
+                    <div className="grid-3">
+                        {/* Service Card 1 */}
+                        <div className="card-neutral">
+                            <div style={{ color: 'var(--color-corporate-blue)', marginBottom: '16px' }}>
+                                <Database size={40} />
+                            </div>
+                            <h3 className="heading-lg" style={{ marginBottom: '12px' }}>Smart Cloud &amp; ERP</h3>
+                            <p style={{ color: 'var(--color-ink)', flex: 1 }}>
+                                Integrate unified databases, configure global API systems, and automate standard workflows across operations, finance, and support.
+                            </p>
+                            <Link to="/services" className="btn-mini" style={{ color: 'var(--color-corporate-blue)', alignSelf: 'flex-start', paddingLeft: 0, marginTop: '16px', fontWeight: 'bold' }}>
+                                Learn More <ChevronRight size={16} style={{ display: 'inline', verticalAlign: 'middle' }} />
+                            </Link>
+                        </div>
+
+                        {/* Service Card 2 */}
+                        <div className="card-neutral">
+                            <div style={{ color: 'var(--color-evergreen-glow)', marginBottom: '16px' }}>
+                                <BarChart2 size={40} />
+                            </div>
+                            <h3 className="heading-lg" style={{ marginBottom: '12px' }}>BI Analytics &amp; Reports</h3>
+                            <p style={{ color: 'var(--color-ink)', flex: 1 }}>
+                                Synthesize massive volumes of transactional data. View progress, track metrics, and generate instant dashboards.
+                            </p>
+                            <Link to="/services" className="btn-mini" style={{ color: 'var(--color-corporate-blue)', alignSelf: 'flex-start', paddingLeft: 0, marginTop: '16px', fontWeight: 'bold' }}>
+                                Learn More <ChevronRight size={16} style={{ display: 'inline', verticalAlign: 'middle' }} />
+                            </Link>
+                        </div>
+
+                        {/* Service Card 3 */}
+                        <div className="card-neutral">
+                            <div style={{ color: 'var(--color-gold)', marginBottom: '16px' }}>
+                                <BookOpen size={40} />
+                            </div>
+                            <h3 className="heading-lg" style={{ marginBottom: '12px' }}>Corporate Training</h3>
+                            <p style={{ color: 'var(--color-ink)', flex: 1 }}>
+                                Skill up your developers, database administrators, and managers with tailored courses on Cloud infrastructure, React dashboards, and BI metrics.
+                            </p>
+                            <Link to="/training" className="btn-mini" style={{ color: 'var(--color-corporate-blue)', alignSelf: 'flex-start', paddingLeft: 0, marginTop: '16px', fontWeight: 'bold' }}>
+                                Explore Courses <ChevronRight size={16} style={{ display: 'inline', verticalAlign: 'middle' }} />
+                            </Link>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            {/* Featured Statistics (BI Demo Teaser) */}
+            <section className="section-gap" style={{ backgroundColor: 'var(--color-light-canvas)', borderTop: '1px solid var(--color-soft-gray)', borderBottom: '1px solid var(--color-soft-gray)' }}>
+                <div className="container">
+                    <div className="grid-2" style={{ alignItems: 'center' }}>
+                        <div>
+                            <div className="badge-mint" style={{ marginBottom: '16px' }}>REAL-TIME ANALYTICS DEMONSTRATION</div>
+                            <h2 className="display-md" style={{ marginBottom: '24px', textAlign: 'left' }}>LIVE INSIGHTS WITH INTERACTIVE GRAPHS</h2>
+                            <p style={{ color: 'var(--color-ink)', marginBottom: '24px', fontSize: '15px', lineHeight: '1.7' }}>
+                                Our modern business intelligence tools represent complex server operations in absolute clean visuals. Observe database sync speeds, payment processing volumes, and cloud instance statuses instantly.
+                            </p>
+                            <div style={{ display: 'flex', gap: '24px' }}>
+                                <div>
+                                    <h4 style={{ fontSize: '32px', fontFamily: 'var(--font-ozik)', color: 'var(--color-corporate-blue)' }}>99.98%</h4>
+                                    <p style={{ fontSize: '12px', textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--color-muted-text)' }}>Cloud Uptime</p>
+                                </div>
+                                <div>
+                                    <h4 style={{ fontSize: '32px', fontFamily: 'var(--font-ozik)', color: 'var(--color-evergreen-glow)' }}>3.4M+</h4>
+                                    <p style={{ fontSize: '12px', textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--color-muted-text)' }}>Daily Operations</p>
+                                </div>
+                                <div>
+                                    <h4 style={{ fontSize: '32px', fontFamily: 'var(--font-ozik)', color: 'var(--color-gold)' }}>150+</h4>
+                                    <p style={{ fontSize: '12px', textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--color-muted-text)' }}>Enterprise Clients</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Micro Dashboard Preview */}
+                        <div className="card-blue-premium">
+                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
+                                <h4 style={{ fontFamily: 'var(--font-aeonik)', fontWeight: '600' }}>Cloud System Monitors</h4>
+                                <span className="badge-dark-accent">LIVE REFRESH</span>
+                            </div>
+                            <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                                <div>
+                                    <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '12px', marginBottom: '6px' }}>
+                                        <span>CPU LOAD</span>
+                                        <span style={{ color: 'var(--color-ai-lime)' }}>48% (Optimal)</span>
+                                    </div>
+                                    <div style={{ height: '6px', backgroundColor: 'rgba(255,255,255,0.1)', borderRadius: '3px', overflow: 'hidden' }}>
+                                        <div style={{ width: '48%', height: '100%', backgroundColor: 'var(--color-ai-lime)' }}></div>
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '12px', marginBottom: '6px' }}>
+                                        <span>DATABASE SYNC LATENCY</span>
+                                        <span style={{ color: 'var(--color-sky-blue)' }}>12ms</span>
+                                    </div>
+                                    <div style={{ height: '6px', backgroundColor: 'rgba(255,255,255,0.1)', borderRadius: '3px', overflow: 'hidden' }}>
+                                        <div style={{ width: '20%', height: '100%', backgroundColor: 'var(--color-sky-blue)' }}></div>
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '12px', marginBottom: '6px' }}>
+                                        <span>API ROUTING LOADS</span>
+                                        <span style={{ color: 'var(--color-gold)' }}>82% Capacity</span>
+                                    </div>
+                                    <div style={{ height: '6px', backgroundColor: 'rgba(255,255,255,0.1)', borderRadius: '3px', overflow: 'hidden' }}>
+                                        <div style={{ width: '82%', height: '100%', backgroundColor: 'var(--color-gold)' }}></div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div style={{ marginTop: '24px', borderTop: '1px solid rgba(255,255,255,0.1)', paddingTop: '16px', display: 'flex', justifyContent: 'space-between', fontSize: '11px', color: 'var(--color-light-text)' }}>
+                                <span>DB Status: Connected</span>
+                                <span>Active Transactions: 812/sec</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            {/* Testimonials */}
+            <section className="section-gap" style={{ backgroundColor: 'var(--color-white)' }}>
+                <div className="container">
+                    <div className="section-header">
+                        <h2 className="display-md">TRUSTED BY INDUSTRY LEADERS</h2>
+                        <p className="section-subtitle">Read how our modules have empowered engineering and management operations.</p>
+                    </div>
+
+                    <div className="grid-2">
+                        <div className="card-neutral" style={{ padding: '32px' }}>
+                            <p className="font-instrument" style={{ fontSize: '18px', color: 'var(--color-dark-olive)', fontStyle: 'italic', marginBottom: '24px', lineHeight: '1.6' }}>
+                                "ITBEES Global transformed our entire client database sync workflow. The new ERP integration resolved legacy latency errors, reducing our client support inquiries by nearly 40%."
+                            </p>
+                            <div style={{ borderTop: '1px solid var(--color-soft-gray)', paddingTop: '16px' }}>
+                                <h5 style={{ fontFamily: 'var(--font-aeonik)', fontWeight: '600' }}>Rajesh Varma</h5>
+                                <p style={{ fontSize: '12px', color: 'var(--color-muted-text)' }}>CTO, Deccan Logistics Ltd.</p>
+                            </div>
+                        </div>
+
+                        <div className="card-neutral" style={{ padding: '32px' }}>
+                            <p className="font-instrument" style={{ fontSize: '18px', color: 'var(--color-dark-olive)', fontStyle: 'italic', marginBottom: '24px', lineHeight: '1.6' }}>
+                                "The corporate training module on cloud architecture and PowerBI was spectacular. Our team scaled up rapidly, and we generated live analytics dashboards for our management within just a few weeks."
+                            </p>
+                            <div style={{ borderTop: '1px solid var(--color-soft-gray)', paddingTop: '16px' }}>
+                                <h5 style={{ fontFamily: 'var(--font-aeonik)', fontWeight: '600' }}>Malini Sen</h5>
+                                <p style={{ fontSize: '12px', color: 'var(--color-muted-text)' }}>Director of HR, FinScale Systems</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            {/* Quick Contact Form CTA */}
+            <section className="section-gap" style={{ backgroundColor: 'var(--color-light-canvas)', borderTop: '1px solid var(--color-soft-gray)' }}>
+                <div className="container">
+                    <div className="card-floating" style={{ backgroundColor: 'var(--color-white)' }}>
+                        <h2 className="display-md" style={{ marginBottom: '16px', textAlign: 'center' }}>REQUEST A TAILORED PROPOSAL</h2>
+                        <p style={{ color: 'var(--color-muted-text)', textAlign: 'center', marginBottom: '32px', maxWidth: '600px', margin: '0 auto 32px auto' }}>
+                            Share your business needs, and our lead consultants will analyze your system constraints and reply within one business day.
+                        </p>
+                        <form onSubmit={handleQuickInquiry} style={{ maxWidth: '600px', margin: '0 auto' }}>
+                            <div className="form-group">
+                                <label className="form-label">Your Name</label>
+                                <input
+                                    type="text"
+                                    className="input-field"
+                                    placeholder="e.g. Vikram Seth"
+                                    value={inqName}
+                                    onChange={(e) => setInqName(e.target.value)}
+                                />
+                            </div>
+                            <div className="form-group">
+                                <label className="form-label">Business Email</label>
+                                <input
+                                    type="email"
+                                    className="input-field"
+                                    placeholder="e.g. name@company.com"
+                                    value={inqEmail}
+                                    onChange={(e) => setInqEmail(e.target.value)}
+                                />
+                            </div>
+                            <div className="form-group">
+                                <label className="form-label">Message / Requirements</label>
+                                <textarea
+                                    className="input-field"
+                                    rows="4"
+                                    style={{ borderRadius: '16px', resize: 'vertical' }}
+                                    placeholder="Tell us about your ERP, Cloud, BI, or Corporate training requirements..."
+                                    value={inqMessage}
+                                    onChange={(e) => setInqMessage(e.target.value)}
+                                ></textarea>
+                            </div>
+                            <button type="submit" className="btn-primary" style={{ width: '100%', padding: '14px' }}>
+                                Submit Consultation Request
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </section>
+
+            {/* Direct CTAs */}
+            <div className="container">
+                <div className="cta-banner">
+                    <div>
+                        <h3 className="heading-lg" style={{ color: 'var(--color-white)' }}>HAVE URGENT BUSINESS CONSULTATIONS?</h3>
+                        <p style={{ color: 'var(--color-light-text)', fontSize: '14px', marginTop: '6px' }}>Click to call our Gachibowli office directly or reach out on WhatsApp.</p>
+                    </div>
+                    <div style={{ display: 'flex', gap: '16px' }}>
+                        <a href="tel:9963186067" className="btn-ghost-dark">
+                            <Phone size={16} /> Call Now
+                        </a>
+                        <a href="https://wa.me/9963186067" className="btn-primary">
+                            <MessageSquare size={16} /> WhatsApp Us
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    );
+}
