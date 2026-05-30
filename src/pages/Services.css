@@ -1,0 +1,27 @@
+/* Services Page and Custom Interactive Tools */
+.module-nav {
+  display: flex;
+  justify-content: center;
+  gap: var(--spacing-16);
+  margin-bottom: var(--spacing-48);
+  flex-wrap: wrap;
+}
+
+.module-tab-btn {
+  background-color: var(--color-light-canvas);
+  border: 1px solid var(--color-soft-gray);
+  color: var(--color-ink);
+  font-family: var(--font-aeonik);
+  font-weight: 600;
+  padding: 12px 24px;
+  border-radius: var(--radius-buttons);
+  cursor: pointer;
+  font-size: 15px;
+}
+
+.module-tab-btn.active {
+  background-color: var(--color-deep-navy);
+  color: var(--color-white);
+  border-color: var(--color-sky-blue);
+  box-shadow: 0 4px 12px rgba(2, 27, 88, 0.2);
+}

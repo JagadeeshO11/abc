@@ -1,0 +1,63 @@
+/* Header & Navigation Styles */
+.header-nav {
+  position: sticky;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 100;
+  background-color: rgba(2, 14, 49, 0.9);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--color-soft-border);
+  padding: var(--spacing-16) 0;
+}
+
+.header-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.logo {
+  font-family: var(--font-ozik);
+  font-size: var(--text-heading-lg);
+  font-weight: 700;
+  color: var(--color-white);
+  text-decoration: none;
+  letter-spacing: -0.015em;
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-8);
+}
+
+.logo-accent {
+  color: var(--color-ai-lime);
+}
+
+.nav-links {
+  display: flex;
+  gap: var(--spacing-16);
+  align-items: center;
+  list-style: none;
+}
+
+.nav-link {
+  font-family: var(--font-aeonik);
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--color-muted-text);
+  text-decoration: none;
+  padding: 8px 12px;
+  border-radius: 4px;
+  transition: color 0.2s, background-color 0.2s;
+}
+
+.nav-link:hover, .nav-link.active {
+  color: var(--color-white);
+  background-color: var(--color-glass-blue);
+}
+
+.nav-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-16);
+}

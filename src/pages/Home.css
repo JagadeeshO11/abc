@@ -1,0 +1,111 @@
+/* Home Page Styling */
+.hero-section {
+  background-color: var(--color-forest-canopy);
+  background-image: var(--gradient-deep-fade);
+  padding: 100px 0 var(--spacing-80) 0;
+  color: var(--color-white);
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+  border-bottom: 1px solid rgba(104, 239, 63, 0.15);
+}
+
+.hero-glow {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 600px;
+  height: 600px;
+  background: radial-gradient(circle, rgba(104, 239, 63, 0.1) 0%, rgba(0, 0, 0, 0) 70%);
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  z-index: 1;
+}
+
+.hero-badge {
+  background-color: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: var(--color-white);
+  padding: 8px 12px;
+  border-radius: 20px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: var(--spacing-24);
+  font-family: var(--font-aeonik);
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  z-index: 2;
+  position: relative;
+}
+
+.hero-badge-dot {
+  width: 8px;
+  height: 8px;
+  background-color: var(--color-ai-lime);
+  border-radius: 50%;
+  display: inline-block;
+  box-shadow: 0 0 8px var(--color-ai-lime);
+  animation: pulse-glow 2s infinite;
+}
+
+.hero-title {
+  max-width: 900px;
+  margin: 0 auto var(--spacing-24) auto;
+  z-index: 2;
+  position: relative;
+}
+
+.hero-subtitle {
+  font-family: var(--font-aeonik);
+  font-size: var(--text-heading-lg);
+  color: var(--color-light-text);
+  max-width: 650px;
+  margin: 0 auto var(--spacing-40) auto;
+  line-height: var(--leading-heading-lg);
+  font-weight: 400;
+  z-index: 2;
+  position: relative;
+}
+
+.hero-btns {
+  display: flex;
+  justify-content: center;
+  gap: var(--spacing-24);
+  z-index: 2;
+  position: relative;
+}
+
+/* Call-to-action banner styling */
+.cta-banner {
+  background: var(--gradient-card);
+  color: var(--color-white);
+  padding: 32px;
+  border-radius: var(--radius-containers);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: var(--spacing-48);
+}
+
+@media (max-width: 768px) {
+  .cta-banner {
+    flex-direction: column;
+    text-align: center;
+    gap: var(--spacing-24);
+  }
+}
+
+@keyframes pulse-glow {
+  0% {
+    box-shadow: 0 0 0 0 rgba(104, 239, 63, 0.7);
+  }
+  70% {
+    box-shadow: 0 0 0 10px rgba(104, 239, 63, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(104, 239, 63, 0);
+  }
+}
