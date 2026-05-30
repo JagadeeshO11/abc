@@ -45,7 +45,7 @@ export default function NavBar() {
             <div className="container header-container">
                 <Link to="/" className="logo" style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: 0 }}>
                     <img src={logoImg} alt="ITBEES Global"
-                        style={{ height: '44px', width: 'auto', objectFit: 'contain', filter: 'brightness(0) invert(1)' }} />
+                        style={{ height: '56px', width: 'auto', objectFit: 'contain', filter: 'brightness(0) invert(1)' }} />
                 </Link>
 
                 {/* Desktop Links */}
