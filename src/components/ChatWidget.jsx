@@ -62,6 +62,7 @@ export default function ChatWidget() {
 
     const sendMessage = (text) => {
         if (!text.trim()) return;
+        // eslint-disable-next-line react-hooks/purity
         const userMsg = { id: Date.now(), text, agent: false };
         setMessages(prev => [...prev, userMsg]);
         setInputValue('');
