@@ -7,6 +7,8 @@ import { HiLightningBolt } from 'react-icons/hi';
 import careersBg from '../assets/carrier.png';
 import aboutBg from '../assets/about.png';
 
+import { appsApi } from '../utils/api.js';
+
 export default function Careers({ jobs, setApplications, triggerToast, addLog }) {
     const [searchTerm, setSearchTerm] = useState('');
     const [selectedDept, setSelectedDept] = useState('All');
@@ -42,26 +44,28 @@ export default function Careers({ jobs, setApplications, triggerToast, addLog })
         }, 300);
     };
 
-    const handleApplySubmit = (e) => {
+    const handleApplySubmit = async (e) => {
         e.preventDefault();
         if (!candName || !candEmail || !candPhone || !resumeName) {
             alert('Please complete all candidate fields and upload your resume.');
             return;
         }
-        const newApp = {
-            id: `app-${Date.now()}`,
-            jobTitle: selectedJob.title,
-            name: candName,
-            email: candEmail,
-            phone: candPhone,
-            status: 'pending',
-            date: new Date().toISOString().split('T')[0]
-        };
-        setApplications(prev => [newApp, ...prev]);
-        triggerToast(`Application submitted successfully for ${selectedJob.title}!`);
-        addLog('system', `Candidate ${candName} applied for the ${selectedJob.title} role.`);
-        setCandName(''); setCandEmail(''); setCandPhone(''); setResumeName('');
-        setSelectedJob(null);
+        try {
+            const newApp = await appsApi.create({
+                job_title: selectedJob.title,
+                name: candName,
+                email: candEmail,
+                phone: candPhone
+            });
+            setApplications(prev => [newApp, ...prev]);
+            triggerToast(`Application submitted successfully for ${selectedJob.title}!`);
+            addLog('system', `Candidate ${candName} applied for the ${selectedJob.title} role.`);
+            setCandName(''); setCandEmail(''); setCandPhone(''); setResumeName('');
+            setSelectedJob(null);
+        } catch (err) {
+            console.error(err);
+            alert('Failed to submit application. Please try again.');
+        }
     };
 
     const perks = [
@@ -76,7 +80,7 @@ export default function Careers({ jobs, setApplications, triggerToast, addLog })
     return (
         <>
         {/* Hero */}
-        <section className="page-hero" style={{ backgroundImage: `url(${careersBg})` }}>
+        <section className="page-hero hero-text-clip" style={{ backgroundImage: `url(${careersBg})` }}>
             <div className="page-hero-inner">
                 <div className="badge-mint" style={{ marginBottom: '16px' }}>
                     <FaBriefcase style={{ display: 'inline', marginRight: '6px' }} />

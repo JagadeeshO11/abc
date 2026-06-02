@@ -5,6 +5,8 @@ import { MdOutlineQuiz, MdVerified, MdSchool } from 'react-icons/md';
 import { BsGraphUp, BsPeopleFill } from 'react-icons/bs';
 import trainingBg from '../assets/training.png';
 
+import { enrollsApi, paymentsApi } from '../utils/api.js';
+
 export default function Training({ courses, setEnrollments, setPayments, triggerToast, addLog }) {
     const [selectedCourse, setSelectedCourse] = useState(null);
 
@@ -34,36 +36,37 @@ export default function Training({ courses, setEnrollments, setPayments, trigger
         ]
     };
 
-    const handleEnrollSubmit = (e) => {
+    const handleEnrollSubmit = async (e) => {
         e.preventDefault();
         if (!enrollName || !cardNumber || !cardExpiry || !cardCVV) {
             alert('Please fill out all billing credentials.');
             return;
         }
-        const newInvoice = `INV-${Date.now().toString().substring(7)}`;
-        const newPayment = {
-            id: `pay-${Date.now()}`,
-            description: `Course Enrollment: ${selectedCourse.title} - ${enrollName}`,
-            amount: `₹${selectedCourse.price.toLocaleString('en-IN')}`,
-            method: 'Credit Card',
-            status: 'Success',
-            date: new Date().toISOString().split('T')[0],
-            invoiceId: newInvoice
-        };
-        setPayments(prev => [newPayment, ...prev]);
-        const newEnroll = {
-            id: `enr-${Date.now()}`,
-            courseTitle: selectedCourse.title,
-            studentName: enrollName,
-            date: new Date().toISOString().split('T')[0],
-            status: 'approved',
-            progress: 0
-        };
-        setEnrollments(prev => [newEnroll, ...prev]);
-        triggerToast(`Payment successful! You are now enrolled in ${selectedCourse.title}.`);
-        addLog('payment', `Received payment ₹${selectedCourse.price} for course ${selectedCourse.title} from ${enrollName}.`);
-        setEnrollName(''); setCardNumber(''); setCardExpiry(''); setCardCVV('');
-        setSelectedCourse(null);
+        try {
+            const newInvoice = `INV-${Date.now().toString().substring(7)}`;
+            const newPayment = await paymentsApi.create({
+                description: `Course Enrollment: ${selectedCourse.title} - ${enrollName}`,
+                amount: `₹${selectedCourse.price.toLocaleString('en-IN')}`,
+                method: 'Credit Card',
+                status: 'Success',
+                invoice_id: newInvoice
+            });
+            setPayments(prev => [newPayment, ...prev]);
+
+            const newEnroll = await enrollsApi.create({
+                course_title: selectedCourse.title,
+                student_name: enrollName
+            });
+            setEnrollments(prev => [newEnroll, ...prev]);
+
+            triggerToast(`Payment successful! You are now enrolled in ${selectedCourse.title}.`);
+            addLog('payment', `Received payment ₹${selectedCourse.price} for course ${selectedCourse.title} from ${enrollName}.`);
+            setEnrollName(''); setCardNumber(''); setCardExpiry(''); setCardCVV('');
+            setSelectedCourse(null);
+        } catch (err) {
+            console.error(err);
+            alert('Payment or enrollment failed. Please try again.');
+        }
     };
 
     const startQuiz = (course) => {
@@ -110,7 +113,7 @@ export default function Training({ courses, setEnrollments, setPayments, trigger
     return (
         <>
         {/* Hero */}
-        <section className="page-hero" style={{ backgroundImage: `url(${trainingBg})` }}>
+        <section className="page-hero hero-text-clip" style={{ backgroundImage: `url(${trainingBg})` }}>
             <div className="page-hero-inner">
                 <div className="badge-mint" style={{ marginBottom: '16px' }}>
                     <FaGraduationCap style={{ display: 'inline', marginRight: '6px' }} />
@@ -220,7 +223,58 @@ export default function Training({ courses, setEnrollments, setPayments, trigger
                 </div>
             </div>
 
-            {/* Testimonial Banner */}
+            {/* Learning Paths */}
+            <div style={{ marginBottom: '64px' }}>
+                <div className="section-header">
+                    <h2 className="display-md">STRUCTURED LEARNING PATHS</h2>
+                    <p className="section-subtitle">Follow a guided roadmap — from beginner to job-ready professional.</p>
+                </div>
+                <div className="grid-3">
+                    {[
+                        {
+                            label: 'Data Analyst Track',
+                            color: 'var(--color-corporate-blue)',
+                            badge: 'Most Popular',
+                            steps: ['Excel Basics & Advanced', 'Power Query', 'Python for Analytics', 'Power BI Dashboards'],
+                            outcome: 'Land a Data Analyst role in 3 months'
+                        },
+                        {
+                            label: 'Automation Specialist Track',
+                            color: 'var(--color-evergreen-glow)',
+                            badge: 'Fast Track',
+                            steps: ['Excel & Formulas', 'VBA & Macros', 'Power Query Automation', 'Python Scripting'],
+                            outcome: 'Automate 80% of manual reporting tasks'
+                        },
+                        {
+                            label: 'BI Developer Track',
+                            color: 'var(--color-gold)',
+                            badge: 'Enterprise Ready',
+                            steps: ['SQL Essentials', 'Data Modeling', 'Power BI Advanced', 'Cloud Data Warehousing'],
+                            outcome: 'Build and own enterprise BI infrastructure'
+                        },
+                    ].map((path, i) => (
+                        <div key={i} className="card-white" style={{ padding: '24px' }}>
+                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '16px' }}>
+                                <h4 className="heading-md" style={{ color: 'var(--color-ink)', flex: 1 }}>{path.label}</h4>
+                                <span style={{ fontSize: '10px', fontWeight: '700', color: path.color, backgroundColor: `${path.color}18`, border: `1px solid ${path.color}40`, borderRadius: '20px', padding: '3px 10px', whiteSpace: 'nowrap', marginLeft: '8px' }}>{path.badge}</span>
+                            </div>
+                            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginBottom: '20px' }}>
+                                {path.steps.map((step, j) => (
+                                    <div key={j} style={{ display: 'flex', alignItems: 'center', gap: '10px', fontSize: '13px', color: 'var(--color-ink)' }}>
+                                        <div style={{ width: '20px', height: '20px', borderRadius: '50%', backgroundColor: path.color, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '10px', fontWeight: '700', color: 'white', flexShrink: 0 }}>{j + 1}</div>
+                                        {step}
+                                    </div>
+                                ))}
+                            </div>
+                            <div style={{ borderTop: '1px solid var(--color-soft-gray)', paddingTop: '14px', fontSize: '12px', color: path.color, fontWeight: '600', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                                <FaRocket size={11} /> {path.outcome}
+                            </div>
+                        </div>
+                    ))}
+                </div>
+            </div>
+
+        {/* Testimonial Banner */}
             <div className="card-blue-premium" style={{ marginBottom: '64px', padding: '40px' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '16px', marginBottom: '24px' }}>
                     <FaGraduationCap size={36} color="var(--color-ai-lime)" />
@@ -245,6 +299,26 @@ export default function Training({ courses, setEnrollments, setPayments, trigger
                             </div>
                         </div>
                     ))}
+                </div>
+            </div>
+
+            {/* Corporate CTA Banner */}
+            <div style={{ background: 'var(--color-navy-dark)', borderRadius: '16px', padding: '48px', marginBottom: '64px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '32px', flexWrap: 'wrap', border: '1px solid var(--color-soft-border)' }}>
+                <div style={{ maxWidth: '560px' }}>
+                    <div className="badge-mint" style={{ marginBottom: '14px' }}>CORPORATE PACKAGES</div>
+                    <h2 style={{ color: 'var(--color-white)', fontFamily: 'var(--font-ozik)', fontSize: '28px', lineHeight: 1.1, marginBottom: '12px' }}>TRAINING YOUR ENTIRE TEAM?</h2>
+                    <p style={{ color: 'rgba(255,255,255,0.65)', fontSize: '14px', lineHeight: '1.7' }}>Get bulk enrollment discounts, a dedicated instructor, and a custom curriculum built around your tech stack. We’ve trained teams of 10 to 500+.</p>
+                </div>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', minWidth: '200px' }}>
+                    {['✓ Custom curriculum', '✓ Bulk discounts (10+ seats)', '✓ Dedicated account manager', '✓ Progress tracking dashboard'].map((item, i) => (
+                        <div key={i} style={{ fontSize: '13px', color: 'rgba(255,255,255,0.8)' }}>{item}</div>
+                    ))}
+                </div>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                    <a href="/contact" className="btn-primary" style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', whiteSpace: 'nowrap' }}>
+                        <FaChalkboardTeacher size={14} /> Request Corporate Quote
+                    </a>
+                    <a href="tel:9963186067" className="btn-ghost-dark" style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>Call Us Now</a>
                 </div>
             </div>
 

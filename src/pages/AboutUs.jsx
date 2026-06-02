@@ -25,7 +25,7 @@ export default function AboutUs() {
     return (
         <div>
             {/* Hero */}
-            <section className="page-hero" style={{ backgroundImage: `url(${aboutBg})` }}>
+            <section className="page-hero hero-text-clip" style={{ backgroundImage: `url(${aboutBg})` }}>
                 <div className="page-hero-inner">
                     <div className="badge-mint" style={{ marginBottom: '16px' }}>
                         <HiOfficeBuilding style={{ display: 'inline', marginRight: '6px' }} />
@@ -85,28 +85,18 @@ export default function AboutUs() {
                 </div>
 
                 {/* Vision / Mission / Values */}
-                <div className="grid-3" style={{ marginBottom: '64px' }}>
-                    <div className="card-neutral">
-                        <div style={{ color: 'var(--color-corporate-blue)', marginBottom: '12px' }}><FaLightbulb size={28} /></div>
-                        <h3 className="heading-lg" style={{ color: 'var(--color-corporate-blue)', marginBottom: '16px' }}>OUR VISION</h3>
-                        <p style={{ fontSize: '14px', lineHeight: '1.6' }}>
-                            To become the leading global architecture and data systems provider, delivering reliable analytics and ERP tools that help businesses and learners scale effortlessly.
-                        </p>
-                    </div>
-                    <div className="card-neutral">
-                        <div style={{ color: 'var(--color-evergreen-glow)', marginBottom: '12px' }}><FaGlobe size={28} /></div>
-                        <h3 className="heading-lg" style={{ color: 'var(--color-evergreen-glow)', marginBottom: '16px' }}>OUR MISSION</h3>
-                        <p style={{ fontSize: '14px', lineHeight: '1.6' }}>
-                            To simplify database migration, deliver precise BI visualizations, and establish structured training platforms that cultivate modern coding standards and security habits.
-                        </p>
-                    </div>
-                    <div className="card-neutral">
-                        <div style={{ color: 'var(--color-gold)', marginBottom: '12px' }}><FaHandshake size={28} /></div>
-                        <h3 className="heading-lg" style={{ color: 'var(--color-gold)', marginBottom: '16px' }}>CORE VALUES</h3>
-                        <p style={{ fontSize: '14px', lineHeight: '1.6' }}>
-                            Integrity, technical expertise, visual clarity in reports, automated efficiency, and a commitment to helping our engineering talent excel globally.
-                        </p>
-                    </div>
+                <div className="grid-3" style={{ marginBottom: '48px' }}>
+                    {[
+                        { icon: <FaLightbulb size={22} />, color: 'var(--color-corporate-blue)', title: 'OUR VISION', text: 'To become the leading global architecture and data systems provider, delivering reliable analytics and ERP tools that help businesses scale effortlessly.' },
+                        { icon: <FaGlobe size={22} />, color: 'var(--color-evergreen-glow)', title: 'OUR MISSION', text: 'To simplify database migration, deliver precise BI visualizations, and establish structured training platforms that cultivate modern coding standards.' },
+                        { icon: <FaHandshake size={22} />, color: 'var(--color-gold)', title: 'CORE VALUES', text: 'Integrity, technical expertise, visual clarity in reports, automated efficiency, and a commitment to helping our engineering talent excel globally.' },
+                    ].map((c, i) => (
+                        <div key={i} className="card-neutral" style={{ padding: '22px', gap: '10px', display: 'flex', flexDirection: 'column' }}>
+                            <div style={{ color: c.color }}>{c.icon}</div>
+                            <h3 style={{ fontFamily: 'var(--font-aeonik)', fontWeight: 700, fontSize: '14px', color: c.color, letterSpacing: '0.04em' }}>{c.title}</h3>
+                            <p style={{ fontSize: '13px', lineHeight: '1.6', color: 'var(--color-ink)' }}>{c.text}</p>
+                        </div>
+                    ))}
                 </div>
 
                 {/* Services Image Banner */}
@@ -122,7 +112,7 @@ export default function AboutUs() {
                 </div>
 
                 {/* Timeline */}
-                <div style={{ marginBottom: '80px' }}>
+                <div style={{ marginBottom: '56px' }}>
                     <div className="section-header">
                         <h2 className="display-md">OUR JOURNEY</h2>
                         <p className="section-subtitle">A decade of innovation, growth, and enterprise impact.</p>

@@ -84,15 +84,28 @@ export default function ChatWidget() {
     return (
         <>
             <button className="chatbot-trigger" onClick={() => setIsOpen(o => !o)} aria-label="Chat">
-                {isOpen ? <X size={24} /> : <MessageSquare size={24} />}
+                {isOpen ? <X size={22} /> : (
+                    <span style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '2px' }}>
+                        <MessageSquare size={22} />
+                        <span style={{ fontSize: '9px', fontFamily: 'var(--font-aeonik)', fontWeight: '600', letterSpacing: '0.04em', lineHeight: 1 }}>CHAT</span>
+                    </span>
+                )}
             </button>
 
             {isOpen && (
                 <div className="chatbot-panel">
                     <div className="chatbot-header">
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                            <div style={{ width: '8px', height: '8px', borderRadius: '50%', backgroundColor: 'var(--color-ai-lime)', boxShadow: '0 0 8px var(--color-ai-lime)' }} />
-                            <strong style={{ fontSize: '14px', fontFamily: 'var(--font-aeonik)' }}>ITBEES Support</strong>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                            <div style={{ width: '36px', height: '36px', borderRadius: '50%', background: 'var(--color-corporate-blue)', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '2px solid var(--color-ai-lime)' }}>
+                                <MessageSquare size={16} color="var(--color-ai-lime)" />
+                            </div>
+                            <div>
+                                <strong style={{ fontSize: '14px', fontFamily: 'var(--font-aeonik)', display: 'block' }}>ITBEES Support Bot</strong>
+                                <span style={{ fontSize: '11px', color: 'var(--color-ai-lime)', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                                    <span style={{ width: '6px', height: '6px', borderRadius: '50%', backgroundColor: 'var(--color-ai-lime)', display: 'inline-block' }} />
+                                    Online — typically replies instantly
+                                </span>
+                            </div>
                         </div>
                         <button style={{ background: 'transparent', border: 'none', color: 'var(--color-white)', cursor: 'pointer' }} onClick={() => setIsOpen(false)}>
                             <X size={16} />

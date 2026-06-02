@@ -8,30 +8,34 @@ import { HiLightningBolt } from 'react-icons/hi';
 import homeBg from '../assets/home.png';
 import aboutImg from '../assets/about.png';
 
+import { inqsApi } from '../utils/api.js';
+
 export default function Home({ setInquiries, triggerToast, addLog }) {
     const [inqName, setInqName] = useState('');
     const [inqEmail, setInqEmail] = useState('');
     const [inqMessage, setInqMessage] = useState('');
 
-    const handleQuickInquiry = (e) => {
+    const handleQuickInquiry = async (e) => {
         e.preventDefault();
         if (!inqName || !inqEmail || !inqMessage) {
             alert('Please fill out all fields.');
             return;
         }
-        const newInquiry = {
-            id: `inq-${Date.now()}`,
-            name: inqName,
-            email: inqEmail,
-            company: 'Website Visitor',
-            message: inqMessage,
-            status: 'pending',
-            date: new Date().toISOString().split('T')[0]
-        };
-        setInquiries(prev => [newInquiry, ...prev]);
-        triggerToast('Thank you! Inquiry submitted successfully.');
-        addLog('system', `New business inquiry received from ${inqName}.`);
-        setInqName(''); setInqEmail(''); setInqMessage('');
+        try {
+            const newInquiry = await inqsApi.create({
+                name: inqName,
+                email: inqEmail,
+                company: 'Website Visitor',
+                message: inqMessage
+            });
+            setInquiries(prev => [newInquiry, ...prev]);
+            triggerToast('Thank you! Inquiry submitted successfully.');
+            addLog('system', `New business inquiry received from ${inqName}.`);
+            setInqName(''); setInqEmail(''); setInqMessage('');
+        } catch (err) {
+            console.error(err);
+            alert('Failed to submit inquiry. Please try again.');
+        }
     };
 
     const whyUs = [
@@ -52,7 +56,7 @@ export default function Home({ setInquiries, triggerToast, addLog }) {
                         <span className="hero-badge-dot"></span>
                         MANAGING SYSTEMS IN THE AGE OF AI
                     </div>
-                    <h1 className="display-lg hero-title">
+                    <h1 className="display-lg hero-title" style={{ color: '#ffffff', WebkitTextFillColor: '#ffffff', background: 'none', filter: 'none', WebkitTextStroke: 'none' }}>
                         ACCELERATE BUSINESS WITH SMART CLOUD &amp; DATA ANALYTICS
                     </h1>
                     <p className="page-hero-sub">
@@ -60,7 +64,7 @@ export default function Home({ setInquiries, triggerToast, addLog }) {
                     </p>
                     <div className="hero-btns" style={{ marginTop: 'var(--spacing-40)' }}>
                         <Link to="/contact" className="btn-primary">
-                            Schedule a Free Demo
+                            📅 Book a Free Demo
                         </Link>
                         <Link to="/services" className="btn-ghost-dark">
                             Explore Our Services
@@ -97,42 +101,20 @@ export default function Home({ setInquiries, triggerToast, addLog }) {
                         <p className="section-subtitle">We deliver premium architecture for your digital transformation goals.</p>
                     </div>
                     <div className="grid-3">
-                        <div className="card-neutral">
-                            <div style={{ color: 'var(--color-corporate-blue)', marginBottom: '16px' }}>
-                                <Database size={40} />
+                        {[
+                            { icon: <Database size={32} />, color: 'var(--color-corporate-blue)', title: 'Smart Cloud & ERP', desc: 'Integrate unified databases, configure global API systems, and automate standard workflows across operations, finance, and support.', to: '/services', cta: 'Learn More' },
+                            { icon: <BarChart2 size={32} />, color: 'var(--color-evergreen-glow)', title: 'BI Analytics & Reports', desc: 'Synthesize massive volumes of transactional data. Track metrics and generate instant executive dashboards.', to: '/services', cta: 'Learn More' },
+                            { icon: <BookOpen size={32} />, color: 'var(--color-gold)', title: 'Corporate Training', desc: 'Skill up your teams with tailored courses on Cloud infrastructure, Power BI dashboards, and data analytics.', to: '/training', cta: 'Explore Courses' },
+                        ].map((c, i) => (
+                            <div key={i} className="card-neutral" style={{ gap: '10px', padding: '24px' }}>
+                                <div style={{ color: c.color }}>{c.icon}</div>
+                                <h3 className="heading-lg" style={{ marginBottom: '6px', fontSize: '18px' }}>{c.title}</h3>
+                                <p style={{ color: 'var(--color-ink)', flex: 1, fontSize: '13px', lineHeight: '1.6' }}>{c.desc}</p>
+                                <Link to={c.to} className="btn-mini" style={{ color: c.color, alignSelf: 'flex-start', paddingLeft: 0, marginTop: '8px', fontWeight: 700, fontSize: '13px' }}>
+                                    {c.cta} <ChevronRight size={14} style={{ display: 'inline', verticalAlign: 'middle' }} />
+                                </Link>
                             </div>
-                            <h3 className="heading-lg" style={{ marginBottom: '12px' }}>Smart Cloud &amp; ERP</h3>
-                            <p style={{ color: 'var(--color-ink)', flex: 1 }}>
-                                Integrate unified databases, configure global API systems, and automate standard workflows across operations, finance, and support.
-                            </p>
-                            <Link to="/services" className="btn-mini" style={{ color: 'var(--color-corporate-blue)', alignSelf: 'flex-start', paddingLeft: 0, marginTop: '16px', fontWeight: 'bold' }}>
-                                Learn More <ChevronRight size={16} style={{ display: 'inline', verticalAlign: 'middle' }} />
-                            </Link>
-                        </div>
-                        <div className="card-neutral">
-                            <div style={{ color: 'var(--color-evergreen-glow)', marginBottom: '16px' }}>
-                                <BarChart2 size={40} />
-                            </div>
-                            <h3 className="heading-lg" style={{ marginBottom: '12px' }}>BI Analytics &amp; Reports</h3>
-                            <p style={{ color: 'var(--color-ink)', flex: 1 }}>
-                                Synthesize massive volumes of transactional data. View progress, track metrics, and generate instant dashboards.
-                            </p>
-                            <Link to="/services" className="btn-mini" style={{ color: 'var(--color-corporate-blue)', alignSelf: 'flex-start', paddingLeft: 0, marginTop: '16px', fontWeight: 'bold' }}>
-                                Learn More <ChevronRight size={16} style={{ display: 'inline', verticalAlign: 'middle' }} />
-                            </Link>
-                        </div>
-                        <div className="card-neutral">
-                            <div style={{ color: 'var(--color-gold)', marginBottom: '16px' }}>
-                                <BookOpen size={40} />
-                            </div>
-                            <h3 className="heading-lg" style={{ marginBottom: '12px' }}>Corporate Training</h3>
-                            <p style={{ color: 'var(--color-ink)', flex: 1 }}>
-                                Skill up your developers, database administrators, and managers with tailored courses on Cloud infrastructure, React dashboards, and BI metrics.
-                            </p>
-                            <Link to="/training" className="btn-mini" style={{ color: 'var(--color-corporate-blue)', alignSelf: 'flex-start', paddingLeft: 0, marginTop: '16px', fontWeight: 'bold' }}>
-                                Explore Courses <ChevronRight size={16} style={{ display: 'inline', verticalAlign: 'middle' }} />
-                            </Link>
-                        </div>
+                        ))}
                     </div>
                 </div>
             </section>
@@ -175,10 +157,10 @@ export default function Home({ setInquiries, triggerToast, addLog }) {
                     </div>
                     <div className="grid-3">
                         {whyUs.map((item, i) => (
-                            <div key={i} className="card-neutral" style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                                <div style={{ color: item.color }}>{item.icon}</div>
-                                <h4 className="heading-md" style={{ color: 'var(--color-ink)' }}>{item.title}</h4>
-                                <p style={{ fontSize: '13px', color: 'var(--color-muted-text)', lineHeight: '1.6' }}>{item.desc}</p>
+                            <div key={i} className="card-neutral" style={{ display: 'flex', flexDirection: 'column', gap: '8px', padding: '20px' }}>
+                                <div style={{ color: item.color }}><item.icon.type size={22} {...item.icon.props} /></div>
+                                <h4 style={{ fontWeight: 600, fontSize: '14px', color: 'var(--color-ink)' }}>{item.title}</h4>
+                                <p style={{ fontSize: '12px', color: 'var(--color-muted-text)', lineHeight: '1.6' }}>{item.desc}</p>
                             </div>
                         ))}
                     </div>
@@ -250,17 +232,17 @@ export default function Home({ setInquiries, triggerToast, addLog }) {
                     </div>
                     <div className="grid-2">
                         {[
-                            { quote: '"ITBEES Global transformed our entire client database sync workflow. The new ERP integration resolved legacy latency errors, reducing our client support inquiries by nearly 40%."', name: 'Rajesh Varma', role: 'CTO, Deccan Logistics Ltd.' },
-                            { quote: '"The corporate training module on cloud architecture and PowerBI was spectacular. Our team scaled up rapidly, and we generated live analytics dashboards for our management within just a few weeks."', name: 'Malini Sen', role: 'Director of HR, FinScale Systems' }
+                            { quote: '"ITBEES Global transformed our entire client database sync workflow. The ERP integration resolved legacy latency errors, reducing client support inquiries by nearly 40%."', name: 'Rajesh Varma', role: 'CTO, Deccan Logistics Ltd.' },
+                            { quote: '"The corporate training on cloud architecture and PowerBI was spectacular. Our team scaled rapidly and we generated live analytics dashboards within just a few weeks."', name: 'Malini Sen', role: 'Director of HR, FinScale Systems' }
                         ].map((t, i) => (
-                            <div key={i} className="card-neutral" style={{ padding: '32px' }}>
-                                <div style={{ display: 'flex', gap: '4px', marginBottom: '16px' }}>
-                                    {[...Array(5)].map((_, j) => <BsStarFill key={j} size={14} color="var(--color-gold)" />)}
+                            <div key={i} className="card-neutral" style={{ padding: '22px', gap: '12px', display: 'flex', flexDirection: 'column' }}>
+                                <div style={{ display: 'flex', gap: '3px' }}>
+                                    {[...Array(5)].map((_, j) => <BsStarFill key={j} size={12} color="var(--color-gold)" />)}
                                 </div>
-                                <p className="font-instrument" style={{ fontSize: '18px', color: 'var(--color-dark-olive)', fontStyle: 'italic', marginBottom: '24px', lineHeight: '1.6' }}>{t.quote}</p>
-                                <div style={{ borderTop: '1px solid var(--color-soft-gray)', paddingTop: '16px' }}>
-                                    <h5 style={{ fontFamily: 'var(--font-aeonik)', fontWeight: '600' }}>{t.name}</h5>
-                                    <p style={{ fontSize: '12px', color: 'var(--color-muted-text)' }}>{t.role}</p>
+                                <p className="font-instrument" style={{ fontSize: '14px', color: 'var(--color-dark-olive)', fontStyle: 'italic', lineHeight: '1.6', flex: 1 }}>{t.quote}</p>
+                                <div style={{ borderTop: '1px solid var(--color-soft-gray)', paddingTop: '12px' }}>
+                                    <h5 style={{ fontFamily: 'var(--font-aeonik)', fontWeight: '600', fontSize: '13px' }}>{t.name}</h5>
+                                    <p style={{ fontSize: '11px', color: 'var(--color-muted-text)' }}>{t.role}</p>
                                 </div>
                             </div>
                         ))}

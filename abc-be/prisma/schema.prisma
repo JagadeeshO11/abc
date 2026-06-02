@@ -1,0 +1,99 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  password  String
+  name      String?
+  role      String   @default("USER") // ADMIN or USER
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Job {
+  id           String   @id @default(uuid())
+  title        String
+  department   String
+  location     String
+  type         String
+  salary       String
+  description  String
+  requirements String[]
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+model Course {
+  id          String   @id @default(uuid())
+  title       String
+  category    String
+  hours       Int
+  duration    String
+  price       Float
+  description String
+  rating      String
+  icon        String
+  image       String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Application {
+  id        String   @id @default(uuid())
+  jobTitle  String
+  name      String
+  email     String
+  phone     String
+  status    String   @default("pending")
+  date      DateTime @default(now())
+}
+
+model Enrollment {
+  id          String   @id @default(uuid())
+  courseTitle String
+  studentName String
+  date        DateTime @default(now())
+  status      String   @default("pending")
+  progress    Int      @default(0)
+}
+
+model Inquiry {
+  id      String   @id @default(uuid())
+  name    String
+  email   String
+  company String
+  message String
+  status  String   @default("pending")
+  date    DateTime @default(now())
+}
+
+model Payment {
+  id          String   @id @default(uuid())
+  description String
+  amount      String
+  method      String
+  status      String
+  date        DateTime @default(now())
+  invoiceId   String   @unique
+}
+
+model Webhook {
+  id     String  @id @default(uuid())
+  name   String
+  url    String
+  active Boolean @default(true)
+}
+
+model Log {
+  id      String   @id @default(uuid())
+  time    DateTime @default(now())
+  type    String
+  message String
+}

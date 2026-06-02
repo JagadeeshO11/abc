@@ -8,25 +8,7 @@ import './Auth.css';
 import logoImg from '../assets/logo.png';
 import { getAuthUser, setAuthUser } from '../utils/auth.js';
 
-/* ─── CREDENTIALS (hardcoded, not exposed in UI) ─── */
-const ACCOUNTS = [
-  {
-    email: 'admin@itbeesglobal.com',
-    password: 'Admin@123',
-    name: 'ITBEES Admin',
-    role: 'admin',
-    token: 'eyJhbGciOiJIUzI1NiJ9.ADMIN.DUMMY_JWT_TOKEN',
-    verificationCode: '123456'
-  },
-  {
-    email: 'user@itbeesglobal.com',
-    password: 'User@123',
-    name: 'Demo User',
-    role: 'user',
-    token: 'eyJhbGciOiJIUzI1NiJ9.USER.DUMMY_JWT_TOKEN',
-    verificationCode: '654321'
-  }
-];
+import { authApi } from '../utils/api.js';
 
 export default function AuthPage() {
   const navigate = useNavigate();
@@ -54,47 +36,45 @@ export default function AuthPage() {
     setEmail(''); setPassword(''); setName(''); setVerifyCode('');
   };
 
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
     setError(''); setLoading(true);
-    setTimeout(() => {
-      const match = ACCOUNTS.find(a => a.email === email && a.password === password);
-      if (match) {
-        setAuthUser({ name: match.name, email: match.email, role: match.role, token: match.token });
-        navigate(match.role === 'admin' ? '/admin' : '/', { replace: true });
+    try {
+      const { token, user } = await authApi.login({ email, password });
+      setAuthUser({ ...user, token });
+      if (user.role === 'admin') {
+        navigate('/admin', { replace: true });
       } else {
-        setError('Invalid email or password.');
+        navigate('/', { replace: true });
       }
+    } catch (err) {
+      setError(err.message || 'Invalid email or password.');
+    } finally {
       setLoading(false);
-    }, 900);
+    }
   };
 
-  const handleSignup = (e) => {
+  const handleSignup = async (e) => {
     e.preventDefault();
     setError('');
     if (!name || !email || !password) { setError('All fields are required.'); return; }
     if (password.length < 6) { setError('Password must be at least 6 characters.'); return; }
     setLoading(true);
-    setTimeout(() => {
+    try {
+      await authApi.register({ name, email, password });
+      setSuccess(`Account created! You can now log in.`);
+      setTab('login');
+    } catch (err) {
+      setError(err.message || 'Error creating account.');
+    } finally {
       setLoading(false);
-      setStep('verify');
-      setSuccess(`A verification code has been sent to ${email}. (Demo code: 654321)`);
-    }, 1000);
+    }
   };
 
   const handleVerify = (e) => {
     e.preventDefault();
-    setError(''); setLoading(true);
-    setTimeout(() => {
-      if (verifyCode === '654321') {
-        const token = `eyJhbGciOiJIUzI1NiJ9.${name.replace(' ', '_').toUpperCase()}.DUMMY_JWT_TOKEN`;
-        setAuthUser({ name, email, role: 'user', token });
-        navigate('/', { replace: true });
-      } else {
-        setError('Invalid verification code. Try: 654321');
-      }
-      setLoading(false);
-    }, 800);
+    // Simplified: skipped verification step for now to match backend
+    navigate('/', { replace: true });
   };
 
   return (
@@ -106,10 +86,7 @@ export default function AuthPage() {
         </div>
 
         <div className="auth-tabs">
-          <button className={`auth-tab-btn ${tab === 'login' ? 'active' : ''}`}
-            onClick={() => { setTab('login'); resetState(); }}>Sign In</button>
-          <button className={`auth-tab-btn ${tab === 'signup' ? 'active' : ''}`}
-            onClick={() => { setTab('signup'); resetState(); }}>Create Account</button>
+          <button className={`auth-tab-btn active`}>Admin Sign In</button>
         </div>
 
         {/* ── LOGIN ── */}

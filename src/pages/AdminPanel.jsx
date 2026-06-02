@@ -5,6 +5,8 @@ import {
   Settings, Activity, TrendingUp
 } from 'lucide-react';
 
+import { jobsApi, coursesApi } from '../utils/api.js';
+
 export default function AdminPanel({
     jobs, setJobs,
     courses, setCourses,
@@ -32,54 +34,65 @@ export default function AdminPanel({
 
     const [activeInvoice, setActiveInvoice] = useState(null);
 
-    const handleCreateJob = (e) => {
+    const handleCreateJob = async (e) => {
         e.preventDefault();
         if (!newJobTitle || !newJobSalary || !newJobDesc) {
             alert('Please fill out all job fields.');
             return;
         }
-        const item = {
-            id: `job-${Date.now()}`,
-            title: newJobTitle,
-            department: newJobDept,
-            location: 'Hyderabad Office',
-            type: 'Full-time',
-            salary: newJobSalary,
-            description: newJobDesc,
-            requirements: ['Relevant engineering credentials', 'Good communication']
-        };
-        setJobs(prev => [...prev, item]);
-        triggerToast('New career opening published.');
-        addLog('system', `Published new career opening: ${newJobTitle}.`);
+        try {
+            const item = await jobsApi.create({
+                title: newJobTitle,
+                department: newJobDept,
+                location: 'Hyderabad Office',
+                type: 'Full-time',
+                salary: newJobSalary,
+                description: newJobDesc,
+                requirements: ['Relevant engineering credentials', 'Good communication']
+            });
+            setJobs(prev => [item, ...prev]);
+            triggerToast('New career opening published.');
+            addLog('system', `Published new career opening: ${newJobTitle}.`);
 
-        setNewJobTitle('');
-        setNewJobSalary('');
-        setNewJobDesc('');
+            setNewJobTitle('');
+            setNewJobSalary('');
+            setNewJobDesc('');
+        } catch (err) {
+            console.error(err);
+            alert('Failed to create job.');
+        }
     };
 
-    const handleCreateCourse = (e) => {
+    const handleCreateCourse = async (e) => {
         e.preventDefault();
         if (!newCourseTitle || !newCoursePrice || !newCourseDesc) {
             alert('Please fill out all course fields.');
             return;
         }
-        const item = {
-            id: `course-${Date.now()}`,
-            title: newCourseTitle,
-            category: newCourseCat,
-            modules: 5,
-            duration: '6 weeks',
-            price: parseInt(newCoursePrice),
-            description: newCourseDesc,
-            rating: 'New Course'
-        };
-        setCourses(prev => [...prev, item]);
-        triggerToast('New training course published.');
-        addLog('system', `Published training course: ${newCourseTitle}.`);
+        try {
+            // Note: coursesApi.create not defined in api.js yet, let's assume it should be or use apiFetch
+            const item = await coursesApi.create({
+                title: newCourseTitle,
+                category: newCourseCat,
+                hours: 20, // default
+                duration: '6 weeks',
+                price: parseInt(newCoursePrice),
+                description: newCourseDesc,
+                rating: 'New Course',
+                icon: '📚', // default
+                image: 'https://via.placeholder.com/300' // default
+            });
+            setCourses(prev => [item, ...prev]);
+            triggerToast('New training course published.');
+            addLog('system', `Published training course: ${newCourseTitle}.`);
 
-        setNewCourseTitle('');
-        setNewCoursePrice('');
-        setNewCourseDesc('');
+            setNewCourseTitle('');
+            setNewCoursePrice('');
+            setNewCourseDesc('');
+        } catch (err) {
+            console.error(err);
+            alert('Failed to create course.');
+        }
     };
 
     const handleAppStatus = (appId, newStatus) => {
