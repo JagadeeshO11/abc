@@ -32,6 +32,7 @@ export const jobsApi = {
 
 export const coursesApi = {
   getAll: () => apiFetch('/courses'),
+  create: (data) => apiFetch('/courses', { method: 'POST', body: JSON.stringify(data) }),
 };
 
 export const authApi = {
@@ -59,3 +60,7 @@ export const paymentsApi = {
   create: (data) => apiFetch('/payments', { method: 'POST', body: JSON.stringify(data) }),
 };
 
+export const logsApi = {
+  getAll: () => apiFetch('/logs'),
+  create: (data) => apiFetch('/logs', { method: 'POST', body: JSON.stringify(data) }),
+};

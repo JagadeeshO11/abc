@@ -11,7 +11,7 @@ const SERVICE_TABS = [
 
 const PER_COL = 5;
 
-export default function NavBar({ courses = [] }) {
+export default function NavBar({ courses = [], authUser, onLogout }) {
     const location = useLocation();
     const [menuOpen, setMenuOpen]       = useState(false);
     const [servicesOpen, setServicesOpen] = useState(false);
@@ -174,7 +174,24 @@ export default function NavBar({ courses = [] }) {
                 </ul>
 
                 {/* Desktop Actions */}
-                <div className="nav-actions">
+                <div className="nav-actions" style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
+                    {authUser ? (
+                        <>
+                            <span style={{ fontSize: '13px', color: 'rgba(255,255,255,0.7)' }}>Hi, {authUser.name}</span>
+                            {authUser.role === 'admin' && (
+                                <Link to="/admin" className="btn-ghost-dark" style={{ padding: '8px 16px', fontSize: '13px' }}>
+                                    Admin
+                                </Link>
+                            )}
+                            <button onClick={onLogout} className="btn-secondary" style={{ padding: '8px 16px', fontSize: '13px' }}>
+                                Logout
+                            </button>
+                        </>
+                    ) : (
+                        <Link to="/login" className="btn-secondary" style={{ padding: '8px 16px', fontSize: '13px' }}>
+                            Login
+                        </Link>
+                    )}
                     <Link to="/contact" className="btn-primary" style={{ padding: '8px 16px', fontSize: '13px' }}>
                         Book a Demo
                     </Link>
@@ -191,6 +208,9 @@ export default function NavBar({ courses = [] }) {
                 <div className="nav-mobile-drawer">
                     <ul className="nav-mobile-links">
                         <li><Link to="/" className={`nav-link ${isActive('/')}`} onClick={closeMenu}>Home</Link></li>
+                        {authUser && authUser.role === 'admin' && (
+                            <li><Link to="/admin" className="nav-link" onClick={closeMenu}>Admin Panel</Link></li>
+                        )}
                         <li><Link to="/about" className={`nav-link ${isActive('/about')}`} onClick={closeMenu}>About Us</Link></li>
                         <li style={{ paddingLeft: '12px', paddingBottom: '4px', fontSize: '12px', color: 'rgba(255,255,255,0.4)', textTransform: 'uppercase', letterSpacing: '0.06em' }}>Services</li>
                         {SERVICE_TABS.map(s => (
@@ -212,6 +232,11 @@ export default function NavBar({ courses = [] }) {
                             </li>
                         ))}
                         <li><Link to="/contact" className={`nav-link ${isActive('/contact')}`} onClick={closeMenu}>Contact Us</Link></li>
+                        {authUser ? (
+                            <li><button onClick={() => { onLogout(); closeMenu(); }} className="nav-link" style={{ background: 'none', border: 'none', textAlign: 'left', width: '100%', cursor: 'pointer' }}>Logout</button></li>
+                        ) : (
+                            <li><Link to="/login" className="nav-link" onClick={closeMenu}>Login</Link></li>
+                        )}
                     </ul>
                     <div className="nav-mobile-actions">
                         <Link to="/contact" className="btn-primary" onClick={closeMenu}

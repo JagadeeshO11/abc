@@ -8,7 +8,7 @@ import {
 import { CheckCircle } from 'lucide-react';
 import { useEffect } from 'react';
 
-// import AuthPage from './pages/Auth.jsx';
+import AuthPage from './pages/Auth.jsx';
 import { getAuthUser, clearAuthUser } from './utils/auth.js';
 
 // Components
@@ -54,10 +54,42 @@ import './pages/Auth.css';
 
 import { jobsApi, coursesApi, appsApi, inqsApi, logsApi } from './utils/api.js';
 
+const VALID_PATHS = ['/', '/about', '/services', '/careers', '/training', '/contact', '/login'];
+
+function Shell({ children, toast, courses, authUser, onLogout }) {
+  const { pathname } = useLocation();
+  const isValid = VALID_PATHS.includes(pathname) || pathname.startsWith('/admin');
+  if (!isValid) {
+    return (
+      <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', textAlign: 'center', padding: '48px 24px', backgroundColor: 'var(--color-navy-dark)' }}>
+        <div style={{ fontSize: '120px', fontFamily: 'var(--font-ozik)', fontWeight: '700', color: 'var(--color-ai-lime)', lineHeight: 1 }}>404</div>
+        <h2 style={{ fontFamily: 'var(--font-ozik)', fontSize: '28px', color: 'var(--color-white)', margin: '16px 0 8px' }}>PAGE NOT FOUND</h2>
+        <p style={{ color: 'rgba(255,255,255,0.55)', fontSize: '15px', marginBottom: '32px', maxWidth: '400px' }}>The page you&apos;re looking for doesn&apos;t exist or has been moved.</p>
+        <a href="/" style={{ backgroundColor: 'var(--color-ai-lime)', color: 'var(--color-deep-moss)', padding: '12px 28px', borderRadius: '28px', fontFamily: 'var(--font-aeonik)', fontWeight: '600', fontSize: '15px', textDecoration: 'none' }}>Back to Home</a>
+      </div>
+    );
+  }
+  const isAdmin = pathname.startsWith('/admin');
+  return (
+    <>
+      {!isAdmin && <NavBar courses={courses} authUser={authUser} onLogout={onLogout} />}
+      <main style={{ flex: 1 }}>{children}</main>
+      {!isAdmin && <Footer />}
+      {!isAdmin && <ChatWidget />}
+      {toast && (
+        <div style={{ position: 'fixed', bottom: '30px', left: '30px', backgroundColor: 'var(--color-navy-dark)', borderLeft: '4px solid var(--color-ai-lime)', color: 'var(--color-white)', padding: '16px 24px', borderRadius: '4px', boxShadow: '0 10px 25px rgba(0,0,0,0.3)', zIndex: 9999, display: 'flex', alignItems: 'center', gap: '12px', fontFamily: 'var(--font-aeonik)' }}>
+          <CheckCircle size={18} color="var(--color-ai-lime)" />
+          <span>{toast}</span>
+        </div>
+      )}
+    </>
+  );
+}
+
 // --- APP LAYOUT COMPONENT ---
 export default function App() {
   // Auth state
-  const [authUser, setAuthUser] = useState(getAuthUser);
+  const [authUser, setAuthUser] = useState(getAuthUser());
 
   // App-wide state
   const [jobs, setJobs] = useState([]);
@@ -135,7 +167,7 @@ export default function App() {
     <Router>
       <div className="app-wrapper" style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', position: 'relative' }}>
         <ScrollToTop />
-        <Shell toast={toast} courses={courses}>
+        <Shell toast={toast} courses={courses} authUser={authUser} onLogout={handleLogout}>
           <PageWrapper>
             <Routes>
               <Route path="/" element={<Home setInquiries={setInquiries} triggerToast={triggerToast} addLog={addLog} />} />
@@ -144,6 +176,7 @@ export default function App() {
               <Route path="/careers" element={<Careers jobs={jobs} setApplications={setApplications} triggerToast={triggerToast} addLog={addLog} />} />
               <Route path="/training" element={<Training courses={courses} setEnrollments={setEnrollments} setPayments={setPayments} triggerToast={triggerToast} addLog={addLog} />} />
               <Route path="/contact" element={<ContactUs setInquiries={setInquiries} triggerToast={triggerToast} addLog={addLog} />} />
+              <Route path="/login" element={<AuthPage />} />
               <Route path="/admin/*" element={
                 <AdminPanel
                   jobs={jobs} setJobs={setJobs}
