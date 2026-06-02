@@ -175,23 +175,16 @@ export default function NavBar({ courses = [], authUser, onLogout }) {
 
                 {/* Desktop Actions */}
                 <div className="nav-actions" style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
-                    {authUser ? (
+                    {authUser && authUser.role === 'admin' ? (
                         <>
-                            <span style={{ fontSize: '13px', color: 'rgba(255,255,255,0.7)' }}>Hi, {authUser.name}</span>
-                            {authUser.role === 'admin' && (
-                                <Link to="/admin" className="btn-ghost-dark" style={{ padding: '8px 16px', fontSize: '13px' }}>
-                                    Admin
-                                </Link>
-                            )}
+                            <Link to="/admin" className="btn-ghost-dark" style={{ padding: '8px 16px', fontSize: '13px' }}>
+                                Dashboard
+                            </Link>
                             <button onClick={onLogout} className="btn-secondary" style={{ padding: '8px 16px', fontSize: '13px' }}>
                                 Logout
                             </button>
                         </>
-                    ) : (
-                        <Link to="/login" className="btn-secondary" style={{ padding: '8px 16px', fontSize: '13px' }}>
-                            Login
-                        </Link>
-                    )}
+                    ) : null}
                     <Link to="/contact" className="btn-primary" style={{ padding: '8px 16px', fontSize: '13px' }}>
                         Book a Demo
                     </Link>
@@ -232,10 +225,8 @@ export default function NavBar({ courses = [], authUser, onLogout }) {
                             </li>
                         ))}
                         <li><Link to="/contact" className={`nav-link ${isActive('/contact')}`} onClick={closeMenu}>Contact Us</Link></li>
-                        {authUser ? (
-                            <li><button onClick={() => { onLogout(); closeMenu(); }} className="nav-link" style={{ background: 'none', border: 'none', textAlign: 'left', width: '100%', cursor: 'pointer' }}>Logout</button></li>
-                        ) : (
-                            <li><Link to="/login" className="nav-link" onClick={closeMenu}>Login</Link></li>
+                        {authUser && authUser.role === 'admin' && (
+                            <li><button onClick={() => { onLogout(); closeMenu(); }} className="nav-link" style={{ background: 'none', border: 'none', textAlign: 'left', width: '100%', cursor: 'pointer' }}>Logout Admin</button></li>
                         )}
                     </ul>
                     <div className="nav-mobile-actions">

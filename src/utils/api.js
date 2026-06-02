@@ -37,7 +37,6 @@ export const coursesApi = {
 
 export const authApi = {
   login: (data) => apiFetch('/auth/login', { method: 'POST', body: JSON.stringify(data) }),
-  register: (data) => apiFetch('/auth/register', { method: 'POST', body: JSON.stringify(data) }),
 };
 
 export const appsApi = {

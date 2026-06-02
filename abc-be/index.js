@@ -28,27 +28,12 @@ const authenticateToken = (req, res, next) => {
 };
 
 // --- AUTH ROUTES ---
-app.post('/api/auth/register', async (req, res) => {
-  try {
-    const { email, password, name } = req.body;
-    const hashedPassword = await bcrypt.hash(password, 10);
-    const [user] = await sql`
-      INSERT INTO users (email, password, name)
-      VALUES (${email}, ${hashedPassword}, ${name})
-      RETURNING id, email, name, role
-    `;
-    res.status(201).json({ message: 'User created successfully', user });
-  } catch (error) {
-    res.status(400).json({ message: 'Error creating user', error: error.message });
-  }
-});
-
 app.post('/api/auth/login', async (req, res) => {
   try {
     const { email, password } = req.body;
     const [user] = await sql`SELECT * FROM users WHERE email = ${email}`;
-    if (!user || !(await bcrypt.compare(password, user.password))) {
-      return res.status(401).json({ message: 'Invalid credentials' });
+    if (!user || user.role !== 'admin' || !(await bcrypt.compare(password, user.password))) {
+      return res.status(401).json({ message: 'Invalid admin credentials' });
     }
     const token = jwt.sign({ id: user.id, email: user.email, role: user.role }, JWT_SECRET);
     res.json({ token, user: { id: user.id, email: user.email, name: user.name, role: user.role } });
