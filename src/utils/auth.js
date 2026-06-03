@@ -3,7 +3,8 @@
 export const getAuthUser = () => {
   try {
     const raw = localStorage.getItem('itbees_auth');
-    return raw ? JSON.parse(raw) : null;
+    if (!raw) return null;
+    return JSON.parse(raw);
   } catch {
     return null;
   }

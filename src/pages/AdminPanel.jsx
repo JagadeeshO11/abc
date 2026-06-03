@@ -1,121 +1,222 @@
-
 import { useState } from 'react';
-import {
-  Grid, Briefcase, BookOpen, Mail, Users, DollarSign,
-  Settings, Activity, TrendingUp
-} from 'lucide-react';
+import { Grid, Briefcase, BookOpen, Mail, Users, DollarSign, Activity, X, Download } from 'lucide-react';
+import { MdVerified } from 'react-icons/md';
+import { FaClock, FaStar } from 'react-icons/fa';
+import { BsPeopleFill } from 'react-icons/bs';
 
-import { jobsApi, coursesApi } from '../utils/api.js';
+const BASE_URL = import.meta.env.VITE_API_URL?.replace('/api', '') || 'http://localhost:5000';
+
+import { adminApi } from '../utils/api.js';
 
 export default function AdminPanel({
     jobs, setJobs,
     courses, setCourses,
     applications, setApplications,
-    enrollments,
     inquiries, setInquiries,
     payments,
-    webhooks, setWebhooks,
-    logs, addLog,
-    triggerToast
+    logs,
+    triggerToast,
+    authUser,
+    onLogout
 }) {
     const [activeTab, setActiveTab] = useState('overview');
 
-    // Job creator states
+    // Job states
     const [newJobTitle, setNewJobTitle] = useState('');
     const [newJobDept, setNewJobDept] = useState('Engineering');
     const [newJobSalary, setNewJobSalary] = useState('');
     const [newJobDesc, setNewJobDesc] = useState('');
+    const [editingJobId, setEditingJobId] = useState(null);
+    const [jobDrawerOpen, setJobDrawerOpen] = useState(false);
+    const [jobSubTab, setJobSubTab] = useState('postings'); // 'postings' | 'applicants'
+    const [jobSaving, setJobSaving] = useState(false);
+
+    const handleSelectJob = (job) => {
+        setEditingJobId(job.id);
+        setNewJobTitle(job.title);
+        setNewJobDept(job.department);
+        setNewJobSalary(job.salary);
+        setNewJobDesc(job.description);
+        setJobDrawerOpen(true);
+    };
+
+    const handleClearJobForm = () => {
+        setEditingJobId(null);
+        setNewJobTitle(''); setNewJobSalary(''); setNewJobDesc('');
+        setNewJobDept('Engineering');
+        setJobDrawerOpen(false);
+    };
 
     // Course creator states
     const [newCourseTitle, setNewCourseTitle] = useState('');
     const [newCourseCat, setNewCourseCat] = useState('Analytics');
     const [newCoursePrice, setNewCoursePrice] = useState('');
     const [newCourseDesc, setNewCourseDesc] = useState('');
+    const [newCourseImage, setNewCourseImage] = useState('');
+    const [courseImageFile, setCourseImageFile] = useState(null);
+    const [imageUploading, setImageUploading] = useState(false);
+    const [newCourseDuration, setNewCourseDuration] = useState('6 weeks');
+    const [newCourseHours, setNewCourseHours] = useState(20);
+    const [editingCourseId, setEditingCourseId] = useState(null);
+
+    const [courseDrawerOpen, setCourseDrawerOpen] = useState(false);
+    const [courseSaving, setCourseSaving] = useState(false);
+
+    const handleSelectCourse = (course) => {
+        setEditingCourseId(course.id);
+        setNewCourseTitle(course.title);
+        setNewCourseCat(course.category);
+        setNewCoursePrice(String(course.price));
+        setNewCourseDesc(course.description);
+        setNewCourseImage(course.image || '');
+        setNewCourseDuration(course.duration || '6 weeks');
+        setNewCourseHours(course.hours || 20);
+        setCourseDrawerOpen(true);
+    };
+
+    const handleClearCourseForm = () => {
+        setEditingCourseId(null);
+        setNewCourseTitle(''); setNewCoursePrice(''); setNewCourseDesc('');
+        setNewCourseImage(''); setNewCourseDuration('6 weeks'); setNewCourseHours(20);
+        setCourseImageFile(null);
+        setCourseDrawerOpen(false);
+    };
+
+    const handleCourseImageChange = async (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+        setImageUploading(true);
+        try {
+            const fd = new FormData();
+            fd.append('image', file);
+            const { url } = await adminApi.uploadImage(fd);
+            setNewCourseImage(url);
+            setCourseImageFile(file);
+        } catch (err) {
+            alert('Image upload failed: ' + err.message);
+        } finally {
+            setImageUploading(false);
+        }
+    };
 
     const [activeInvoice, setActiveInvoice] = useState(null);
 
+    const handleDeleteApp = async (id) => {
+        if (!window.confirm('Delete this application?')) return;
+        try {
+            await adminApi.deleteApplication(id);
+            setApplications(prev => prev.filter(a => a.id !== id));
+            triggerToast('Application deleted.');
+        } catch (err) { alert(err.message); }
+    };
+
     const handleCreateJob = async (e) => {
         e.preventDefault();
-        if (!newJobTitle || !newJobSalary || !newJobDesc) {
-            alert('Please fill out all job fields.');
-            return;
+        setJobSaving(true);
+        const payload = {
+            title: newJobTitle,
+            department: newJobDept,
+            location: 'Hyderabad Office',
+            type: 'Full-time',
+            salary: newJobSalary,
+            description: newJobDesc,
+            requirements: ['Relevant credentials', 'Good communication']
+        };
+        if (editingJobId) {
+            try {
+                const { data } = await adminApi.updateJob(editingJobId, payload);
+                setJobs(prev => prev.map(j => j.id === editingJobId ? data : j));
+                triggerToast('Job updated successfully.');
+                handleClearJobForm();
+            } catch (err) { alert(err.message); }
+            finally { setJobSaving(false); }
+        } else {
+            const duplicate = jobs.find(j => j.title.trim().toLowerCase() === newJobTitle.trim().toLowerCase());
+            if (duplicate) { triggerToast(`⚠️ Job "${duplicate.title}" already exists.`); return; }
+            try {
+                const { data } = await adminApi.createJob(payload);
+                setJobs(prev => [data, ...prev]);
+                triggerToast('New career opening published.');
+                handleClearJobForm();
+            } catch (err) { alert(err.message); }
+            finally { setJobSaving(false); }
         }
-        try {
-            const item = await jobsApi.create({
-                title: newJobTitle,
-                department: newJobDept,
-                location: 'Hyderabad Office',
-                type: 'Full-time',
-                salary: newJobSalary,
-                description: newJobDesc,
-                requirements: ['Relevant engineering credentials', 'Good communication']
-            });
-            setJobs(prev => [item, ...prev]);
-            triggerToast('New career opening published.');
-            addLog('system', `Published new career opening: ${newJobTitle}.`);
+    };
 
-            setNewJobTitle('');
-            setNewJobSalary('');
-            setNewJobDesc('');
+    const handleRemoveJob = async (id) => {
+        if (!window.confirm('Archive this job opening?')) return;
+        try {
+            await adminApi.deleteJob(id);
+            setJobs(prev => prev.filter(j => j.id !== id));
+            triggerToast('Job archived successfully.');
         } catch (err) {
-            console.error(err);
-            alert('Failed to create job.');
+            alert(err.message);
         }
     };
 
     const handleCreateCourse = async (e) => {
         e.preventDefault();
-        if (!newCourseTitle || !newCoursePrice || !newCourseDesc) {
-            alert('Please fill out all course fields.');
-            return;
+        setCourseSaving(true);
+        const payload = {
+            title: newCourseTitle,
+            category: newCourseCat,
+            hours: parseInt(newCourseHours),
+            duration: newCourseDuration,
+            price: parseFloat(newCoursePrice),
+            description: newCourseDesc,
+            image: newCourseImage || null,
+            rating: 'New',
+            icon: '📚'
+        };
+        if (editingCourseId) {
+            // UPDATE
+            try {
+                const { data } = await adminApi.updateCourse(editingCourseId, payload);
+                setCourses(prev => prev.map(c => c.id === editingCourseId ? data : c));
+                triggerToast('Course updated successfully.');
+                handleClearCourseForm();
+            } catch (err) { alert(err.message); }
+            finally { setCourseSaving(false); }
+        } else {
+            // CREATE — check duplicate
+            const duplicate = courses.find(c => c.title.trim().toLowerCase() === newCourseTitle.trim().toLowerCase());
+            if (duplicate) {
+                triggerToast(`⚠️ Course "${duplicate.title}" already exists (ID: ${duplicate.id.slice(0, 8)}...)`);
+                return;
+            }
+            try {
+                const { data } = await adminApi.createCourse(payload);
+                setCourses(prev => [data, ...prev]);
+                triggerToast('New training course published.');
+                handleClearCourseForm();
+            } catch (err) { alert(err.message); }
+            finally { setCourseSaving(false); }
         }
+    };
+
+    const handleRemoveCourse = async (id) => {
+        if (!window.confirm('Archive this training course?')) return;
         try {
-            // Note: coursesApi.create not defined in api.js yet, let's assume it should be or use apiFetch
-            const item = await coursesApi.create({
-                title: newCourseTitle,
-                category: newCourseCat,
-                hours: 20, // default
-                duration: '6 weeks',
-                price: parseInt(newCoursePrice),
-                description: newCourseDesc,
-                rating: 'New Course',
-                icon: '📚', // default
-                image: 'https://via.placeholder.com/300' // default
-            });
-            setCourses(prev => [item, ...prev]);
-            triggerToast('New training course published.');
-            addLog('system', `Published training course: ${newCourseTitle}.`);
-
-            setNewCourseTitle('');
-            setNewCoursePrice('');
-            setNewCourseDesc('');
+            await adminApi.deleteCourse(id);
+            setCourses(prev => prev.filter(c => c.id !== id));
+            triggerToast('Course archived successfully.');
         } catch (err) {
-            console.error(err);
-            alert('Failed to create course.');
+            alert(err.message);
         }
     };
 
-    const handleAppStatus = (appId, newStatus) => {
-        setApplications(prev => prev.map(app => app.id === appId ? { ...app, status: newStatus } : app));
-        triggerToast(`Application status updated to ${newStatus}`);
-        addLog('system', `Updated application ${appId} status to ${newStatus}`);
-    };
-
-    const handleInqStatus = (inqId, newStatus) => {
-        setInquiries(prev => prev.map(inq => inq.id === inqId ? { ...inq, status: newStatus } : inq));
-        triggerToast(`Inquiry status updated to ${newStatus}`);
-        addLog('system', `Updated inquiry ${inqId} status to ${newStatus}`);
-    };
-
-    const toggleWebhook = (whId) => {
-        setWebhooks(prev => prev.map(wh => wh.id === whId ? { ...wh, active: !wh.active } : wh));
-        const wh = webhooks.find(w => w.id === whId);
-        triggerToast(`${wh.name} ${!wh.active ? 'Activated' : 'Deactivated'}`);
+    const handleInqStatus = async (inqId) => {
+        try {
+            await adminApi.archiveInquiry(inqId);
+            setInquiries(prev => prev.map(inq => inq.id === inqId ? { ...inq, status: 'ARCHIVED' } : inq));
+            triggerToast('Inquiry archived.');
+        } catch (err) {
+            alert(err.message);
+        }
     };
 
     return (
         <div className="admin-layout">
-            {/* Sidebar navigation */}
             <aside className="admin-sidebar">
                 <div style={{ color: 'var(--color-white)', fontSize: '13px', fontWeight: 'bold', padding: '0 16px 16px 16px', borderBottom: '1px solid rgba(255,255,255,0.1)', marginBottom: '16px' }}>
                     ADMIN MENU
@@ -132,557 +233,417 @@ export default function AdminPanel({
                 <button className={`admin-sidebar-btn ${activeTab === 'inquiries' ? 'active' : ''}`} onClick={() => setActiveTab('inquiries')}>
                     <Mail size={16} /> Client Inquiries
                 </button>
-                <button className={`admin-sidebar-btn ${activeTab === 'applications' ? 'active' : ''}`} onClick={() => setActiveTab('applications')}>
-                    <Users size={16} /> Job Applicants
-                </button>
                 <button className={`admin-sidebar-btn ${activeTab === 'payments' ? 'active' : ''}`} onClick={() => setActiveTab('payments')}>
                     <DollarSign size={16} /> Transactions
-                </button>
-                <button className={`admin-sidebar-btn ${activeTab === 'automations' ? 'active' : ''}`} onClick={() => setActiveTab('automations')}>
-                    <Settings size={16} /> Webhooks &amp; API
                 </button>
                 <button className={`admin-sidebar-btn ${activeTab === 'logs' ? 'active' : ''}`} onClick={() => setActiveTab('logs')}>
                     <Activity size={16} /> System Logs
                 </button>
+                <div style={{ marginTop: 'auto', padding: '16px' }}>
+                    <button className="btn-mini" style={{ color: 'var(--color-ai-lime)', width: '100%' }} onClick={onLogout}>Logout</button>
+                </div>
             </aside>
 
-            {/* Main Admin Screen */}
             <section className="admin-content" style={{ textAlign: 'left' }}>
-
-                {/* Overview Tab */}
                 {activeTab === 'overview' && (
                     <div>
                         <h2 className="heading-lg" style={{ color: 'var(--color-navy-dark)', marginBottom: '24px' }}>ADMINISTRATIVE OVERVIEW</h2>
-
-                        {/* Stat Cards */}
                         <div className="analytics-grid">
                             <div className="stat-card">
                                 <div className="stat-label">Inquiries</div>
                                 <div className="stat-value">{inquiries.length}</div>
-                                <span className="stat-trend trend-up"><TrendingUp size={12} /> Realtime tracking</span>
                             </div>
                             <div className="stat-card">
                                 <div className="stat-label">Job Applications</div>
                                 <div className="stat-value">{applications.length}</div>
-                                <span className="stat-trend trend-up"><TrendingUp size={12} /> Resumes uploaded</span>
-                            </div>
-                            <div className="stat-card">
-                                <div className="stat-label">Total Enrollments</div>
-                                <div className="stat-value">{enrollments.length}</div>
-                                <span className="stat-trend trend-up"><TrendingUp size={12} /> Active Students</span>
                             </div>
                             <div className="stat-card">
                                 <div className="stat-label">Transactions</div>
                                 <div className="stat-value">{payments.length}</div>
-                                <span className="stat-trend trend-up"><TrendingUp size={12} /> UPI &amp; Cards</span>
-                            </div>
-                        </div>
-
-                        {/* Quick Insights charts */}
-                        <div className="grid-2">
-                            <div className="card-white" style={{ padding: '24px' }}>
-                                <h4 className="heading-md" style={{ marginBottom: '16px' }}>Monthly Transaction Activity</h4>
-                                <svg className="chart-svg">
-                                    {/* Axis lines */}
-                                    <line x1="40" y1="20" x2="40" y2="200" className="chart-axis" />
-                                    <line x1="40" y1="200" x2="340" y2="200" className="chart-axis" />
-
-                                    {/* Grid Lines */}
-                                    <line x1="40" y1="80" x2="340" y2="80" stroke="rgba(255,255,255,0.05)" />
-                                    <line x1="40" y1="140" x2="340" y2="140" stroke="rgba(255,255,255,0.05)" />
-
-                                    {/* SVG Bar graphs */}
-                                    <rect x="60" y="120" width="30" height="80" className="chart-bar" />
-                                    <rect x="120" y="90" width="30" height="110" className="chart-bar" style={{ fill: 'var(--color-ai-lime)' }} />
-                                    <rect x="180" y="150" width="30" height="50" className="chart-bar" />
-                                    <rect x="240" y="60" width="30" height="140" className="chart-bar" style={{ fill: 'var(--color-ai-lime)' }} />
-                                    <rect x="300" y="100" width="30" height="100" className="chart-bar" />
-
-                                    {/* Chart labels */}
-                                    <text x="75" y="215" className="chart-text" textAnchor="middle">Jan</text>
-                                    <text x="135" y="215" className="chart-text" textAnchor="middle">Feb</text>
-                                    <text x="195" y="215" className="chart-text" textAnchor="middle">Mar</text>
-                                    <text x="255" y="215" className="chart-text" textAnchor="middle">Apr</text>
-                                    <text x="315" y="215" className="chart-text" textAnchor="middle">May</text>
-
-                                    <text x="30" y="125" className="chart-text" textAnchor="end">₹10K</text>
-                                    <text x="30" y="65" className="chart-text" textAnchor="end">₹50K</text>
-                                </svg>
-                            </div>
-
-                            <div className="card-white" style={{ padding: '24px' }}>
-                                <h4 className="heading-md" style={{ marginBottom: '16px' }}>Database Sync Speeds</h4>
-                                <svg className="chart-svg">
-                                    <line x1="40" y1="20" x2="40" y2="200" className="chart-axis" />
-                                    <line x1="40" y1="200" x2="340" y2="200" className="chart-axis" />
-
-                                    {/* Grid Lines */}
-                                    <line x1="40" y1="80" x2="340" y2="80" stroke="rgba(255,255,255,0.05)" />
-                                    <line x1="40" y1="140" x2="340" y2="140" stroke="rgba(255,255,255,0.05)" />
-
-                                    {/* Line Graph */}
-                                    <path d="M 40 180 L 100 130 L 160 160 L 220 80 L 280 110 L 340 50" className="chart-line" />
-
-                                    <circle cx="100" cy="130" r="4" fill="var(--color-ai-lime)" />
-                                    <circle cx="220" cy="80" r="4" fill="var(--color-ai-lime)" />
-                                    <circle cx="340" cy="50" r="4" fill="var(--color-ai-lime)" />
-
-                                    <text x="100" y="215" className="chart-text" textAnchor="middle">10:00</text>
-                                    <text x="220" y="215" className="chart-text" textAnchor="middle">12:00</text>
-                                    <text x="340" y="215" className="chart-text" textAnchor="middle">14:00</text>
-
-                                    <text x="30" y="145" className="chart-text" textAnchor="end">15ms</text>
-                                    <text x="30" y="85" className="chart-text" textAnchor="end">5ms</text>
-                                </svg>
                             </div>
                         </div>
                     </div>
                 )}
 
-                {/* Manage Jobs Tab */}
                 {activeTab === 'jobs' && (
-                    <div>
-                        <h2 className="heading-lg" style={{ color: 'var(--color-navy-dark)', marginBottom: '24px' }}>MANAGE JOB POSTINGS</h2>
-
-                        <div className="grid-2" style={{ alignItems: 'flex-start' }}>
-                            <div className="card-white" style={{ padding: '32px' }}>
-                                <h4 className="heading-md" style={{ marginBottom: '20px' }}>Create Career Posting</h4>
-                                <form onSubmit={handleCreateJob}>
-                                    <div className="form-group">
-                                        <label className="form-label">Job Title</label>
-                                        <input
-                                            type="text"
-                                            className="input-field"
-                                            required
-                                            placeholder="e.g. Cloud Engineer"
-                                            value={newJobTitle}
-                                            onChange={(e) => setNewJobTitle(e.target.value)}
-                                        />
-                                    </div>
-                                    <div className="grid-2">
-                                        <div className="form-group">
-                                            <label className="form-label">Department</label>
-                                            <select
-                                                className="input-field"
-                                                value={newJobDept}
-                                                onChange={(e) => setNewJobDept(e.target.value)}
-                                            >
-                                                <option value="Engineering">Engineering</option>
-                                                <option value="Analytics">Analytics</option>
-                                                <option value="Consulting">Consulting</option>
-                                                <option value="HR &amp; Staffing">HR &amp; Staffing</option>
-                                            </select>
-                                        </div>
-                                        <div className="form-group">
-                                            <label className="form-label">Salary Range</label>
-                                            <input
-                                                type="text"
-                                                className="input-field"
-                                                required
-                                                placeholder="₹8L - ₹12L"
-                                                value={newJobSalary}
-                                                onChange={(e) => setNewJobSalary(e.target.value)}
-                                            />
-                                        </div>
-                                    </div>
-                                    <div className="form-group">
-                                        <label className="form-label">Job Description Summary</label>
-                                        <textarea
-                                            className="input-field"
-                                            rows="4"
-                                            required
-                                            placeholder="Enter description and details..."
-                                            style={{ borderRadius: '16px' }}
-                                            value={newJobDesc}
-                                            onChange={(e) => setNewJobDesc(e.target.value)}
-                                        ></textarea>
-                                    </div>
-                                    <button type="submit" className="btn-primary" style={{ width: '100%' }}>
-                                        Publish to Career Page
-                                    </button>
-                                </form>
-                            </div>
-
-                            <div>
-                                <h4 className="heading-md" style={{ marginBottom: '16px' }}>Active Job Postings ({jobs.length})</h4>
-                                <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                                    {jobs.map(job => (
-                                        <div key={job.id} className="card-white" style={{ padding: '16px' }}>
-                                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                                                <div>
-                                                    <strong style={{ fontSize: '15px' }}>{job.title}</strong>
-                                                    <div style={{ fontSize: '12px', color: 'var(--color-muted-text)' }}>{job.department} &bull; {job.salary}</div>
-                                                </div>
-                                                <button className="btn-mini" style={{ color: '#d93838' }} onClick={() => {
-                                                    setJobs(prev => prev.filter(j => j.id !== job.id));
-                                                    addLog('system', `Deleted career posting: ${job.title}`);
-                                                }}>
-                                                    Remove
-                                                </button>
-                                            </div>
-                                        </div>
-                                    ))}
-                                </div>
-                            </div>
+                    <div style={{ position: 'relative' }}>
+                        {/* Header */}
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '20px' }}>
+                            <button
+                                onClick={() => { handleClearJobForm(); setJobDrawerOpen(true); }}
+                                style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', background: 'var(--color-corporate-blue)', color: '#fff', border: 'none', borderRadius: '8px', padding: '9px 18px', fontSize: '13px', fontWeight: '700', cursor: 'pointer' }}
+                            >
+                                <span style={{ fontSize: '18px', lineHeight: 1 }}>&#8250;</span> Add Job
+                            </button>
+                            <h2 className="heading-lg" style={{ color: 'var(--color-navy-dark)', margin: 0 }}>MANAGE JOBS</h2>
                         </div>
-                    </div>
-                )}
 
-                {/* Manage Courses Tab */}
-                {activeTab === 'courses' && (
-                    <div>
-                        <h2 className="heading-lg" style={{ color: 'var(--color-navy-dark)', marginBottom: '24px' }}>MANAGE COURSES</h2>
+                        {/* Sub-tab toggle */}
+                        <div style={{ display: 'flex', gap: '4px', marginBottom: '16px', background: '#f0f2f5', borderRadius: '8px', padding: '4px', width: 'fit-content' }}>
+                            <button onClick={() => setJobSubTab('postings')} style={{ padding: '7px 20px', borderRadius: '6px', border: 'none', cursor: 'pointer', fontSize: '13px', fontWeight: '600', background: jobSubTab === 'postings' ? '#fff' : 'transparent', color: jobSubTab === 'postings' ? 'var(--color-corporate-blue)' : 'var(--color-muted-text)', boxShadow: jobSubTab === 'postings' ? '0 1px 4px rgba(0,0,0,0.1)' : 'none' }}>Job Postings ({jobs.length})</button>
+                            <button onClick={() => setJobSubTab('applicants')} style={{ padding: '7px 20px', borderRadius: '6px', border: 'none', cursor: 'pointer', fontSize: '13px', fontWeight: '600', background: jobSubTab === 'applicants' ? '#fff' : 'transparent', color: jobSubTab === 'applicants' ? 'var(--color-corporate-blue)' : 'var(--color-muted-text)', boxShadow: jobSubTab === 'applicants' ? '0 1px 4px rgba(0,0,0,0.1)' : 'none' }}>Applicants ({applications.length})</button>
+                        </div>
 
-                        <div className="grid-2" style={{ alignItems: 'flex-start' }}>
-                            <div className="card-white" style={{ padding: '32px' }}>
-                                <h4 className="heading-md" style={{ marginBottom: '20px' }}>Add New Course</h4>
-                                <form onSubmit={handleCreateCourse}>
-                                    <div className="form-group">
-                                        <label className="form-label">Course Title</label>
-                                        <input
-                                            type="text"
-                                            className="input-field"
-                                            required
-                                            placeholder="e.g. SQL Database Optimization"
-                                            value={newCourseTitle}
-                                            onChange={(e) => setNewCourseTitle(e.target.value)}
-                                        />
-                                    </div>
-                                    <div className="grid-2">
-                                        <div className="form-group">
-                                            <label className="form-label">Category</label>
-                                            <select
-                                                className="input-field"
-                                                value={newCourseCat}
-                                                onChange={(e) => setNewCourseCat(e.target.value)}
-                                            >
-                                                <option value="Analytics">Analytics</option>
-                                                <option value="ERP">ERP</option>
-                                                <option value="Development">Development</option>
-                                            </select>
-                                        </div>
-                                        <div className="form-group">
-                                            <label className="form-label">Course Price (INR)</label>
-                                            <input
-                                                type="number"
-                                                className="input-field"
-                                                required
-                                                placeholder="7999"
-                                                value={newCoursePrice}
-                                                onChange={(e) => setNewCoursePrice(e.target.value)}
-                                            />
-                                        </div>
-                                    </div>
-                                    <div className="form-group">
-                                        <label className="form-label">Course Description</label>
-                                        <textarea
-                                            className="input-field"
-                                            rows="4"
-                                            required
-                                            placeholder="Enter course description summary..."
-                                            style={{ borderRadius: '16px' }}
-                                            value={newCourseDesc}
-                                            onChange={(e) => setNewCourseDesc(e.target.value)}
-                                        ></textarea>
-                                    </div>
-                                    <button type="submit" className="btn-primary" style={{ width: '100%' }}>
-                                        Publish to Catalog
-                                    </button>
-                                </form>
-                            </div>
-
-                            <div>
-                                <h4 className="heading-md" style={{ marginBottom: '16px' }}>Published Course Catalog ({courses.length})</h4>
-                                <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                                    {courses.map(course => (
-                                        <div key={course.id} className="card-white" style={{ padding: '16px' }}>
-                                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                                                <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                                                    {course.image && (
-                                                        <img src={course.image} alt="" style={{ width: '40px', height: '40px', borderRadius: '4px', objectFit: 'cover' }} />
-                                                    )}
-                                                    <div>
-                                                        <strong style={{ fontSize: '15px' }}>{course.title}</strong>
-                                                        <div style={{ fontSize: '12px', color: 'var(--color-muted-text)' }}>{course.category} &bull; ₹{course.price.toLocaleString('en-IN')}</div>
+                        {/* Job Postings Table */}
+                        {jobSubTab === 'postings' && (
+                            <div className="admin-table-container" style={{ width: '100%' }}>
+                                <table className="admin-table" style={{ width: '100%' }}>
+                                    <thead>
+                                        <tr>
+                                            <th>Title</th>
+                                            <th>Department</th>
+                                            <th>Location</th>
+                                            <th>Type</th>
+                                            <th>Salary</th>
+                                            <th>Added</th>
+                                            <th>Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {jobs.map(job => (
+                                            <tr key={job.id} style={{ background: editingJobId === job.id ? '#eef4ff' : undefined }}>
+                                                <td><strong>{job.title}</strong><br/><span style={{ fontSize: '10px', color: '#aaa', fontFamily: 'monospace' }}>{job.id.slice(0, 8)}…</span></td>
+                                                <td><span className="badge-blue">{job.department}</span></td>
+                                                <td>{job.location}</td>
+                                                <td>{job.type}</td>
+                                                <td style={{ fontWeight: '700', color: 'var(--color-corporate-blue)' }}>{job.salary}</td>
+                                                <td style={{ fontSize: '12px' }}>{new Date(job.createdAt).toLocaleDateString('en-IN')}</td>
+                                                <td>
+                                                    <div style={{ display: 'flex', gap: '6px' }}>
+                                                        <button className="btn-mini" style={{ color: 'var(--color-corporate-blue)' }} onClick={() => handleSelectJob(job)}>Edit</button>
+                                                        <button className="btn-mini" style={{ color: '#d93838' }} onClick={() => handleRemoveJob(job.id)}>Remove</button>
                                                     </div>
-                                                </div>
-                                                <button className="btn-mini" style={{ color: '#d93838' }} onClick={() => {
-                                                    setCourses(prev => prev.filter(c => c.id !== course.id));
-                                                    addLog('system', `Deleted training course: ${course.title}`);
-                                                }}>
-                                                    Remove
-                                                </button>
+                                                </td>
+                                            </tr>
+                                        ))}
+                                        {jobs.length === 0 && (
+                                            <tr><td colSpan="7" style={{ textAlign: 'center', padding: '40px', color: 'var(--color-muted-text)' }}>No jobs yet. Click › Add Job to get started.</td></tr>
+                                        )}
+                                    </tbody>
+                                </table>
+                            </div>
+                        )}
+
+                        {/* Applicants Table */}
+                        {jobSubTab === 'applicants' && (
+                            <div className="admin-table-container" style={{ width: '100%' }}>
+                                <table className="admin-table" style={{ width: '100%' }}>
+                                    <thead>
+                                        <tr>
+                                            <th>Candidate</th>
+                                            <th>Email</th>
+                                            <th>Phone</th>
+                                            <th>Job</th>
+                                            <th>Experience</th>
+                                            <th>Resume</th>
+                                            <th>Applied</th>
+                                            <th>Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {applications.map(app => (
+                                            <tr key={app.id}>
+                                                <td><strong>{app.name}</strong><br/><span style={{ fontSize: '11px', color: '#aaa' }}>{app.location}</span></td>
+                                                <td>{app.email}</td>
+                                                <td>{app.phone}</td>
+                                                <td>{app.job?.title}</td>
+                                                <td>{app.experience}</td>
+                                                <td>
+                                                    <a href={`${BASE_URL}/uploads/resumes/${app.resumePath}`} target="_blank" rel="noreferrer" style={{ display: 'flex', alignItems: 'center', gap: '4px', color: 'var(--color-corporate-blue)', fontSize: '12px' }}>
+                                                        <Download size={12} /> View
+                                                    </a>
+                                                </td>
+                                                <td style={{ fontSize: '12px' }}>{new Date(app.createdAt).toLocaleDateString('en-IN')}</td>
+                                                <td>
+                                                    <button className="btn-mini" style={{ color: '#d93838' }} onClick={() => handleDeleteApp(app.id)}>Delete</button>
+                                                </td>
+                                            </tr>
+                                        ))}
+                                        {applications.length === 0 && (
+                                            <tr><td colSpan="8" style={{ textAlign: 'center', padding: '40px', color: 'var(--color-muted-text)' }}>No applications yet.</td></tr>
+                                        )}
+                                    </tbody>
+                                </table>
+                            </div>
+                        )}
+
+
+
+                        {/* Add/Edit Job Modal */}
+                        {jobDrawerOpen && (
+                            <>
+                                <div onClick={handleClearJobForm} style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.45)', zIndex: 200 }} />
+                                <div style={{ position: 'fixed', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', width: '520px', maxHeight: '90vh', background: '#fff', borderRadius: '12px', boxShadow: '0 20px 60px rgba(0,0,0,0.25)', zIndex: 201, display: 'flex', flexDirection: 'column', animation: 'popIn 0.22s ease' }}>
+                                    <style>{`@keyframes popIn { from { opacity:0; transform:translate(-50%,-48%) scale(0.97); } to { opacity:1; transform:translate(-50%,-50%) scale(1); } }`}</style>
+                                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '18px 24px', borderBottom: '1px solid rgba(255,255,255,0.1)', background: 'var(--color-corporate-blue)', borderRadius: '12px 12px 0 0' }}>
+                                        <div style={{ color: '#fff', fontWeight: '700', fontSize: '15px' }}>{editingJobId ? '✏️ Edit Job' : '› Add New Job'}</div>
+                                        <button onClick={handleClearJobForm} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#fff', display: 'flex' }}><X size={20} /></button>
+                                    </div>
+                                    <div style={{ flex: 1, overflowY: 'auto', padding: '24px', background: 'var(--color-corporate-blue)' }}>
+                                        <form onSubmit={handleCreateJob}>
+                                            <div className="form-group">
+                                                <label className="form-label" style={{ color: 'rgba(255,255,255,0.8)' }}>Job Title</label>
+                                                <input type="text" className="input-field" required value={newJobTitle} onChange={(e) => setNewJobTitle(e.target.value)} />
                                             </div>
-                                        </div>
-                                    ))}
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                )}
-
-                {/* Client Inquiries Tab */}
-                {activeTab === 'inquiries' && (
-                    <div>
-                        <h2 className="heading-lg" style={{ color: 'var(--color-navy-dark)', marginBottom: '24px' }}>CLIENT CONSULTATION INQUIRIES</h2>
-                        <div className="admin-table-container">
-                            <table className="admin-table">
-                                <thead>
-                                    <tr>
-                                        <th>Date</th>
-                                        <th>Client Name</th>
-                                        <th>Email</th>
-                                        <th>Company</th>
-                                        <th>Requirement Notes</th>
-                                        <th>Status</th>
-                                        <th>Actions</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {inquiries.map(inq => (
-                                        <tr key={inq.id}>
-                                            <td style={{ whiteSpace: 'nowrap' }}>{inq.date}</td>
-                                            <td><strong>{inq.name}</strong></td>
-                                            <td>{inq.email}</td>
-                                            <td>{inq.company}</td>
-                                            <td style={{ fontSize: '13px', maxWidth: '300px' }}>{inq.message}</td>
-                                            <td>
-                                                <span className={`status-badge status-${inq.status}`}>{inq.status}</span>
-                                            </td>
-                                            <td>
-                                                <div style={{ display: 'flex', gap: '8px' }}>
-                                                    <button className="btn-mini" style={{ color: 'var(--color-evergreen-glow)', padding: 0 }} onClick={() => handleInqStatus(inq.id, 'contacted')}>
-                                                        Contacted
-                                                    </button>
-                                                    <button className="btn-mini" style={{ color: '#d93838', padding: 0 }} onClick={() => {
-                                                        setInquiries(prev => prev.filter(i => i.id !== inq.id));
-                                                        addLog('system', `Deleted client inquiry from ${inq.name}`);
-                                                    }}>
-                                                        Delete
-                                                    </button>
+                                            <div className="grid-2">
+                                                <div className="form-group">
+                                                    <label className="form-label" style={{ color: 'rgba(255,255,255,0.8)' }}>Department</label>
+                                                    <select className="input-field" value={newJobDept} onChange={(e) => setNewJobDept(e.target.value)}>
+                                                        <option value="Engineering">Engineering</option>
+                                                        <option value="Analytics">Analytics</option>
+                                                        <option value="Sales">Sales</option>
+                                                        <option value="HR">HR</option>
+                                                        <option value="Finance">Finance</option>
+                                                    </select>
                                                 </div>
-                                            </td>
-                                        </tr>
-                                    ))}
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                )}
-
-                {/* Job Applicants Tab */}
-                {activeTab === 'applications' && (
-                    <div>
-                        <h2 className="heading-lg" style={{ color: 'var(--color-navy-dark)', marginBottom: '24px' }}>CANDIDATE APPLICATIONS</h2>
-                        <div className="admin-table-container">
-                            <table className="admin-table">
-                                <thead>
-                                    <tr>
-                                        <th>Date</th>
-                                        <th>Job Title</th>
-                                        <th>Candidate</th>
-                                        <th>Email</th>
-                                        <th>Phone</th>
-                                        <th>Resume</th>
-                                        <th>Status</th>
-                                        <th>Actions</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {applications.map(app => (
-                                        <tr key={app.id}>
-                                            <td>{app.date}</td>
-                                            <td><strong>{app.jobTitle}</strong></td>
-                                            <td>{app.name}</td>
-                                            <td>{app.email}</td>
-                                            <td>{app.phone}</td>
-                                            <td><span style={{ fontSize: '12px', color: 'var(--color-corporate-blue)', textDecoration: 'underline', cursor: 'pointer' }} onClick={() => triggerToast('Opening resume_cv.pdf parser mockup.')}>resume.pdf</span></td>
-                                            <td>
-                                                <span className={`status-badge status-${app.status}`}>{app.status}</span>
-                                            </td>
-                                            <td>
-                                                <div style={{ display: 'flex', gap: '8px' }}>
-                                                    <button className="btn-mini" style={{ color: 'var(--color-evergreen-glow)', padding: 0 }} onClick={() => handleAppStatus(app.id, 'shortlisted')}>
-                                                        Shortlist
-                                                    </button>
-                                                    <button className="btn-mini" style={{ color: 'var(--color-sky-blue)', padding: 0 }} onClick={() => handleAppStatus(app.id, 'hired')}>
-                                                        Hire
-                                                    </button>
-                                                    <button className="btn-mini" style={{ color: '#d93838', padding: 0 }} onClick={() => handleAppStatus(app.id, 'rejected')}>
-                                                        Reject
-                                                    </button>
+                                                <div className="form-group">
+                                                    <label className="form-label" style={{ color: 'rgba(255,255,255,0.8)' }}>Salary</label>
+                                                    <input type="text" className="input-field" required placeholder="e.g. ₹4-6 LPA" value={newJobSalary} onChange={(e) => setNewJobSalary(e.target.value)} />
                                                 </div>
-                                            </td>
-                                        </tr>
-                                    ))}
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                )}
-
-                {/* Transactions Tab */}
-                {activeTab === 'payments' && (
-                    <div>
-                        <h2 className="heading-lg" style={{ color: 'var(--color-navy-dark)', marginBottom: '24px' }}>TRANSACTIONS &amp; INVOICING</h2>
-                        <div className="admin-table-container">
-                            <table className="admin-table">
-                                <thead>
-                                    <tr>
-                                        <th>Date</th>
-                                        <th>Invoice ID</th>
-                                        <th>Description</th>
-                                        <th>Amount</th>
-                                        <th>Method</th>
-                                        <th>Status</th>
-                                        <th>Invoicing</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {payments.map(pay => (
-                                        <tr key={pay.id}>
-                                            <td>{pay.date}</td>
-                                            <td><code>{pay.invoiceId}</code></td>
-                                            <td>{pay.description}</td>
-                                            <td><strong>{pay.amount}</strong></td>
-                                            <td>{pay.method}</td>
-                                            <td>
-                                                <span style={{ color: 'var(--color-evergreen-glow)', fontWeight: 'bold' }}>{pay.status}</span>
-                                            </td>
-                                            <td>
-                                                <button className="btn-mini" style={{ color: 'var(--color-corporate-blue)', textDecoration: 'underline' }} onClick={() => setActiveInvoice(pay)}>
-                                                    View Invoice
-                                                </button>
-                                            </td>
-                                        </tr>
-                                    ))}
-                                </tbody>
-                            </table>
-                        </div>
-
-                        {/* Modal Invoice details */}
-                        {activeInvoice && (
-                            <div className="modal-overlay">
-                                <div className="modal-content" style={{ width: '480px', padding: '32px' }}>
-                                    <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid var(--color-soft-gray)', paddingBottom: '16px', marginBottom: '20px' }}>
-                                        <div>
-                                            <h4 className="logo" style={{ color: 'var(--color-navy-dark)' }}>ITBEES <span className="logo-accent">GLOBAL</span></h4>
-                                            <p style={{ fontSize: '11px', color: 'var(--color-muted-text)', marginTop: '4px' }}>Gachibowli, Hyderabad, TS</p>
-                                        </div>
-                                        <div style={{ textAlign: 'right' }}>
-                                            <h3 style={{ fontSize: '18px', fontWeight: 'bold' }}>INVOICE</h3>
-                                            <code style={{ fontSize: '12px' }}>{activeInvoice.invoiceId}</code>
-                                        </div>
-                                    </div>
-
-                                    <div style={{ marginBottom: '20px', fontSize: '13px' }}>
-                                        <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px' }}>
-                                            <span>Date:</span>
-                                            <span>{activeInvoice.date}</span>
-                                        </div>
-                                        <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px' }}>
-                                            <span>Payment Method:</span>
-                                            <span>{activeInvoice.method}</span>
-                                        </div>
-                                        <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                                            <span>Transaction Status:</span>
-                                            <strong style={{ color: 'var(--color-evergreen-glow)' }}>{activeInvoice.status}</strong>
-                                        </div>
-                                    </div>
-
-                                    <div style={{ borderTop: '2px solid var(--color-ink)', borderBottom: '2px solid var(--color-ink)', padding: '12px 0', marginBottom: '20px' }}>
-                                        <div style={{ display: 'flex', justifyContent: 'space-between', fontWeight: 'bold', fontSize: '14px' }}>
-                                            <span>Item Details</span>
-                                            <span>Total</span>
-                                        </div>
-                                        <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '13px', marginTop: '8px' }}>
-                                            <span style={{ maxWidth: '280px' }}>{activeInvoice.description}</span>
-                                            <span>{activeInvoice.amount}</span>
-                                        </div>
-                                    </div>
-
-                                    <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '12px' }}>
-                                        <button className="btn-secondary" style={{ padding: '8px 16px', fontSize: '12px' }} onClick={() => triggerToast('Invoice print output simulation.')}>
-                                            Print PDF
-                                        </button>
-                                        <button className="btn-primary" style={{ padding: '8px 16px', fontSize: '12px' }} onClick={() => setActiveInvoice(null)}>
-                                            Close
-                                        </button>
+                                            </div>
+                                            <div className="form-group">
+                                                <label className="form-label" style={{ color: 'rgba(255,255,255,0.8)' }}>Description</label>
+                                                <textarea className="input-field" rows="4" required value={newJobDesc} onChange={(e) => setNewJobDesc(e.target.value)}></textarea>
+                                            </div>
+                                            <div style={{ display: 'flex', gap: '10px', marginTop: '8px' }}>
+                                                <button type="submit" className="btn-primary" style={{ flex: 1 }} disabled={jobSaving}>{jobSaving ? 'Saving...' : (editingJobId ? 'Update Job' : 'Publish Job')}</button>
+                                                <button type="button" className="btn-secondary" style={{ flex: 1 }} onClick={handleClearJobForm}>Cancel</button>
+                                            </div>
+                                        </form>
                                     </div>
                                 </div>
-                            </div>
+                            </>
                         )}
                     </div>
                 )}
 
-                {/* Webhooks & API Automation Tab */}
-                {activeTab === 'automations' && (
-                    <div>
-                        <h2 className="heading-lg" style={{ color: 'var(--color-navy-dark)', marginBottom: '24px' }}>WEBHOOKS &amp; AUTOMATION</h2>
-                        <p style={{ color: 'var(--color-ink)', marginBottom: '24px', fontSize: '14px' }}>
-                            Connect inquiries and applications from the frontend to external services (like Zapier, Slack, or webhook handlers) automatically.
-                        </p>
-
-                        <div className="card-white" style={{ padding: '24px', marginBottom: '24px' }}>
-                            <h4 className="heading-md" style={{ marginBottom: '16px' }}>Configure Active Listeners</h4>
-                            <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-                                {webhooks.map(wh => (
-                                    <div key={wh.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid var(--color-soft-gray)', paddingBottom: '12px' }}>
-                                        <div>
-                                            <strong>{wh.name}</strong>
-                                            <div style={{ fontSize: '12px', color: 'var(--color-muted-text)', marginTop: '4px', fontFamily: 'monospace' }}>{wh.url}</div>
-                                        </div>
-                                        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                                            <span style={{ fontSize: '12px', color: wh.active ? 'var(--color-evergreen-glow)' : 'var(--color-muted-text)' }}>
-                                                {wh.active ? 'Active' : 'Disabled'}
-                                            </span>
-                                            <button
-                                                className={`btn-secondary`}
-                                                style={{ padding: '6px 12px', fontSize: '12px', backgroundColor: wh.active ? '#d93838' : 'var(--color-deep-navy)', borderColor: 'transparent' }}
-                                                onClick={() => toggleWebhook(wh.id)}
-                                            >
-                                                {wh.active ? 'Disable' : 'Enable'}
-                                            </button>
-                                        </div>
-                                    </div>
-                                ))}
+                {activeTab === 'courses' && (
+                    <div style={{ position: 'relative' }}>
+                        {/* Header */}
+                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '20px' }}>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                                <button
+                                    onClick={() => { handleClearCourseForm(); setCourseDrawerOpen(true); }}
+                                    style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', background: 'var(--color-corporate-blue)', color: '#fff', border: 'none', borderRadius: '8px', padding: '9px 18px', fontSize: '13px', fontWeight: '700', cursor: 'pointer' }}
+                                >
+                                    <span style={{ fontSize: '18px', lineHeight: 1 }}>&#8250;</span> Add Course
+                                </button>
+                                <h2 className="heading-lg" style={{ color: 'var(--color-navy-dark)', margin: 0 }}>MANAGE COURSES</h2>
                             </div>
                         </div>
+
+                        {/* Full-width table */}
+                        <div className="admin-table-container" style={{ width: '100%' }}>
+                            <table className="admin-table" style={{ width: '100%' }}>
+                                <thead>
+                                    <tr>
+                                        <th>Image</th>
+                                        <th>Title</th>
+                                        <th>Category</th>
+                                        <th>Duration</th>
+                                        <th>Hours</th>
+                                        <th>Price</th>
+                                        <th>Added</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {courses.map(course => (
+                                        <tr key={course.id} style={{ background: editingCourseId === course.id ? '#eef4ff' : undefined }}>
+                                            <td>
+                                                {course.image
+                                                    ? <img src={course.image} alt={course.title} style={{ width: '40px', height: '40px', objectFit: 'cover', borderRadius: '6px' }} onError={(e) => e.target.style.display = 'none'} />
+                                                    : <div style={{ width: '40px', height: '40px', borderRadius: '6px', background: '#f0f0f0', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><BookOpen size={16} /></div>
+                                                }
+                                            </td>
+                                            <td>
+                                                <strong>{course.title}</strong><br/>
+                                                <span style={{ fontSize: '10px', color: '#aaa', fontFamily: 'monospace' }}>{course.id.slice(0, 8)}…</span>
+                                            </td>
+                                            <td><span className="badge-blue">{course.category}</span></td>
+                                            <td>{course.duration}</td>
+                                            <td>{course.hours}h</td>
+                                            <td style={{ fontWeight: '700', color: 'var(--color-corporate-blue)' }}>₹{Number(course.price).toLocaleString('en-IN')}</td>
+                                            <td style={{ fontSize: '12px' }}>{new Date(course.createdAt).toLocaleDateString('en-IN')}</td>
+                                            <td>
+                                                <div style={{ display: 'flex', gap: '6px' }}>
+                                                    <button className="btn-mini" style={{ color: 'var(--color-corporate-blue)' }} onClick={() => handleSelectCourse(course)}>Edit</button>
+                                                    <button className="btn-mini" style={{ color: '#d93838' }} onClick={() => handleRemoveCourse(course.id)}>Remove</button>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    ))}
+                                    {courses.length === 0 && (
+                                        <tr><td colSpan="8" style={{ textAlign: 'center', padding: '40px', color: 'var(--color-muted-text)' }}>No courses yet. Click › Add Course to get started.</td></tr>
+                                    )}
+                                </tbody>
+                            </table>
+                        </div>
+
+                        {/* Center modal popup */}
+                        {courseDrawerOpen && (
+                            <>
+                                <div onClick={handleClearCourseForm} style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.45)', zIndex: 200 }} />
+                                <div style={{
+                                    position: 'fixed', top: '50%', left: '50%',
+                                    transform: 'translate(-50%, -50%)',
+                                    width: '520px', maxHeight: '90vh',
+                                    background: '#fff', borderRadius: '12px',
+                                    boxShadow: '0 20px 60px rgba(0,0,0,0.25)',
+                                    zIndex: 201, display: 'flex', flexDirection: 'column',
+                                    animation: 'popIn 0.22s ease'
+                                }}>
+                                    <style>{`@keyframes popIn { from { opacity:0; transform:translate(-50%,-48%) scale(0.97); } to { opacity:1; transform:translate(-50%,-50%) scale(1); } }`}</style>
+
+                                    {/* Modal header */}
+                                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '18px 24px', borderBottom: '1px solid rgba(255,255,255,0.1)', background: 'var(--color-corporate-blue)', borderRadius: '12px 12px 0 0' }}>
+                                        <div style={{ color: '#fff', fontWeight: '700', fontSize: '15px' }}>
+                                            {editingCourseId ? '✏️ Edit Course' : '› Add New Course'}
+                                        </div>
+                                        <button onClick={handleClearCourseForm} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#fff', display: 'flex', alignItems: 'center' }}>
+                                            <X size={20} />
+                                        </button>
+                                    </div>
+
+                                    {/* Modal body */}
+                                    <div style={{ flex: 1, overflowY: 'auto', padding: '24px', background: 'var(--color-corporate-blue)' }}>
+                                        <form onSubmit={handleCreateCourse}>
+                                            <div className="form-group">
+                                                <label className="form-label" style={{ color: 'rgba(255,255,255,0.8)' }}>Course Title</label>
+                                                <input type="text" className="input-field" required value={newCourseTitle} onChange={(e) => setNewCourseTitle(e.target.value)} />
+                                            </div>
+                                            <div className="grid-2">
+                                                <div className="form-group">
+                                                    <label className="form-label" style={{ color: 'rgba(255,255,255,0.8)' }}>Category</label>
+                                                    <select className="input-field" value={newCourseCat} onChange={(e) => setNewCourseCat(e.target.value)}>
+                                                        <option value="Analytics">Analytics</option>
+                                                        <option value="ERP">ERP</option>
+                                                        <option value="Cloud">Cloud</option>
+                                                        <option value="Python">Python</option>
+                                                        <option value="Power BI">Power BI</option>
+                                                    </select>
+                                                </div>
+                                                <div className="form-group">
+                                                    <label className="form-label" style={{ color: 'rgba(255,255,255,0.8)' }}>Price (INR)</label>
+                                                    <input type="number" className="input-field" required value={newCoursePrice} onChange={(e) => setNewCoursePrice(e.target.value)} />
+                                                </div>
+                                            </div>
+                                            <div className="grid-2">
+                                                <div className="form-group">
+                                                    <label className="form-label" style={{ color: 'rgba(255,255,255,0.8)' }}>Duration</label>
+                                                    <input type="text" className="input-field" required placeholder="6 weeks" value={newCourseDuration} onChange={(e) => setNewCourseDuration(e.target.value)} />
+                                                </div>
+                                                <div className="form-group">
+                                                    <label className="form-label" style={{ color: 'rgba(255,255,255,0.8)' }}>Hours</label>
+                                                    <input type="number" className="input-field" required value={newCourseHours} onChange={(e) => setNewCourseHours(e.target.value)} />
+                                                </div>
+                                            </div>
+                                            <div className="form-group">
+                                                <label className="form-label" style={{ color: 'rgba(255,255,255,0.8)' }}>Description</label>
+                                                <textarea className="input-field" rows="3" required value={newCourseDesc} onChange={(e) => setNewCourseDesc(e.target.value)}></textarea>
+                                            </div>
+                                            <div className="form-group">
+                                                <label className="form-label" style={{ color: 'rgba(255,255,255,0.8)' }}>Course Image <span style={{ fontSize: '11px', color: 'rgba(255,255,255,0.45)', fontWeight: 400 }}>(optional, max 5MB)</span></label>
+                                                <input type="file" id="course-image-upload" hidden accept="image/*" onChange={handleCourseImageChange} />
+                                                <label htmlFor="course-image-upload" style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '10px 14px', border: '2px dashed rgba(255,255,255,0.25)', borderRadius: '8px', cursor: imageUploading ? 'wait' : 'pointer', background: 'rgba(255,255,255,0.05)', transition: 'all 0.15s' }}>
+                                                    {imageUploading
+                                                        ? <span style={{ fontSize: '13px', color: 'rgba(255,255,255,0.6)' }}>Uploading...</span>
+                                                        : newCourseImage
+                                                            ? <><img src={newCourseImage} alt="Preview" style={{ width: '36px', height: '36px', objectFit: 'cover', borderRadius: '4px' }} /><span style={{ fontSize: '13px', color: 'var(--color-ai-lime)' }}>Image uploaded ✓</span><span style={{ marginLeft: 'auto', fontSize: '11px', color: 'rgba(255,255,255,0.4)' }}>Click to change</span></>
+                                                            : <span style={{ fontSize: '13px', color: 'rgba(255,255,255,0.6)' }}>Click to upload image</span>
+                                                    }
+                                                </label>
+                                            </div>
+                                            <div style={{ display: 'flex', gap: '10px', marginTop: '8px' }}>
+                                                <button type="submit" className="btn-primary" style={{ flex: 1 }} disabled={imageUploading || courseSaving}>
+                                                    {courseSaving ? 'Saving...' : (editingCourseId ? 'Update Course' : 'Publish Course')}
+                                                </button>
+                                                <button type="button" className="btn-secondary" style={{ flex: 1 }} onClick={handleClearCourseForm}>Cancel</button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </>
+                        )}
                     </div>
                 )}
 
-                {/* System Logs Tab */}
+                {activeTab === 'inquiries' && (
+                    <div className="admin-table-container">
+                        <table className="admin-table">
+                            <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Client</th>
+                                    <th>Message</th>
+                                    <th>Status</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {inquiries.map(inq => (
+                                    <tr key={inq.id}>
+                                        <td>{new Date(inq.createdAt).toLocaleDateString()}</td>
+                                        <td><strong>{inq.name}</strong><br/>{inq.email}</td>
+                                        <td>{inq.message}</td>
+                                        <td><span className={`status-badge status-${inq.status.toLowerCase()}`}>{inq.status}</span></td>
+                                        <td>
+                                            <button className="btn-mini" onClick={() => handleInqStatus(inq.id)}>Archive</button>
+                                        </td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    </div>
+                )}
+
+
+                {activeTab === 'payments' && (
+                    <div className="admin-table-container">
+                        <table className="admin-table">
+                            <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Customer</th>
+                                    <th>Course</th>
+                                    <th>Amount</th>
+                                    <th>Status</th>
+                                    <th>Invoice</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {payments.map(pay => (
+                                    <tr key={pay.id}>
+                                        <td>{new Date(pay.createdAt).toLocaleDateString()}</td>
+                                        <td><strong>{pay.name}</strong><br/>{pay.email}</td>
+                                        <td>{pay.course?.title}</td>
+                                        <td>₹{pay.amount}</td>
+                                        <td><span className={`status-badge status-${pay.status.toLowerCase()}`}>{pay.status}</span></td>
+                                        <td>
+                                            {pay.invoice && (
+                                                <a href={`${BASE_URL}/uploads/invoices/${pay.invoice.filePath}`} target="_blank" rel="noreferrer" style={{ color: 'var(--color-corporate-blue)', fontSize: '12px' }}>
+                                                    Download
+                                                </a>
+                                            )}
+                                        </td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    </div>
+                )}
+
                 {activeTab === 'logs' && (
-                    <div>
-                        <h2 className="heading-lg" style={{ color: 'var(--color-navy-dark)', marginBottom: '24px' }}>SYSTEM LOGS</h2>
-                        <div className="card-white" style={{ padding: '24px', backgroundColor: '#16171d', border: '1px solid var(--color-soft-border)' }}>
-                            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '16px' }}>
-                                <span style={{ color: 'var(--color-ai-lime)', fontWeight: 'bold', fontSize: '12px' }}>LIVE LOGGER ACTIVE</span>
-                                <button className="btn-mini" style={{ color: 'var(--color-sky-blue)' }} onClick={() => addLog('system', 'Manually cleared logs mockup.')}>Clear Console</button>
-                            </div>
-                            <div style={{ height: '300px', overflowY: 'auto', fontFamily: 'monospace', fontSize: '12px', color: '#a3be8c', display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                                {logs.map(log => (
-                                    <div key={log.id} style={{ borderBottom: '1px solid rgba(255,255,255,0.05)', paddingBottom: '4px' }}>
-                                        <span style={{ color: '#88c0d0' }}>[{log.time}]</span>{' '}
-                                        <span style={{
-                                            padding: '2px 4px',
-                                            borderRadius: '3px',
-                                            fontSize: '10px',
-                                            backgroundColor: log.type === 'payment' ? 'var(--color-gold)' : 'var(--color-glass-blue)',
-                                            color: log.type === 'payment' ? 'var(--color-deep-moss)' : 'var(--color-sky-blue)',
-                                            fontWeight: 'bold',
-                                            marginRight: '8px'
-                                        }}>
-                                            {log.type.toUpperCase()}
-                                        </span>{' '}
-                                        {log.message}
-                                    </div>
-                                ))}
-                            </div>
+                    <div className="card-white" style={{ backgroundColor: '#16171d', padding: '24px' }}>
+                        <div style={{ height: '400px', overflowY: 'auto', fontFamily: 'monospace', fontSize: '12px', color: '#a3be8c' }}>
+                            {logs.map(log => (
+                                <div key={log.id} style={{ marginBottom: '8px' }}>
+                                    <span style={{ color: '#88c0d0' }}>[{log.time}]</span> {log.message}
+                                </div>
+                            ))}
                         </div>
                     </div>
                 )}
-
             </section>
         </div>
     );

@@ -1,16 +1,15 @@
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import {
   Mail, Eye, EyeOff, CheckCircle,
   AlertCircle, ArrowRight, RefreshCw
 } from 'lucide-react';
 import './Auth.css';
 import logoImg from '../assets/logo.png';
-import { getAuthUser, setAuthUser } from '../utils/auth.js';
+import { getAuthUser } from '../utils/auth.js';
+import { adminApi } from '../utils/api.js';
 
-import { authApi } from '../utils/api.js';
-
-export default function AuthPage() {
+export default function AuthPage({ setAuthUser }) {
   const navigate = useNavigate();
   const [showPw, setShowPw] = useState(false);
 
@@ -23,18 +22,26 @@ export default function AuthPage() {
   // Redirect if already logged in as admin
   useEffect(() => {
     const user = getAuthUser();
-    if (user && user.role === 'admin') navigate('/admin', { replace: true });
+    if (user) navigate('/admin', { replace: true });
   }, [navigate]);
 
   const handleLogin = async (e) => {
     e.preventDefault();
     setError(''); setLoading(true);
     try {
-      const { token, user } = await authApi.login({ email, password });
-      if (user.role !== 'admin') {
-        throw new Error('Access restricted to administrators only.');
-      }
-      setAuthUser({ ...user, token });
+      const { data } = await adminApi.login({ email, password });
+      
+      const authData = { 
+        id: data.admin.id, 
+        email: data.admin.email, 
+        name: data.admin.name, 
+        role: data.admin.role,
+        accessToken: data.accessToken,
+        refreshToken: data.refreshToken
+      };
+
+      setAuthUser(authData);
+      localStorage.setItem('itbees_auth', JSON.stringify(authData));
       navigate('/admin', { replace: true });
     } catch (err) {
       setError(err.message || 'Invalid admin credentials.');

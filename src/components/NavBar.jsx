@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { Menu, X, ChevronDown, BarChart2, GraduationCap, Users, ArrowRight } from 'lucide-react';
 import logoImg from '../assets/logo.png';
 
@@ -20,6 +20,18 @@ export default function NavBar({ courses = [], authUser, onLogout }) {
     const navRef         = useRef(null);
     const servicesRef    = useRef(null);
     const trainingRef    = useRef(null);
+    const navigate       = useNavigate();
+
+    const scrollToCourse = (courseId) => {
+        setTrainingOpen(false);
+        setMenuOpen(false);
+        if (location.pathname === '/training') {
+            const el = document.getElementById(`course-${courseId}`);
+            if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        } else {
+            navigate(`/training#course-${courseId}`);
+        }
+    };
 
     const isActive = (path) => location.pathname === path ? 'active' : '';
     const isServicesActive = location.pathname === '/services' ? 'active' : '';
@@ -128,27 +140,27 @@ export default function NavBar({ courses = [], authUser, onLogout }) {
                                 <div className="nav-training-cols">
                                     <div className="nav-training-col">
                                         {col1.map(c => (
-                                            <Link key={c.id} to="/training" className="nav-training-item"
-                                                onClick={() => setTrainingOpen(false)}>
+                                            <button key={c.id} className="nav-training-item" style={{ background: 'none', border: 'none', width: '100%', textAlign: 'left', cursor: 'pointer', padding: 0 }}
+                                                onClick={() => scrollToCourse(c.id)}>
                                                 <span className="nav-training-emoji">{c.icon || '📘'}</span>
                                                 <span>
                                                     <span className="nav-dropdown-label">{c.title}</span>
                                                     <span className="nav-dropdown-desc">{c.category} · {c.duration}</span>
                                                 </span>
-                                            </Link>
+                                            </button>
                                         ))}
                                     </div>
                                     {col2.length > 0 && (
                                         <div className="nav-training-col">
                                             {col2.map(c => (
-                                                <Link key={c.id} to="/training" className="nav-training-item"
-                                                    onClick={() => setTrainingOpen(false)}>
+                                                <button key={c.id} className="nav-training-item" style={{ background: 'none', border: 'none', width: '100%', textAlign: 'left', cursor: 'pointer', padding: 0 }}
+                                                    onClick={() => scrollToCourse(c.id)}>
                                                     <span className="nav-training-emoji">{c.icon || '📘'}</span>
                                                     <span>
                                                         <span className="nav-dropdown-label">{c.title}</span>
                                                         <span className="nav-dropdown-desc">{c.category} · {c.duration}</span>
                                                     </span>
-                                                </Link>
+                                                </button>
                                             ))}
                                         </div>
                                     )}
@@ -218,10 +230,10 @@ export default function NavBar({ courses = [], authUser, onLogout }) {
                         <li style={{ paddingLeft: '12px', paddingBottom: '4px', fontSize: '12px', color: 'rgba(255,255,255,0.4)', textTransform: 'uppercase', letterSpacing: '0.06em' }}>Training</li>
                         {courses.map(c => (
                             <li key={c.id} style={{ paddingLeft: '8px' }}>
-                                <Link to="/training" className="nav-link" onClick={closeMenu}
-                                    style={{ fontSize: '13px', color: 'rgba(255,255,255,0.65)' }}>
+                                <button className="nav-link" onClick={() => scrollToCourse(c.id)}
+                                    style={{ fontSize: '13px', color: 'rgba(255,255,255,0.65)', background: 'none', border: 'none', cursor: 'pointer', textAlign: 'left', width: '100%' }}>
                                     {c.icon} {c.title}
-                                </Link>
+                                </button>
                             </li>
                         ))}
                         <li><Link to="/contact" className={`nav-link ${isActive('/contact')}`} onClick={closeMenu}>Contact Us</Link></li>

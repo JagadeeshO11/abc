@@ -1,19 +1,36 @@
-import { useState } from 'react';
-import { BookOpen, X, Lock, CheckCircle } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { BookOpen, X, CheckCircle } from 'lucide-react';
 import { FaGraduationCap, FaCertificate, FaUsers, FaClock, FaStar, FaPlayCircle, FaChalkboardTeacher, FaLaptopCode, FaAward, FaRocket } from 'react-icons/fa';
 import { MdOutlineQuiz, MdVerified, MdSchool } from 'react-icons/md';
 import { BsGraphUp, BsPeopleFill } from 'react-icons/bs';
 import trainingBg from '../assets/training.png';
 
-import { enrollsApi, paymentsApi } from '../utils/api.js';
+import { publicApi } from '../utils/api.js';
+
+// Scroll to course card when navigated via navbar hash link
+function useHashScroll() {
+    useEffect(() => {
+        const hash = window.location.hash;
+        if (!hash) return;
+        const tryScroll = (attempts = 0) => {
+            const el = document.getElementById(hash.slice(1));
+            if (el) {
+                el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                el.style.outline = '2px solid var(--color-ai-lime)';
+                el.style.borderRadius = 'var(--radius-containers)';
+                setTimeout(() => { el.style.outline = ''; }, 1500);
+            } else if (attempts < 10) {
+                setTimeout(() => tryScroll(attempts + 1), 150);
+            }
+        };
+        tryScroll();
+    }, []);
+}
 
 export default function Training({ courses, setEnrollments, setPayments, triggerToast, addLog }) {
-    const [selectedCourse, setSelectedCourse] = useState(null);
-
-    const [enrollName, setEnrollName] = useState('');
-    const [cardNumber, setCardNumber] = useState('');
-    const [cardExpiry, setCardExpiry] = useState('');
-    const [cardCVV, setCardCVV] = useState('');
+    useHashScroll();
+    const navigate = useNavigate();
 
     const [quizCourse, setQuizCourse] = useState(null);
     const [currentQuestionIdx, setCurrentQuestionIdx] = useState(0);
@@ -21,53 +38,7 @@ export default function Training({ courses, setEnrollments, setPayments, trigger
     const [quizScore, setQuizScore] = useState(null);
     const [showCertificate, setShowCertificate] = useState(false);
 
-    const mockQuizData = {
-        'course-1': [
-            { q: 'What does DAX stand for in PowerBI?', options: ['Data Analysis Expressions', 'Dynamic Analytics Extension', 'Database Access XML', 'Digital Asset Exchange'], ans: 0 },
-            { q: 'Which connection mode provides real-time access to database systems in PowerBI?', options: ['Import Mode', 'DirectQuery Mode', 'Dual Mode', 'Live Connection'], ans: 1 }
-        ],
-        'course-2': [
-            { q: 'What is the primary role of a ledger in ERP?', options: ['Store developer logs', 'Maintain company financial books', 'Route APIs', 'Assess candidate status'], ans: 1 },
-            { q: 'Which module manages client information and sales pipelines in ERP?', options: ['SCM', 'CRM', 'HRM', 'MRP'], ans: 1 }
-        ],
-        'course-3': [
-            { q: 'What is the primary optimization benefit of React.memo?', options: ['Secures payments', 'Prevents unnecessary functional re-renders', 'Creates webhooks', 'Compiles SCSS into vanilla CSS'], ans: 1 },
-            { q: 'Which hook is most appropriate to store a reference value that does not trigger re-render?', options: ['useState', 'useRef', 'useEffect', 'useMemo'], ans: 1 }
-        ]
-    };
-
-    const handleEnrollSubmit = async (e) => {
-        e.preventDefault();
-        if (!enrollName || !cardNumber || !cardExpiry || !cardCVV) {
-            alert('Please fill out all billing credentials.');
-            return;
-        }
-        try {
-            const newInvoice = `INV-${Date.now().toString().substring(7)}`;
-            const newPayment = await paymentsApi.create({
-                description: `Course Enrollment: ${selectedCourse.title} - ${enrollName}`,
-                amount: `₹${selectedCourse.price.toLocaleString('en-IN')}`,
-                method: 'Credit Card',
-                status: 'Success',
-                invoice_id: newInvoice
-            });
-            setPayments(prev => [newPayment, ...prev]);
-
-            const newEnroll = await enrollsApi.create({
-                course_title: selectedCourse.title,
-                student_name: enrollName
-            });
-            setEnrollments(prev => [newEnroll, ...prev]);
-
-            triggerToast(`Payment successful! You are now enrolled in ${selectedCourse.title}.`);
-            addLog('payment', `Received payment ₹${selectedCourse.price} for course ${selectedCourse.title} from ${enrollName}.`);
-            setEnrollName(''); setCardNumber(''); setCardExpiry(''); setCardCVV('');
-            setSelectedCourse(null);
-        } catch (err) {
-            console.error(err);
-            alert('Payment or enrollment failed. Please try again.');
-        }
-    };
+    
 
     const startQuiz = (course) => {
         setQuizCourse(course);
@@ -186,7 +157,7 @@ export default function Training({ courses, setEnrollments, setPayments, trigger
                 </div>
                 <div className="grid-3">
                     {courses.map(course => (
-                        <div key={course.id} className="card-white" style={{ textAlign: 'left' }}>
+                        <div key={course.id} id={`course-${course.id}`} className="card-white" style={{ textAlign: 'left', scrollMarginTop: '100px' }}>
                             <div className="course-card-img-placeholder" style={{ position: 'relative', overflow: 'hidden', backgroundColor: 'var(--color-light-canvas)' }}>
                                 {course.image ? (
                                     <img src={course.image} alt={course.title} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
@@ -210,7 +181,7 @@ export default function Training({ courses, setEnrollments, setPayments, trigger
                                     <div style={{ fontSize: '16px', fontWeight: '700', color: 'var(--color-ink)' }}>₹{course.price.toLocaleString('en-IN')}</div>
                                 </div>
                                 <div style={{ display: 'flex', gap: '8px' }}>
-                                    <button className="btn-primary" style={{ padding: '8px 12px', fontSize: '12px' }} onClick={() => setSelectedCourse(course)}>
+                                    <button className="btn-primary" style={{ padding: '8px 12px', fontSize: '12px' }} onClick={() => navigate('/training/checkout', { state: { course } })}>
                                         Enroll
                                     </button>
                                     <button className="btn-secondary" style={{ padding: '8px 12px', fontSize: '12px' }} onClick={() => startQuiz(course)}>
@@ -322,51 +293,7 @@ export default function Training({ courses, setEnrollments, setPayments, trigger
                 </div>
             </div>
 
-            {/* Checkout Modal */}
-            {selectedCourse && (
-                <div className="modal-overlay">
-                    <div className="modal-content" style={{ width: '460px' }}>
-                        <div className="modal-header">
-                            <h3 className="heading-lg">Course Checkout</h3>
-                            <button className="modal-close" onClick={() => setSelectedCourse(null)}><X size={20} /></button>
-                        </div>
-                        <div className="modal-body">
-                            <div style={{ marginBottom: '20px', borderBottom: '1px solid var(--color-soft-gray)', paddingBottom: '16px' }}>
-                                <div style={{ fontSize: '12px', color: 'var(--color-muted-text)', textTransform: 'uppercase' }}>PRODUCT</div>
-                                <div style={{ fontSize: '16px', fontWeight: '600', color: 'var(--color-ink)', marginTop: '4px' }}>{selectedCourse.title}</div>
-                                <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '12px', fontSize: '14px' }}>
-                                    <span>Price:</span>
-                                    <strong>₹{selectedCourse.price.toLocaleString('en-IN')}</strong>
-                                </div>
-                            </div>
-                            <form onSubmit={handleEnrollSubmit}>
-                                <div className="form-group">
-                                    <label className="form-label">Student Name</label>
-                                    <input type="text" className="input-field" required placeholder="Anil Kumar" value={enrollName} onChange={(e) => setEnrollName(e.target.value)} />
-                                </div>
-                                <div className="form-group">
-                                    <label className="form-label">Card Number</label>
-                                    <input type="text" className="input-field" required placeholder="4111 2222 3333 4444" maxLength="19" value={cardNumber} onChange={(e) => setCardNumber(e.target.value)} />
-                                </div>
-                                <div className="grid-2">
-                                    <div className="form-group">
-                                        <label className="form-label">Expiry Date</label>
-                                        <input type="text" className="input-field" required placeholder="MM/YY" maxLength="5" value={cardExpiry} onChange={(e) => setCardExpiry(e.target.value)} />
-                                    </div>
-                                    <div className="form-group">
-                                        <label className="form-label">CVV</label>
-                                        <input type="password" className="input-field" required placeholder="***" maxLength="3" value={cardCVV} onChange={(e) => setCardCVV(e.target.value)} />
-                                    </div>
-                                </div>
-                                <div style={{ fontSize: '11px', color: 'var(--color-muted-text)', display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '20px' }}>
-                                    <Lock size={12} /> SSL Secure Connection.
-                                </div>
-                                <button type="submit" className="btn-primary" style={{ width: '100%' }}>Pay &amp; Enroll Securely</button>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-            )}
+            
 
             {/* Quiz Modal */}
             {quizCourse && (

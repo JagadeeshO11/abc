@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API Connection Test</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 800px; margin: 50px auto; padding: 20px; }
+        button { padding: 10px 20px; margin: 10px; cursor: pointer; background: #007bff; color: white; border: none; border-radius: 4px; }
+        button:hover { background: #0056b3; }
+        .result { background: #f5f5f5; padding: 15px; margin: 10px 0; border-radius: 4px; }
+        .success { background: #d4edda; border: 1px solid #c3e6cb; color: #155724; }
+        .error { background: #f8d7da; border: 1px solid #f5c6cb; color: #721c24; }
+    </style>
+</head>
+<body>
+    <h1>🔌 ITBEES Global API Connection Test</h1>
+    <p>This page tests the connection between frontend and backend.</p>
+    
+    <h2>Tests:</h2>
+    <button onclick="testBackendHealth()">1. Test Backend Health</button>
+    <button onclick="testGetCourses()">2. Test Get Courses</button>
+    <button onclick="testGetJobs()">3. Test Get Jobs</button>
+    <div id="results"></div>
+
+    <script>
+        const API_URL = 'http://localhost:5000/api';
+        const resultsDiv = document.getElementById('results');
+
+        function addResult(message, isSuccess) {
+            const div = document.createElement('div');
+            div.className = 'result ' + (isSuccess ? 'success' : 'error');
+            div.innerHTML = `<strong>${new Date().toLocaleTimeString()}</strong><br>${message}`;
+            resultsDiv.prepend(div);
+        }
+
+        async function testBackendHealth() {
+            try {
+                const response = await fetch(API_URL);
+                if (!response.ok) throw new Error('Backend not responding');
+                addResult('✅ Backend is ONLINE at ' + API_URL, true);
+            } catch (error) {
+                addResult('❌ Backend connection failed: ' + error.message, false);
+            }
+        }
+
+        async function testGetCourses() {
+            try {
+                const response = await fetch(`${API_URL}/public/courses`);
+                const data = await response.json();
+                if (data.success) {
+                    addResult(`✅ GET /public/courses - Success! Found ${data.data.length} courses`, true);
+                } else {
+                    throw new Error('Invalid response');
+                }
+            } catch (error) {
+                addResult('❌ GET /public/courses failed: ' + error.message, false);
+            }
+        }
+
+        async function testGetJobs() {
+            try {
+                const response = await fetch(`${API_URL}/public/jobs`);
+                const data = await response.json();
+                if (data.success) {
+                    addResult(`✅ GET /public/jobs - Success! Found ${data.data.length} jobs`, true);
+                } else {
+                    throw new Error('Invalid response');
+                }
+            } catch (error) {
+                addResult('❌ GET /public/jobs failed: ' + error.message, false);
+            }
+        }
+
+        // Run health check on load
+        window.onload = () => {
+            addResult('🚀 Testing backend connection...', true);
+            testBackendHealth();
+        };
+    </script>
+</body>
+</html>

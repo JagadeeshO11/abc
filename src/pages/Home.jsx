@@ -8,12 +8,13 @@ import { HiLightningBolt } from 'react-icons/hi';
 import homeBg from '../assets/home.png';
 import aboutImg from '../assets/about.png';
 
-import { inqsApi } from '../utils/api.js';
+import { publicApi } from '../utils/api.js';
 
-export default function Home({ setInquiries, triggerToast, addLog }) {
+export default function Home({ setInquiries, triggerToast }) {
     const [inqName, setInqName] = useState('');
     const [inqEmail, setInqEmail] = useState('');
     const [inqMessage, setInqMessage] = useState('');
+    const [inqLoading, setInqLoading] = useState(false);
 
     const handleQuickInquiry = async (e) => {
         e.preventDefault();
@@ -21,20 +22,22 @@ export default function Home({ setInquiries, triggerToast, addLog }) {
             alert('Please fill out all fields.');
             return;
         }
+        setInqLoading(true);
         try {
-            const newInquiry = await inqsApi.create({
+            const response = await publicApi.submitInquiry({
                 name: inqName,
                 email: inqEmail,
-                company: 'Website Visitor',
+                subject: 'Website Inquiry',
                 message: inqMessage
             });
-            setInquiries(prev => [newInquiry, ...prev]);
+            setInquiries(prev => [response.data, ...prev]);
             triggerToast('Thank you! Inquiry submitted successfully.');
-            addLog('system', `New business inquiry received from ${inqName}.`);
             setInqName(''); setInqEmail(''); setInqMessage('');
         } catch (err) {
             console.error(err);
             alert('Failed to submit inquiry. Please try again.');
+        } finally {
+            setInqLoading(false);
         }
     };
 
@@ -271,8 +274,8 @@ export default function Home({ setInquiries, triggerToast, addLog }) {
                                 <label className="form-label">Message / Requirements</label>
                                 <textarea className="input-field" rows="4" style={{ borderRadius: '16px', resize: 'vertical' }} placeholder="Tell us about your ERP, Cloud, BI, or Corporate training requirements..." value={inqMessage} onChange={(e) => setInqMessage(e.target.value)}></textarea>
                             </div>
-                            <button type="submit" className="btn-primary" style={{ width: '100%', padding: '14px' }}>
-                                Submit Consultation Request
+                            <button type="submit" className="btn-primary" style={{ width: '100%', padding: '14px' }} disabled={inqLoading}>
+                                {inqLoading ? 'Sending...' : 'Submit Consultation Request'}
                             </button>
                         </form>
                     </div>

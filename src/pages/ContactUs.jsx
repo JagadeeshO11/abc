@@ -34,32 +34,36 @@ const ClickCard = ({ href, color, children, style = {} }) => {
     );
 };
 
-import { inqsApi } from '../utils/api.js';
+import { publicApi } from '../utils/api.js';
 
-export default function ContactUs({ setInquiries, triggerToast, addLog }) {
+export default function ContactUs({ setInquiries, triggerToast }) {
     const [form, setForm] = useState({ name: '', email: '', company: '', phone: '', service: '', message: '' });
     const [submitted, setSubmitted] = useState(false);
+    const [isSubmitting, setIsSubmitting] = useState(false);
     const set = k => e => setForm(f => ({ ...f, [k]: e.target.value }));
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         if (!form.name || !form.email || !form.message) { alert('Please fill in Name, Email, and Message.'); return; }
+        setIsSubmitting(true);
         try {
-            const newInq = await inqsApi.create({
+            const response = await publicApi.submitInquiry({
                 name: form.name,
                 email: form.email,
-                company: form.company || 'N/A',
-                message: `[${form.service || 'General'}] ${form.message}`
+                phone: form.phone || undefined,
+                company: form.company || undefined,
+                subject: form.service || 'General Enquiry',
+                message: form.message
             });
-            setInquiries(prev => [newInq, ...prev]);
+            setInquiries(prev => [response.data, ...prev]);
             triggerToast("Message sent! We'll get back to you within 24 hours.");
-            addLog('system', `Contact form submitted by ${form.name} — ${form.service || 'General'}.`);
             setForm({ name: '', email: '', company: '', phone: '', service: '', message: '' });
             setSubmitted(true);
             setTimeout(() => setSubmitted(false), 5000);
         } catch (err) {
-            console.error(err);
-            alert('Failed to send message. Please try again.');
+            alert(err.message);
+        } finally {
+            setIsSubmitting(false);
         }
     };
 
@@ -185,12 +189,12 @@ export default function ContactUs({ setInquiries, triggerToast, addLog }) {
                                 <div style={{ marginBottom: 18 }}>
                                     <label className="form-label">Message / Requirements *</label>
                                     <textarea className="input-field" rows={4} required
-                                        placeholder="Tell us about your project, timeline, team size..."
+                                        placeholder="Minimum atleast 10 characters required. Tell us about your project, timeline, team size..."
                                         style={{ borderRadius: 12, resize: 'vertical' }}
                                         value={form.message} onChange={set('message')} />
                                 </div>
-                                <button type="submit" className="btn-primary" style={{ width: '100%', justifyContent: 'center', gap: 8 }}>
-                                    <Send size={14} /> Send Message
+                                <button type="submit" className="btn-primary" style={{ width: '100%', justifyContent: 'center', gap: 8 }} disabled={isSubmitting}>
+                                    {isSubmitting ? 'Sending...' : <><Send size={14} /> Send Message</>}
                                 </button>
                                 <p style={{ fontSize: 11, color: 'var(--color-muted-text)', textAlign: 'center', marginTop: 10 }}>🔒 Your information is secure and never shared.</p>
                             </form>

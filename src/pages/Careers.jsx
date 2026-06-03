@@ -1,25 +1,16 @@
 import { useState } from 'react';
-import { Search, X, Upload, Check } from 'lucide-react';
+import { Search } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import { FaBriefcase, FaMapMarkerAlt, FaRupeeSign, FaUsers, FaRocket, FaHeart } from 'react-icons/fa';
 import { MdVerified, MdWorkOutline, MdSchool } from 'react-icons/md';
-import { BsArrowRight, BsStarFill } from 'react-icons/bs';
+import { BsStarFill } from 'react-icons/bs';
 import { HiLightningBolt } from 'react-icons/hi';
 import careersBg from '../assets/carrier.png';
 import aboutBg from '../assets/about.png';
 
-import { appsApi } from '../utils/api.js';
-
-export default function Careers({ jobs, setApplications, triggerToast, addLog }) {
+export default function Careers({ jobs }) {
     const [searchTerm, setSearchTerm] = useState('');
     const [selectedDept, setSelectedDept] = useState('All');
-    const [selectedJob, setSelectedJob] = useState(null);
-
-    const [candName, setCandName] = useState('');
-    const [candEmail, setCandEmail] = useState('');
-    const [candPhone, setCandPhone] = useState('');
-    const [resumeName, setResumeName] = useState('');
-    const [isUploading, setIsUploading] = useState(false);
-    const [uploadProgress, setUploadProgress] = useState(0);
 
     const filteredJobs = jobs.filter(job => {
         const matchesSearch = job.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -27,46 +18,6 @@ export default function Careers({ jobs, setApplications, triggerToast, addLog })
         const matchesDept = selectedDept === 'All' || job.department === selectedDept;
         return matchesSearch && matchesDept;
     });
-
-    const handleResumeSimulate = () => {
-        setIsUploading(true);
-        setUploadProgress(0);
-        const interval = setInterval(() => {
-            setUploadProgress(prev => {
-                if (prev >= 100) {
-                    clearInterval(interval);
-                    setResumeName('parsed_resume_cv.pdf');
-                    setIsUploading(false);
-                    return 100;
-                }
-                return prev + 25;
-            });
-        }, 300);
-    };
-
-    const handleApplySubmit = async (e) => {
-        e.preventDefault();
-        if (!candName || !candEmail || !candPhone || !resumeName) {
-            alert('Please complete all candidate fields and upload your resume.');
-            return;
-        }
-        try {
-            const newApp = await appsApi.create({
-                job_title: selectedJob.title,
-                name: candName,
-                email: candEmail,
-                phone: candPhone
-            });
-            setApplications(prev => [newApp, ...prev]);
-            triggerToast(`Application submitted successfully for ${selectedJob.title}!`);
-            addLog('system', `Candidate ${candName} applied for the ${selectedJob.title} role.`);
-            setCandName(''); setCandEmail(''); setCandPhone(''); setResumeName('');
-            setSelectedJob(null);
-        } catch (err) {
-            console.error(err);
-            alert('Failed to submit application. Please try again.');
-        }
-    };
 
     const perks = [
         { icon: <FaRocket size={24} />, title: 'Fast Career Growth', desc: 'Structured growth paths with quarterly performance reviews.', color: 'var(--color-corporate-blue)' },
@@ -148,11 +99,7 @@ export default function Careers({ jobs, setApplications, triggerToast, addLog })
             </div>
 
             {/* Search & Filters */}
-            <div className="card-white" style={{ padding: '24px', marginBottom: '32px' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '16px' }}>
-                    <MdWorkOutline size={20} color="var(--color-corporate-blue)" />
-                    <h3 className="heading-md" style={{ color: 'var(--color-ink)' }}>Browse Open Positions</h3>
-                </div>
+            <div style={{ marginBottom: '32px' }}>
                 <div className="job-search-bar">
                     <div style={{ flex: 1, position: 'relative' }}>
                         <input type="text" className="input-field" placeholder="Search jobs by title or keyword..." value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} style={{ paddingLeft: '44px' }} />
@@ -192,9 +139,9 @@ export default function Careers({ jobs, setApplications, triggerToast, addLog })
                             <span style={{ fontSize: '13px', fontWeight: '600', display: 'flex', alignItems: 'center', gap: '4px' }}>
                                 <FaBriefcase size={12} color="var(--color-corporate-blue)" /> {job.type}
                             </span>
-                            <button className="btn-secondary" style={{ padding: '8px 16px', fontSize: '13px', display: 'flex', alignItems: 'center', gap: '6px' }} onClick={() => setSelectedJob(job)}>
-                                View Details <BsArrowRight />
-                            </button>
+                            <Link to={`/careers/apply/${job.id}`} className="btn-primary" style={{ padding: '8px 16px', fontSize: '13px', gap: '6px' }}>
+                                Apply Now <FaBriefcase size={12} />
+                            </Link>
                         </div>
                     </div>
                 ))}
@@ -207,66 +154,7 @@ export default function Careers({ jobs, setApplications, triggerToast, addLog })
                 </div>
             )}
 
-            {/* Job Details & Apply Modal */}
-            {selectedJob && (
-                <div className="modal-overlay">
-                    <div className="modal-content" style={{ width: '600px' }}>
-                        <div className="modal-header">
-                            <div>
-                                <h3 className="heading-lg">{selectedJob.title}</h3>
-                                <span className="badge-blue" style={{ marginTop: '4px' }}>{selectedJob.department} &bull; {selectedJob.location}</span>
-                            </div>
-                            <button className="modal-close" onClick={() => setSelectedJob(null)}><X size={20} /></button>
-                        </div>
-                        <div className="modal-body">
-                            <h4 className="heading-sm" style={{ marginBottom: '8px' }}>Job Description</h4>
-                            <p style={{ fontSize: '14px', color: 'var(--color-ink)', marginBottom: '20px' }}>{selectedJob.description}</p>
-                            <h4 className="heading-sm" style={{ marginBottom: '8px' }}>Requirements</h4>
-                            <ul style={{ paddingLeft: '20px', marginBottom: '24px', fontSize: '14px' }}>
-                                {selectedJob.requirements.map((req, i) => (
-                                    <li key={i} style={{ marginBottom: '6px' }}>{req}</li>
-                                ))}
-                            </ul>
-                            <div style={{ borderTop: '1px solid var(--color-soft-gray)', paddingTop: '20px' }}>
-                                <h4 className="heading-md" style={{ marginBottom: '16px' }}>Candidate Application</h4>
-                                <form onSubmit={handleApplySubmit}>
-                                    <div className="form-group">
-                                        <label className="form-label">Full Name</label>
-                                        <input type="text" className="input-field" required value={candName} onChange={(e) => setCandName(e.target.value)} />
-                                    </div>
-                                    <div className="grid-2">
-                                        <div className="form-group">
-                                            <label className="form-label">Email</label>
-                                            <input type="email" className="input-field" required value={candEmail} onChange={(e) => setCandEmail(e.target.value)} />
-                                        </div>
-                                        <div className="form-group">
-                                            <label className="form-label">Phone Number</label>
-                                            <input type="tel" className="input-field" required value={candPhone} onChange={(e) => setCandPhone(e.target.value)} />
-                                        </div>
-                                    </div>
-                                    <div className="form-group" style={{ backgroundColor: 'var(--color-light-canvas)', padding: '16px', borderRadius: '8px' }}>
-                                        <label className="form-label">Resume / CV Upload</label>
-                                        <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-                                            <button type="button" className="btn-secondary" style={{ padding: '8px 16px', fontSize: '12px', display: 'flex', alignItems: 'center', gap: '6px' }} onClick={handleResumeSimulate}>
-                                                <Upload size={14} /> Upload Mock PDF
-                                            </button>
-                                            {isUploading && <div style={{ fontSize: '12px', color: 'var(--color-muted-text)' }}>Uploading... {uploadProgress}%</div>}
-                                            {resumeName && !isUploading && (
-                                                <div style={{ fontSize: '12px', color: 'var(--color-evergreen-glow)', fontWeight: '600', display: 'flex', alignItems: 'center', gap: '4px' }}>
-                                                    <Check size={14} /> {resumeName}
-                                                </div>
-                                            )}
-                                        </div>
-                                    </div>
-                                    <button type="submit" className="btn-primary" style={{ width: '100%', marginTop: '16px' }}>
-                                        Submit Candidate Details
-                                    </button>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            )}
+
         </div>
         </>
     );

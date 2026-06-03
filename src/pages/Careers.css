@@ -20,3 +20,24 @@
   transform: translateX(4px);
   border-left-color: var(--color-ai-lime);
 }
+
+/* Job Apply Page */
+.apply-layout {
+  grid-template-columns: minmax(0, 1fr) 340px;
+}
+
+.form-grid-2 {
+  grid-template-columns: 1fr 1fr;
+}
+
+@media (max-width: 900px) {
+  .apply-layout {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+@media (max-width: 540px) {
+  .form-grid-2 {
+    grid-template-columns: 1fr !important;
+  }
+}

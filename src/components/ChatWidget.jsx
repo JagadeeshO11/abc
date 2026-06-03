@@ -143,7 +143,7 @@ export default function ChatWidget() {
                             value={inputValue}
                             onChange={e => setInputValue(e.target.value)}
                         />
-                        <button type="submit" className="chatbot-send-btn"><Send size={14} /></button>
+                        <button type="submit" className="chatbot-send-btn" disabled={typing || !inputValue.trim()}>{typing ? '...' : <Send size={14} />}</button>
                     </form>
                 </div>
             )}
