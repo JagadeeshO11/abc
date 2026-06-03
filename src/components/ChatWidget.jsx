@@ -86,7 +86,7 @@ export default function ChatWidget() {
             <button className="chatbot-trigger" onClick={() => setIsOpen(o => !o)} aria-label="Chat">
                 {isOpen ? <X size={22} /> : (
                     <span style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '2px' }}>
-                        <MessageSquare size={22} />
+                        <Bot size={22} />
                         <span style={{ fontSize: '9px', fontFamily: 'var(--font-aeonik)', fontWeight: '600', letterSpacing: '0.04em', lineHeight: 1 }}>CHAT</span>
                     </span>
                 )}
@@ -97,7 +97,7 @@ export default function ChatWidget() {
                     <div className="chatbot-header">
                         <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                             <div style={{ width: '36px', height: '36px', borderRadius: '50%', background: 'var(--color-corporate-blue)', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '2px solid var(--color-ai-lime)' }}>
-                                <MessageSquare size={16} color="var(--color-ai-lime)" />
+                                <Bot size={16} color="var(--color-ai-lime)" />
                             </div>
                             <div>
                                 <strong style={{ fontSize: '14px', fontFamily: 'var(--font-aeonik)', display: 'block' }}>ITBEES Support Bot</strong>
