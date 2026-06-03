@@ -59,8 +59,8 @@ export default function Home({ setInquiries, triggerToast }) {
                         <span className="hero-badge-dot"></span>
                         MANAGING SYSTEMS IN THE AGE OF AI
                     </div>
-                    <h1 className="display-lg hero-title">
-                        ACCELERATE BUSINESS WITH SMART CLOUD &amp; DATA ANALYTICS
+                    <h1 className="display-lg ">
+                        ACCELERATE BUSINESS WITH SMART CLOUD & DATA ANALYTICS
                     </h1>
                     <p className="page-hero-sub">
                         Integrate next-gen ERP Solutions, automate critical pipelines, and build visual dashboards with ITBEES Global's smart infrastructure.
