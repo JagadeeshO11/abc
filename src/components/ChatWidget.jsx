@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { X, MessageSquare, Send } from 'lucide-react';
+import { X, Bot, Send } from 'lucide-react';
 
 const QUICK_REPLIES = [
     { label: '📊 Data & BI',        prompt: 'data automation and BI services' },
