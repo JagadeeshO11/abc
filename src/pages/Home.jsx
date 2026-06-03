@@ -53,7 +53,7 @@ export default function Home({ setInquiries, triggerToast }) {
     return (
         <div>
             {/* Hero Section */}
-            <section className="page-hero" style={{ backgroundImage: `url(${homeBg})` }}>
+            <section className="page-hero hero-text-clip" style={{ backgroundImage: `url(${homeBg})` }}>
                 <div className="page-hero-inner">
                     <div className="hero-badge">
                         <span className="hero-badge-dot"></span>
