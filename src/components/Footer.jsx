@@ -37,7 +37,7 @@ export default function Footer() {
                             <li className="footer-link-item"><Link to="/services" className="footer-link">Services</Link></li>
                             <li className="footer-link-item"><Link to="/careers" className="footer-link">Talent Acquisition</Link></li>
                             <li className="footer-link-item"><Link to="/contact" className="footer-link">Contact Us</Link></li>
-                            <li className="footer-link-item"><Link to="/admin/login" className="footer-link">Admin Portal</Link></li>
+                            <li className="footer-link-item"><Link to="/login" className="footer-link">Admin Portal</Link></li>
                         </ul>
                     </div>
                     <div>
