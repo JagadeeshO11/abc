@@ -59,7 +59,7 @@ export default function Home({ setInquiries, triggerToast }) {
                         <span className="hero-badge-dot"></span>
                         MANAGING SYSTEMS IN THE AGE OF AI
                     </div>
-                    <h1 className="display-lg ">
+                    <h1 className="display-lg " style={{ lineHeight: '1' }}>
                         ACCELERATE BUSINESS WITH SMART CLOUD & DATA ANALYTICS
                     </h1>
                     <p className="page-hero-sub">
