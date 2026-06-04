@@ -9,7 +9,7 @@ const navItems = [
   { to: '/admin/inquiries', label: 'Client Inquiries', icon: <Mail size={16} /> },
   { to: '/admin/transactions', label: 'Transactions', icon: <DollarSign size={16} /> },
   { to: '/admin/logs', label: 'System Logs', icon: <Activity size={16} /> },
-  { to: '/admin/image-url', label: 'Image → URL', icon: <ImageIcon size={16} /> },
+  // { to: '/admin/image-url', label: 'Image → URL', icon: <ImageIcon size={16} /> },
 ];
 
 export default function AdminLayout({ onLogout, toast, adminLoading }) {
