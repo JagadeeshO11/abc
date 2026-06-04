@@ -78,10 +78,11 @@ export default function NavBar({ courses = [], authUser, onLogout }) {
                 <Link to="/" className="logo-wrap">
                     <div className="logo-img-container">
                         <img src={logoImg} alt="ITBEES Global" className="header-logo-img" />
+                        
                     </div>
                     <div className="logo-text-block">
                         <span className="logo-brand">ITBEES <span className="logo-accent">GLOBAL</span></span>
-                        <span className="logo-tagline">Enterprise Solutions & Training</span>
+                        <span className="logo-tagline">Smart Cloud · BI Analytics · ERP Solutions</span>
                     </div>
                 </Link>
 
