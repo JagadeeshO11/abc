@@ -11,7 +11,8 @@ export default function Footer() {
                         <img
                             src={logoImg}
                             alt="ITBEES Global Pvt. Ltd."
-                            style={{ height: '72px', width: 'auto', objectFit: 'contain', filter: 'brightness(0) invert(1)', marginBottom: '16px', display: 'block' }}
+                            style={{ height: '64px', width: '64px', objectFit: 'cover', objectPosition: 'center', borderRadius: '50%', marginBottom: '16px', display: 'block' }}
+                            onError={e => { e.target.onerror = null; e.target.style.display = 'none'; }}
                         />
                         <p className="footer-brand-desc">
                             Empowering professionals &amp; enterprises with Smart Cloud, BI Analytics, ERP Solutions, and industry-oriented training programs.

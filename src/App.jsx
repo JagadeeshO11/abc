@@ -24,9 +24,10 @@ import ChatWidget from './components/ChatWidget.jsx';
 
 function ScrollToTop() {
   const { pathname, search } = useLocation();
-  useEffect(() => { window.scrollTo({ top: 0, behavior: 'instant' }); }, [pathname, search]);
+  useEffect(() => { window.scrollTo({ top: 0, behavior: 'smooth' }); }, [pathname, search]);
   return null;
 }
+
 
 function PageWrapper({ children }) {
   const { pathname, search } = useLocation();

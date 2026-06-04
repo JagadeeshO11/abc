@@ -112,7 +112,7 @@ export default function Checkout({ triggerToast, setPayments }) {
 
   return (
     <div style={{ minHeight: '80vh', padding: '40px 16px', display: 'flex', justifyContent: 'center' }}>
-      <div style={{ width: 520 }}>
+      <div style={{ width: '100%', maxWidth: '520px' }}>
         <div style={{ marginBottom: 18 }}>
           <button className="btn-mini" onClick={() => navigate('/training')}>← Back to Courses</button>
         </div>
@@ -139,7 +139,7 @@ export default function Checkout({ triggerToast, setPayments }) {
                 <label className="form-label">Address</label>
                 <input type="text" className="input-field" required placeholder="House No, Street, Area" value={userDetails.address} onChange={(e) => setUserDetails({ ...userDetails, address: e.target.value })} />
               </div>
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))', gap: '12px' }}>
                 <div className="form-group">
                   <label className="form-label">City</label>
                   <input type="text" className="input-field" required placeholder="Hyderabad" value={userDetails.city} onChange={(e) => setUserDetails({ ...userDetails, city: e.target.value })} />

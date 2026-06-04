@@ -39,15 +39,15 @@ export default function AboutUs() {
             {/* Stats Bar — horizontal */}
             <section style={{ backgroundColor: 'var(--color-navy-dark)', padding: '28px 0' }}>
                 <div className="container">
-                    <div style={{ display: 'flex', justifyContent: 'space-around', alignItems: 'center', flexWrap: 'wrap', gap: '24px' }}>
+                    <div className="grid-4" style={{ gap: '24px' }}>
                         {[
                             { icon: <FaUsers size={24} />, value: '150+', label: 'Enterprise Clients', color: 'var(--color-ai-lime)' },
                             { icon: <FaAward size={24} />, value: '10+', label: 'Years Experience', color: 'var(--color-gold)' },
                             { icon: <FaGlobe size={24} />, value: '5', label: 'Countries Served', color: 'var(--color-sky-blue)' },
                             { icon: <BsStarFill size={22} />, value: '4.9/5', label: 'Client Rating', color: '#e05c5c' },
                         ].map((s, i) => (
-                            <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
-                                <div style={{ color: s.color }}>{s.icon}</div>
+                            <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '14px', justifyContent: 'center' }}>
+                                <div style={{ color: s.color, flexShrink: 0 }}>{s.icon}</div>
                                 <div>
                                     <div style={{ fontSize: '24px', fontWeight: '700', color: 'var(--color-white)', lineHeight: 1 }}>{s.value}</div>
                                     <div style={{ fontSize: '11px', color: 'rgba(255,255,255,0.55)', textTransform: 'uppercase', letterSpacing: '0.05em', marginTop: '4px' }}>{s.label}</div>

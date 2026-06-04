@@ -16,6 +16,13 @@ export default function NavBar({ courses = [], authUser, onLogout }) {
     const [menuOpen, setMenuOpen]       = useState(false);
     const [servicesOpen, setServicesOpen] = useState(false);
     const [trainingOpen, setTrainingOpen] = useState(false);
+    
+    // Mobile dropdown states
+    const [mobileServicesOpen, setMobileServicesOpen] = useState(false);
+    const [mobileTrainingOpen, setMobileTrainingOpen] = useState(false);
+    const [mobileShowAllCourses, setMobileShowAllCourses] = useState(false);
+
+    const MOBILE_COURSES_LIMIT = 5;
 
     const navRef         = useRef(null);
     const servicesRef    = useRef(null);
@@ -37,6 +44,13 @@ export default function NavBar({ courses = [], authUser, onLogout }) {
     const isServicesActive = location.pathname === '/services' ? 'active' : '';
     const isTrainingActive = location.pathname === '/training'  ? 'active' : '';
 
+    const closeMenu = () => {
+        setMenuOpen(false);
+        setMobileServicesOpen(false);
+        setMobileTrainingOpen(false);
+        setMobileShowAllCourses(false);
+    };
+
     /* keep --navbar-bottom in sync */
     useEffect(() => {
         const update = () => {
@@ -56,15 +70,14 @@ export default function NavBar({ courses = [], authUser, onLogout }) {
         const handler = (e) => {
             if (servicesRef.current && !servicesRef.current.contains(e.target)) setServicesOpen(false);
             if (trainingRef.current && !trainingRef.current.contains(e.target)) setTrainingOpen(false);
+            if (menuOpen && navRef.current && !navRef.current.contains(e.target)) closeMenu();
         };
         document.addEventListener('mousedown', handler);
         return () => document.removeEventListener('mousedown', handler);
-    }, []);
+    }, [menuOpen]);
 
     /* close both when route changes */
     useEffect(() => { setServicesOpen(false); setTrainingOpen(false); setMenuOpen(false); }, [location]);
-
-    const closeMenu = () => setMenuOpen(false);
 
     /* split courses into max-2 columns of 5 */
     const visibleCourses = courses.slice(0, PER_COL * 2);
@@ -92,7 +105,9 @@ export default function NavBar({ courses = [], authUser, onLogout }) {
                    
 
                     {/* Services dropdown */}
-                    <li className="nav-dropdown-wrap" ref={servicesRef}>
+                    <li className="nav-dropdown-wrap" ref={servicesRef}
+                        onMouseEnter={() => { setServicesOpen(true); setTrainingOpen(false); }}
+                        onMouseLeave={() => setServicesOpen(false)}>
                         <button
                             className={`nav-link nav-dropdown-trigger ${isServicesActive}`}
                             onClick={() => { setServicesOpen(o => !o); setTrainingOpen(false); }}
@@ -118,7 +133,9 @@ export default function NavBar({ courses = [], authUser, onLogout }) {
                     <li><Link to="/careers" className={`nav-link ${isActive('/careers')}`}>Careers</Link></li>
 
                     {/* Training dropdown */}
-                    <li className="nav-dropdown-wrap" ref={trainingRef}>
+                    <li className="nav-dropdown-wrap" ref={trainingRef}
+                        onMouseEnter={() => { setTrainingOpen(true); setServicesOpen(false); }}
+                        onMouseLeave={() => setTrainingOpen(false)}>
                         <button
                             className={`nav-link nav-dropdown-trigger ${isTrainingActive}`}
                             onClick={() => { setTrainingOpen(o => !o); setServicesOpen(false); }}
@@ -217,26 +234,80 @@ export default function NavBar({ courses = [], authUser, onLogout }) {
                         {authUser && authUser.role === 'admin' && (
                             <li><Link to="/admin" className="nav-link" onClick={closeMenu}>Admin Panel</Link></li>
                         )}
-                        <li><Link to="/about" className={`nav-link ${isActive('/about')}`} onClick={closeMenu}>About Us</Link></li>
-                        <li style={{ paddingLeft: '12px', paddingBottom: '4px', fontSize: '12px', color: 'rgba(255,255,255,0.4)', textTransform: 'uppercase', letterSpacing: '0.06em' }}>Services</li>
-                        {SERVICE_TABS.map(s => (
-                            <li key={s.tab} style={{ paddingLeft: '8px' }}>
-                                <Link to={`/services?tab=${s.tab}`} className="nav-link" onClick={closeMenu}
-                                    style={{ fontSize: '13px', color: 'rgba(255,255,255,0.65)' }}>
-                                    — {s.label}
-                                </Link>
-                            </li>
-                        ))}
+
+                        {/* Services accordion */}
+                        <li>
+                            <button
+                                className="nav-mobile-accordion-btn"
+                                onClick={() => setMobileServicesOpen(o => !o)}
+                            >
+                                <span>Services</span>
+                                <ChevronDown size={14} style={{ transition: 'transform 0.2s', transform: mobileServicesOpen ? 'rotate(180deg)' : 'rotate(0deg)' }} />
+                            </button>
+                            {mobileServicesOpen && (
+                                <ul className="nav-mobile-sub">
+                                    {SERVICE_TABS.map(s => (
+                                        <li key={s.tab}>
+                                            <Link to={`/services?tab=${s.tab}`} className="nav-mobile-sub-link" onClick={closeMenu}>
+                                                <span className="nav-mobile-sub-icon">{s.icon}</span>
+                                                <span>
+                                                    <span className="nav-mobile-sub-label">{s.label}</span>
+                                                    <span className="nav-mobile-sub-desc">{s.desc}</span>
+                                                </span>
+                                            </Link>
+                                        </li>
+                                    ))}
+                                </ul>
+                            )}
+                        </li>
+
                         <li><Link to="/careers" className={`nav-link ${isActive('/careers')}`} onClick={closeMenu}>Careers</Link></li>
-                        <li style={{ paddingLeft: '12px', paddingBottom: '4px', fontSize: '12px', color: 'rgba(255,255,255,0.4)', textTransform: 'uppercase', letterSpacing: '0.06em' }}>Training</li>
-                        {courses.map(c => (
-                            <li key={c.id} style={{ paddingLeft: '8px' }}>
-                                <button className="nav-link" onClick={() => scrollToCourse(c.id)}
-                                    style={{ fontSize: '13px', color: 'rgba(255,255,255,0.65)', background: 'none', border: 'none', cursor: 'pointer', textAlign: 'left', width: '100%' }}>
-                                    {c.icon} {c.title}
-                                </button>
-                            </li>
-                        ))}
+
+                        {/* Training accordion */}
+                        <li>
+                            <button
+                                className="nav-mobile-accordion-btn"
+                                onClick={() => { setMobileTrainingOpen(o => !o); setMobileShowAllCourses(false); }}
+                            >
+                                <span>Training</span>
+                                <ChevronDown size={14} style={{ transition: 'transform 0.2s', transform: mobileTrainingOpen ? 'rotate(180deg)' : 'rotate(0deg)' }} />
+                            </button>
+                            {mobileTrainingOpen && (
+                                <ul className="nav-mobile-sub">
+                                    {(mobileShowAllCourses ? courses : courses.slice(0, MOBILE_COURSES_LIMIT)).map(c => (
+                                        <li key={c.id}>
+                                            <button className="nav-mobile-sub-link" style={{ background: 'none', border: 'none', width: '100%', textAlign: 'left', cursor: 'pointer' }}
+                                                onClick={() => scrollToCourse(c.id)}>
+                                                <span className="nav-mobile-sub-icon" style={{ fontSize: '16px' }}>{c.icon || '📘'}</span>
+                                                <span>
+                                                    <span className="nav-mobile-sub-label">{c.title}</span>
+                                                    <span className="nav-mobile-sub-desc">{c.category} · {c.duration}</span>
+                                                </span>
+                                            </button>
+                                        </li>
+                                    ))}
+                                    {courses.length > MOBILE_COURSES_LIMIT && !mobileShowAllCourses && (
+                                        <li>
+                                            <button
+                                                className="nav-mobile-view-more"
+                                                onClick={() => setMobileShowAllCourses(true)}
+                                            >
+                                                View {courses.length - MOBILE_COURSES_LIMIT} more courses <ArrowRight size={12} />
+                                            </button>
+                                        </li>
+                                    )}
+                                    {mobileShowAllCourses && (
+                                        <li>
+                                            <Link to="/training" className="nav-mobile-view-more" onClick={closeMenu}>
+                                                View full catalog <ArrowRight size={12} />
+                                            </Link>
+                                        </li>
+                                    )}
+                                </ul>
+                            )}
+                        </li>
+
+                        <li><Link to="/about" className={`nav-link ${isActive('/about')}`} onClick={closeMenu}>About Us</Link></li>
                         <li><Link to="/contact" className={`nav-link ${isActive('/contact')}`} onClick={closeMenu}>Contact Us</Link></li>
                         {authUser && authUser.role === 'admin' && (
                             <li><button onClick={() => { onLogout(); closeMenu(); }} className="nav-link" style={{ background: 'none', border: 'none', textAlign: 'left', width: '100%', cursor: 'pointer' }}>Logout Admin</button></li>

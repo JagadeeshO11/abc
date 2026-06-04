@@ -1,3 +1,27 @@
+/* Course card — replaces card-white for proper padding & image layout */
+.course-card {
+  background-color: var(--color-white);
+  border-radius: var(--radius-containers);
+  border: 1px solid var(--color-soft-gray);
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  overflow: hidden;
+  transition: box-shadow 0.2s, transform 0.2s;
+}
+
+.course-card:hover {
+  box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+  transform: translateY(-2px);
+}
+
+.course-card-body {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
 /* Training, Quiz & Certification Styles */
 .course-card-img-placeholder {
   height: 160px;
@@ -86,4 +110,27 @@
   .course-card-img-placeholder {
     height: 120px;
   }
+}
+
+/* Training corporate CTA banner */
+.training-cta-banner {
+  background: var(--color-navy-dark);
+  border-radius: 16px;
+  padding: 48px;
+  margin-bottom: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 32px;
+  flex-wrap: wrap;
+  border: 1px solid var(--color-soft-border);
+}
+
+@media (max-width: 768px) {
+  .training-cta-banner {
+    padding: 28px 20px !important;
+    flex-direction: column !important;
+    align-items: stretch !important;
+  }
+  .training-cta-banner > div { min-width: unset !important; }
 }

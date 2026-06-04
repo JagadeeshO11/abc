@@ -68,9 +68,9 @@ export default function Home({ setInquiries, triggerToast }) {
             </section>
 
             {/* Trust Bar — directly below hero */}
-            <section style={{ backgroundColor: 'var(--color-navy-dark)', padding: '20px 0', borderBottom: '1px solid rgba(255,255,255,0.08)' }}>
+            <section style={{ backgroundColor: 'var(--color-navy-dark)', padding: '24px 0', borderBottom: '1px solid rgba(255,255,255,0.08)' }}>
                 <div className="container">
-                    <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '48px', flexWrap: 'wrap' }}>
+                    <div className="trust-bar-flex" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '32px', flexWrap: 'wrap' }}>
                         {[
                             { icon: <MdVerified size={18} />, text: 'ISO Certified' },
                             { icon: <FaShieldAlt size={16} />, text: 'GDPR Compliant' },
@@ -78,7 +78,7 @@ export default function Home({ setInquiries, triggerToast }) {
                             { icon: <BsStarFill size={14} />, text: '4.9/5 Client Rating' },
                             { icon: <FaRocket size={16} />, text: '99.98% Uptime SLA' },
                         ].map((item, i) => (
-                            <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '8px', color: 'rgba(255,255,255,0.7)', fontSize: '13px' }}>
+                            <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '8px', color: 'rgba(255,255,255,0.7)', fontSize: '13px', whiteSpace: 'nowrap' }}>
                                 <span style={{ color: 'var(--color-ai-lime)' }}>{item.icon}</span>
                                 {item.text}
                             </div>
@@ -86,6 +86,11 @@ export default function Home({ setInquiries, triggerToast }) {
                     </div>
                 </div>
             </section>
+            <style>{`
+                @media (max-width: 768px) {
+                    .trust-bar-flex { gap: 16px 24px !important; }
+                }
+            `}</style>
 
             {/* YouTube Video — 2 col */}
             <section style={{ backgroundColor: 'var(--color-navy-dark)', padding: '64px 0', borderBottom: '1px solid rgba(255,255,255,0.08)' }}>
@@ -296,7 +301,7 @@ export default function Home({ setInquiries, triggerToast }) {
                             <h3 className="heading-lg" style={{ color: 'var(--color-white)' }}>HAVE URGENT BUSINESS CONSULTATIONS?</h3>
                             <p style={{ color: 'rgba(255,255,255,0.65)', fontSize: '14px', marginTop: '6px' }}>Click to call our Gachibowli office directly or reach out on WhatsApp.</p>
                         </div>
-                        <div style={{ display: 'flex', gap: '16px' }}>
+                        <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
                             <a href="tel:9963186067" className="btn-ghost-dark"><Phone size={16} /> Call Now</a>
                             <a href="https://wa.me/9963186067" className="btn-primary"><MessageSquare size={16} /> WhatsApp Us</a>
                         </div>

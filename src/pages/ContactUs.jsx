@@ -123,7 +123,7 @@ export default function ContactUs({ setInquiries, triggerToast }) {
         {/* Quick Contact Cards — clearly clickable */}
         <section style={{ backgroundColor: 'var(--color-white)', borderBottom: '1px solid var(--color-soft-gray)', padding: '28px 0' }}>
             <div className="container">
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: 16 }}>
+                <div className="grid-4" style={{ gap: 16 }}>
                     {contactCards.map((c, i) => (
                         <ClickCard key={i} href={c.href} color={c.color}>
                             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
@@ -142,7 +142,7 @@ export default function ContactUs({ setInquiries, triggerToast }) {
         <div className="container section-gap">
 
             {/* Form + Sidebar */}
-            <div style={{ display: 'grid', gridTemplateColumns: '3fr 2fr', gap: 36, marginBottom: 56, alignItems: 'start' }}>
+            <div className="contact-form-layout">
 
                 {/* Form */}
                 <div>
@@ -159,7 +159,7 @@ export default function ContactUs({ setInquiries, triggerToast }) {
                     ) : (
                         <div style={{ background: 'var(--color-white)', border: '1px solid var(--color-soft-gray)', borderRadius: 14, padding: '24px 28px' }}>
                             <form onSubmit={handleSubmit}>
-                                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14, marginBottom: 14 }}>
+                                <div className="contact-form-inner-grid">
                                     <div>
                                         <label className="form-label">Full Name *</label>
                                         <input className="input-field" required placeholder="Rajesh Kumar" value={form.name} onChange={set('name')} />
@@ -169,7 +169,7 @@ export default function ContactUs({ setInquiries, triggerToast }) {
                                         <input type="tel" className="input-field" placeholder="+91 98765 43210" value={form.phone} onChange={set('phone')} />
                                     </div>
                                 </div>
-                                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14, marginBottom: 14 }}>
+                                <div className="contact-form-inner-grid">
                                     <div>
                                         <label className="form-label">Business Email *</label>
                                         <input type="email" className="input-field" required placeholder="you@company.com" value={form.email} onChange={set('email')} />
@@ -263,7 +263,7 @@ export default function ContactUs({ setInquiries, triggerToast }) {
                     <h2 className="display-md">WHAT CAN WE HELP WITH?</h2>
                     <p className="section-subtitle">Click to connect with the right team for your needs.</p>
                 </div>
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 16 }}>
+                <div className="grid-3" style={{ gap: 16 }}>
                     {serviceLinks.map((s, i) => {
                         const [hov, setHov] = useState(false);
                         return (
@@ -290,7 +290,7 @@ export default function ContactUs({ setInquiries, triggerToast }) {
             </div>
 
             {/* Office + Map */}
-            <div id="map" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 28, marginBottom: 56, gridAutoRows: '400px' }}>
+            <div id="map" className="contact-office-map">
                 <div style={{ background: 'var(--color-deep-moss)', border: '1px solid rgba(104,239,63,0.15)', borderRadius: 16, padding: '28px 26px', display: 'flex', flexDirection: 'column', gap: 18 }}>
                     <h3 style={{ color: 'var(--color-white)', fontFamily: 'var(--font-ozik)', fontSize: 17, letterSpacing: '0.04em' }}>CORPORATE HEADQUARTERS</h3>
                     {officeRows.map((row, i) => (
@@ -318,7 +318,7 @@ export default function ContactUs({ setInquiries, triggerToast }) {
                     <h2 className="display-md">FREQUENTLY ASKED QUESTIONS</h2>
                     <p className="section-subtitle">Quick answers before you reach out.</p>
                 </div>
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2,1fr)', gap: 16 }}>
+                <div className="contact-faq-grid">
                     {faqs.map((faq, i) => (
                         <div key={i} style={{ background: 'var(--color-light-canvas)', border: '1px solid var(--color-soft-gray)', borderRadius: 10, padding: '20px 22px', display: 'flex', flexDirection: 'column', gap: 8 }}>
                             <div style={{ display: 'flex', alignItems: 'flex-start', gap: 10 }}>

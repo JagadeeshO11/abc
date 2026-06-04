@@ -482,19 +482,8 @@ export default function AdminPanel({
 
                         {/* Center modal popup */}
                         {courseDrawerOpen && (
-                            <>
-                                <div onClick={handleClearCourseForm} style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.45)', zIndex: 200 }} />
-                                <div style={{
-                                    position: 'fixed', top: '50%', left: '50%',
-                                    transform: 'translate(-50%, -50%)',
-                                    width: '520px', maxHeight: '90vh',
-                                    background: '#fff', borderRadius: '12px',
-                                    boxShadow: '0 20px 60px rgba(0,0,0,0.25)',
-                                    zIndex: 201, display: 'flex', flexDirection: 'column',
-                                    animation: 'popIn 0.22s ease'
-                                }}>
-                                    <style>{`@keyframes popIn { from { opacity:0; transform:translate(-50%,-48%) scale(0.97); } to { opacity:1; transform:translate(-50%,-50%) scale(1); } }`}</style>
-
+                            <div className="modal-overlay">
+                                <div className="modal-content" style={{ maxWidth: '520px' }}>
                                     {/* Modal header */}
                                     <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '18px 24px', borderBottom: '1px solid rgba(255,255,255,0.1)', background: 'var(--color-corporate-blue)', borderRadius: '12px 12px 0 0' }}>
                                         <div style={{ color: '#fff', fontWeight: '700', fontSize: '15px' }}>
@@ -506,13 +495,13 @@ export default function AdminPanel({
                                     </div>
 
                                     {/* Modal body */}
-                                    <div style={{ flex: 1, overflowY: 'auto', padding: '24px', background: 'var(--color-corporate-blue)' }}>
+                                    <div className="modal-body" style={{ background: 'var(--color-corporate-blue)' }}>
                                         <form onSubmit={handleCreateCourse}>
                                             <div className="form-group">
                                                 <label className="form-label" style={{ color: 'rgba(255,255,255,0.8)' }}>Course Title</label>
                                                 <input type="text" className="input-field" required value={newCourseTitle} onChange={(e) => setNewCourseTitle(e.target.value)} />
                                             </div>
-                                            <div className="grid-2">
+                                            <div className="grid-2" style={{ gap: '16px' }}>
                                                 <div className="form-group">
                                                     <label className="form-label" style={{ color: 'rgba(255,255,255,0.8)' }}>Category</label>
                                                     <select className="input-field" value={newCourseCat} onChange={(e) => setNewCourseCat(e.target.value)}>
@@ -528,7 +517,7 @@ export default function AdminPanel({
                                                     <input type="number" className="input-field" required value={newCoursePrice} onChange={(e) => setNewCoursePrice(e.target.value)} />
                                                 </div>
                                             </div>
-                                            <div className="grid-2">
+                                            <div className="grid-2" style={{ gap: '16px' }}>
                                                 <div className="form-group">
                                                     <label className="form-label" style={{ color: 'rgba(255,255,255,0.8)' }}>Duration</label>
                                                     <input type="text" className="input-field" required placeholder="6 weeks" value={newCourseDuration} onChange={(e) => setNewCourseDuration(e.target.value)} />
@@ -563,7 +552,7 @@ export default function AdminPanel({
                                         </form>
                                     </div>
                                 </div>
-                            </>
+                            </div>
                         )}
                     </div>
                 )}
@@ -639,6 +628,16 @@ export default function AdminPanel({
                             {logs.map(log => (
                                 <div key={log.id} style={{ marginBottom: '8px' }}>
                                     <span style={{ color: '#88c0d0' }}>[{log.time}]</span> {log.message}
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                )}
+            </section>
+        </div>
+    );
+}
+span style={{ color: '#88c0d0' }}>[{log.time}]</span> {log.message}
                                 </div>
                             ))}
                         </div>

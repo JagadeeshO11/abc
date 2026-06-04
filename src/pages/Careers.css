@@ -41,3 +41,69 @@
     grid-template-columns: 1fr !important;
   }
 }
+
+/* Careers stats bar */
+.careers-stats-bar {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 48px;
+  flex-wrap: wrap;
+}
+
+@media (max-width: 768px) {
+  .careers-stats-bar {
+    gap: 16px 28px;
+  }
+}
+.contact-form-layout {
+  display: grid;
+  grid-template-columns: 3fr 2fr;
+  gap: 36px;
+  margin-bottom: 56px;
+  align-items: start;
+}
+
+.contact-office-map {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 28px;
+  margin-bottom: 56px;
+  grid-auto-rows: 400px;
+}
+
+.contact-faq-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+}
+
+.contact-form-inner-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+  margin-bottom: 14px;
+}
+
+@media (max-width: 900px) {
+  .contact-form-layout {
+    grid-template-columns: 1fr !important;
+    gap: 24px !important;
+  }
+  .contact-office-map {
+    grid-template-columns: 1fr !important;
+    grid-auto-rows: auto !important;
+  }
+  .contact-office-map > div:last-child {
+    height: 300px;
+  }
+}
+
+@media (max-width: 768px) {
+  .contact-faq-grid {
+    grid-template-columns: 1fr !important;
+  }
+  .contact-form-inner-grid {
+    grid-template-columns: 1fr !important;
+  }
+}

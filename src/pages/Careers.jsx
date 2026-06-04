@@ -45,7 +45,7 @@ export default function Careers({ jobs }) {
         {/* Stats Bar */}
         <section style={{ backgroundColor: 'var(--color-navy-dark)', padding: '24px 0' }}>
             <div className="container">
-                <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '48px', flexWrap: 'wrap' }}>
+                <div className="careers-stats-bar">
                     {[
                         { icon: <MdWorkOutline size={18} />, text: `${jobs.length} Open Positions` },
                         { icon: <FaUsers size={16} />, text: '200+ Team Members' },

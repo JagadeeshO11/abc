@@ -14,6 +14,7 @@
   --color-light-canvas: #f2f5eb;
   --color-mid-gray: #d6d6d6;
   --color-ui-gray: #dcdfe3;
+  --color-muted-text: #6b7280;
 
   /* Navy Dark System colors (Dark Corporate Blue Theme) */
   --color-navy-dark: #020e31;
@@ -275,10 +276,10 @@ h3.display-sm {
 
 @media (max-width: 1024px) {
   h1.display-lg {
-    font-size: var(--text-display-lg);
+    font-size: 42px;
   }
   h2.display-md {
-    font-size: var(--text-display-sm);
+    font-size: 32px;
   }
   .grid-3 {
     grid-template-columns: repeat(2, 1fr);
@@ -290,31 +291,64 @@ h3.display-sm {
 
 @media (max-width: 768px) {
   h1.display-lg {
-    font-size: var(--text-display-sm);
+    font-size: 34px;
+    line-height: 1.2 !important;
   }
   h2.display-md {
-    font-size: var(--text-heading-lg);
+    font-size: 28px;
+    line-height: 1.3 !important;
   }
   .grid-4, .grid-3, .grid-2 {
     grid-template-columns: 1fr;
+    gap: var(--spacing-24) !important;
   }
   .section-gap {
-    padding-top: 48px;
-    padding-bottom: 48px;
+    padding-top: 40px;
+    padding-bottom: 40px;
   }
   .container {
     padding: 0 var(--spacing-16);
   }
   .page-hero {
-    min-height: 280px;
+    min-height: 300px;
   }
   .page-hero .page-hero-inner {
-    padding: 56px var(--spacing-16);
+    padding: 60px var(--spacing-16);
   }
   .hero-btns {
     flex-direction: column;
-    align-items: center;
-    gap: var(--spacing-16);
+    align-items: stretch;
+    gap: var(--spacing-12);
+    width: 100%;
+    max-width: 300px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+}
+
+/* Responsive Split Grid (3:2 ratio on desktop, stacks on mobile) */
+.grid-split-3-2 {
+  display: grid;
+  grid-template-columns: 3fr 2fr;
+  gap: var(--spacing-32);
+}
+
+@media (max-width: 1024px) {
+  .grid-split-3-2 {
+    grid-template-columns: 1fr;
+    gap: var(--spacing-24);
+  }
+}
+
+@media (max-width: 480px) {
+  h1.display-lg {
+    font-size: 28px;
+  }
+  h2.display-md {
+    font-size: 24px;
+  }
+  .section-header h2 {
+    font-size: 24px;
   }
 }
 
@@ -658,4 +692,188 @@ h3.display-sm {
 
 .trend-down {
   color: #d93838;
+}
+
+/* ============================================
+   CTA BANNER
+   ============================================ */
+.cta-banner {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 24px;
+  flex-wrap: wrap;
+}
+
+/* ============================================
+   MOBILE RESPONSIVE
+   ============================================ */
+
+/* Tablet */
+@media (max-width: 768px) {
+
+  /* Typography */
+  h1.display-lg {
+    font-size: 32px !important;
+    line-height: 1.15 !important;
+  }
+  h2.display-md {
+    font-size: 26px !important;
+    line-height: 1.2 !important;
+  }
+  .heading-lg { font-size: 20px !important; }
+  .section-subtitle { font-size: 14px !important; }
+
+  /* Grids — all stack */
+  .grid-2, .grid-3, .grid-4 {
+    grid-template-columns: 1fr !important;
+    gap: 20px !important;
+  }
+
+  /* Section spacing */
+  .section-gap {
+    padding-top: 40px !important;
+    padding-bottom: 40px !important;
+  }
+  .section-header {
+    margin-bottom: 28px !important;
+  }
+
+  /* Container */
+  .container {
+    padding: 0 16px !important;
+  }
+
+  /* Hero */
+  .page-hero {
+    min-height: 220px !important;
+  }
+  .page-hero .page-hero-inner {
+    padding: 48px 16px !important;
+  }
+  .page-hero-sub {
+    font-size: 14px !important;
+    margin-top: 12px !important;
+  }
+
+  /* Hero buttons */
+  .hero-btns {
+    flex-direction: column !important;
+    align-items: stretch !important;
+    gap: 10px !important;
+    width: 100% !important;
+    max-width: 320px !important;
+    margin: 24px auto 0 !important;
+  }
+  .hero-btns a, .hero-btns button {
+    width: 100%;
+    justify-content: center;
+  }
+
+  /* CTA Banner */
+  .cta-banner {
+    flex-direction: column !important;
+    align-items: stretch !important;
+    gap: 16px !important;
+  }
+  .cta-banner > div:last-child {
+    flex-direction: column;
+    width: 100%;
+  }
+  .cta-banner a, .cta-banner button {
+    width: 100%;
+    justify-content: center;
+  }
+
+  /* Cards */
+  .card-neutral {
+    padding: 20px !important;
+  }
+  .card-blue-premium {
+    padding: 20px !important;
+  }
+
+  /* Modal — bottom sheet */
+  .modal-overlay {
+    align-items: flex-end !important;
+    padding: 0 !important;
+  }
+  .modal-content {
+    max-width: 100% !important;
+    width: 100% !important;
+    max-height: 92vh !important;
+    border-radius: 16px 16px 0 0 !important;
+  }
+  .modal-body {
+    padding: 20px !important;
+  }
+  .modal-header {
+    padding: 16px 20px !important;
+  }
+  .modal-form-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* Admin */
+  .admin-content {
+    padding: 16px !important;
+  }
+  .admin-layout {
+    grid-template-columns: 1fr !important;
+  }
+  .admin-sidebar {
+    flex-direction: row !important;
+    flex-wrap: wrap !important;
+    padding: 10px !important;
+    gap: 4px !important;
+    border-right: none !important;
+    border-bottom: 1px solid rgba(35,149,238,0.18) !important;
+  }
+  .admin-sidebar-btn {
+    flex: 1 1 auto !important;
+    justify-content: center !important;
+    padding: 8px 10px !important;
+    font-size: 11px !important;
+    border-left: none !important;
+  }
+  .admin-sidebar-btn.active {
+    border-left: none !important;
+    border-bottom: 2px solid var(--color-sky-blue) !important;
+  }
+
+  /* Analytics grid */
+  .analytics-grid {
+    grid-template-columns: 1fr 1fr !important;
+  }
+
+  /* Scrollbar thin on mobile */
+  ::-webkit-scrollbar { width: 3px; height: 3px; }
+}
+
+/* Small phones */
+@media (max-width: 480px) {
+
+  h1.display-lg  { font-size: 26px !important; }
+  h2.display-md  { font-size: 22px !important; }
+  .heading-lg    { font-size: 18px !important; }
+
+  .container { padding: 0 12px !important; }
+
+  /* Analytics grid single col */
+  .analytics-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* Cards tighter */
+  .card-neutral  { padding: 16px !important; }
+
+  /* Checkout drawer full width */
+  .modal-content { max-height: 96vh !important; }
+
+  /* Admin table scroll */
+  .admin-table-container { overflow-x: auto; }
+  .admin-table { min-width: 560px; }
+
+  /* Training corporate CTA inner padding */
+  .card-blue-premium { padding: 16px !important; }
 }

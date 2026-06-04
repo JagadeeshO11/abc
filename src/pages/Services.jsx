@@ -1,4 +1,5 @@
 import { useSearchParams, Link } from 'react-router-dom';
+import { useEffect } from 'react';
 import { Award, Users, Briefcase, BarChart2, Database } from 'lucide-react';
 import { FaDatabase, FaChartBar, FaUserTie, FaCogs, FaCloud, FaShieldAlt, FaRocket, FaCheckCircle } from 'react-icons/fa';
 import { MdIntegrationInstructions, MdAnalytics, MdVerified, MdAutoGraph, MdSpeed } from 'react-icons/md';
@@ -12,6 +13,10 @@ import aboutBg from '../assets/about.png';
 export default function Services() {
     const [searchParams] = useSearchParams();
     const activeSubTab = searchParams.get('tab') || 'data';
+
+    useEffect(() => {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }, [activeSubTab]);
 
     const serviceHighlights = [
         { icon: <FaDatabase size={24} />, title: 'Database Architecture', desc: 'SQL, PostgreSQL, MongoDB schema design and migration.', color: 'var(--color-corporate-blue)' },
@@ -62,7 +67,7 @@ export default function Services() {
                 <div style={{ position: 'relative', borderRadius: '16px', overflow: 'hidden', marginBottom: '56px', height: '320px' }}>
                     <img src={servicesBg} alt="Data Automation" style={{ width: '100%', height: '100%', objectFit: 'cover', filter: 'brightness(0.3)' }} />
                     <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(90deg, rgba(2,14,49,0.95) 0%, rgba(2,14,49,0.4) 100%)' }} />
-                    <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', padding: '48px' }}>
+                    <div className="services-banner-content" style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', padding: '40px' }}>
                         <div style={{ maxWidth: '580px' }}>
                             <div className="badge-blue" style={{ marginBottom: '16px', display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
                                 <FaDatabase size={12} /> DATA AUTOMATION & BI
@@ -77,7 +82,7 @@ export default function Services() {
                 </div>
 
                 {/* Stats Row */}
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '24px', marginBottom: '56px' }}>
+                <div className="services-stats-grid">
                     {[
                         { value: '80%', label: 'Reduction in manual reporting time', color: 'var(--color-ai-lime)', icon: <MdSpeed size={28} /> },
                         { value: '3x', label: 'Faster business decision making', color: 'var(--color-sky-blue)', icon: <MdAutoGraph size={28} /> },
@@ -123,12 +128,12 @@ export default function Services() {
                 </div>
 
                 {/* Process Steps */}
-                <div style={{ backgroundColor: 'var(--color-navy-dark)', borderRadius: '16px', padding: '48px', marginBottom: '56px' }}>
+                <div className="services-banner-inner" style={{ backgroundColor: 'var(--color-navy-dark)', borderRadius: '16px', padding: '48px', marginBottom: '56px' }}>
                     <div style={{ textAlign: 'center', marginBottom: '40px' }}>
                         <h2 style={{ color: 'var(--color-white)', fontFamily: 'var(--font-ozik)', fontSize: '28px', marginBottom: '8px' }}>OUR PROVEN 4-STEP PROCESS</h2>
                         <p style={{ color: 'rgba(255,255,255,0.55)', fontSize: '14px' }}>From discovery to a live dashboard — typically delivered in 3–6 weeks.</p>
                     </div>
-                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '24px' }}>
+                    <div className="services-process-grid">
                         {[
                             { step: '01', title: 'Discovery & Audit', desc: 'We audit your existing data sources, tools, and reporting gaps to map the full picture.', color: 'var(--color-ai-lime)' },
                             { step: '02', title: 'Architecture Design', desc: 'Our engineers design a scalable data architecture tailored to your industry and volume.', color: 'var(--color-sky-blue)' },
@@ -195,7 +200,7 @@ export default function Services() {
                     <div style={{ position: 'relative', borderRadius: '16px', overflow: 'hidden', marginBottom: '48px', height: '300px' }}>
                         <img src={trainingBg} alt="Corporate Training" style={{ width: '100%', height: '100%', objectFit: 'cover', filter: 'brightness(0.25)' }} />
                         <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(90deg, rgba(2,14,49,0.95) 0%, rgba(2,14,49,0.3) 100%)' }} />
-                        <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', padding: '48px' }}>
+                        <div className="services-banner-content" style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', padding: '40px' }}>
                             <div style={{ maxWidth: '560px' }}>
                                 <div className="badge-mint" style={{ marginBottom: '14px', display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
                                     <Award size={12} /> CORPORATE TRAINING
@@ -210,7 +215,7 @@ export default function Services() {
                     </div>
 
                     {/* Stats Row */}
-                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '20px', marginBottom: '48px' }}>
+                    <div className="services-stats-grid" style={{ marginBottom: '48px' }}>
                         {[
                             { value: '5,000+', label: 'Professionals Trained', color: 'var(--color-corporate-blue)' },
                             { value: '1,200+', label: 'Certificates Issued', color: 'var(--color-evergreen-glow)' },
@@ -303,7 +308,7 @@ export default function Services() {
                     <div style={{ position: 'relative', borderRadius: '16px', overflow: 'hidden', marginBottom: '48px', height: '300px' }}>
                         <img src={careersBg} alt="HR Recruitment" style={{ width: '100%', height: '100%', objectFit: 'cover', filter: 'brightness(0.22)' }} />
                         <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(90deg, rgba(2,14,49,0.95) 0%, rgba(2,14,49,0.3) 100%)' }} />
-                        <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', padding: '48px' }}>
+                        <div className="services-banner-content" style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', padding: '40px' }}>
                             <div style={{ maxWidth: '560px' }}>
                                 <div className="badge-blue" style={{ marginBottom: '14px', display: 'inline-flex', alignItems: 'center', gap: '6px' }}>
                                     <FaUserTie size={11} /> HR STAFFING & RECRUITMENT
@@ -318,7 +323,7 @@ export default function Services() {
                     </div>
 
                     {/* Stats Row */}
-                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '20px', marginBottom: '48px' }}>
+                    <div className="grid-4" style={{ gap: '20px', marginBottom: '48px' }}>
                         {[
                             { value: '300+', label: 'Placements Made', color: 'var(--color-corporate-blue)' },
                             { value: '48hrs', label: 'Avg. Time to Shortlist', color: 'var(--color-evergreen-glow)' },
