@@ -343,12 +343,18 @@
 
 /* Mobile drawer */
 .nav-mobile-drawer {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
   background: rgba(2, 14, 49, 0.98);
   border-top: 1px solid rgba(35, 149, 238, 0.15);
   padding: 16px var(--spacing-24) 24px;
   max-height: calc(100vh - 72px);
   overflow-y: auto;
   backdrop-filter: blur(20px);
+  box-shadow: 0 20px 48px rgba(0, 0, 0, 0.4);
+  z-index: 100;
 }
 
 .nav-mobile-links {
