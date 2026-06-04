@@ -55,7 +55,11 @@ export default function JobApply({ jobs, triggerToast }) {
             setSubmitted(true);
             triggerToast(`Application submitted for ${job.title}!`);
         } catch (err) {
-            alert(err.message);
+            if (err.message?.toLowerCase().includes('already applied')) {
+                triggerToast('⚠️ You have already applied for this job.');
+            } else {
+                triggerToast('❌ Submission failed. Please try again.');
+            }
         } finally {
             setIsUploading(false);
         }
