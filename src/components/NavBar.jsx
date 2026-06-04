@@ -27,7 +27,37 @@ export default function NavBar({ courses = [], authUser, onLogout }) {
     const navRef         = useRef(null);
     const servicesRef    = useRef(null);
     const trainingRef    = useRef(null);
+    const servicesTimeoutRef = useRef(null);
+    const trainingTimeoutRef = useRef(null);
     const navigate       = useNavigate();
+
+    const handleServicesEnter = () => {
+        if (servicesTimeoutRef.current) clearTimeout(servicesTimeoutRef.current);
+        if (trainingTimeoutRef.current) clearTimeout(trainingTimeoutRef.current);
+        setServicesOpen(true);
+        setTrainingOpen(false);
+    };
+
+    const handleServicesLeave = () => {
+        if (servicesTimeoutRef.current) clearTimeout(servicesTimeoutRef.current);
+        servicesTimeoutRef.current = setTimeout(() => {
+            setServicesOpen(false);
+        }, 150);
+    };
+
+    const handleTrainingEnter = () => {
+        if (servicesTimeoutRef.current) clearTimeout(servicesTimeoutRef.current);
+        if (trainingTimeoutRef.current) clearTimeout(trainingTimeoutRef.current);
+        setTrainingOpen(true);
+        setServicesOpen(false);
+    };
+
+    const handleTrainingLeave = () => {
+        if (trainingTimeoutRef.current) clearTimeout(trainingTimeoutRef.current);
+        trainingTimeoutRef.current = setTimeout(() => {
+            setTrainingOpen(false);
+        }, 150);
+    };
 
     const scrollToCourse = (courseId) => {
         setTrainingOpen(false);
@@ -91,7 +121,6 @@ export default function NavBar({ courses = [], authUser, onLogout }) {
                 <Link to="/" className="logo-wrap">
                     <div className="logo-img-container">
                         <img src={logoImg} alt="ITBEES Global" className="header-logo-img" />
-                        
                     </div>
                     <div className="logo-text-block">
                         <span className="logo-brand">ITBEES <span className="logo-accent">GLOBAL</span></span>
@@ -102,12 +131,11 @@ export default function NavBar({ courses = [], authUser, onLogout }) {
                 {/* Desktop Links */}
                 <ul className="nav-links">
                     <li><Link to="/" className={`nav-link ${isActive('/')}`}>Home</Link></li>
-                   
 
                     {/* Services dropdown */}
                     <li className="nav-dropdown-wrap" ref={servicesRef}
-                        onMouseEnter={() => { setServicesOpen(true); setTrainingOpen(false); }}
-                        onMouseLeave={() => setServicesOpen(false)}>
+                        onMouseEnter={handleServicesEnter}
+                        onMouseLeave={handleServicesLeave}>
                         <button
                             className={`nav-link nav-dropdown-trigger ${isServicesActive}`}
                             onClick={() => { setServicesOpen(o => !o); setTrainingOpen(false); }}
@@ -115,7 +143,9 @@ export default function NavBar({ courses = [], authUser, onLogout }) {
                             Services <ChevronDown size={13} className={servicesOpen ? 'chevron-open' : ''} />
                         </button>
                         {servicesOpen && (
-                            <div className="nav-dropdown">
+                            <div className="nav-dropdown" 
+                                 onMouseEnter={handleServicesEnter} 
+                                 onMouseLeave={handleServicesLeave}>
                                 {SERVICE_TABS.map(s => (
                                     <Link key={s.tab} to={`/services?tab=${s.tab}`} className="nav-dropdown-item"
                                         onClick={() => setServicesOpen(false)}>
@@ -134,8 +164,8 @@ export default function NavBar({ courses = [], authUser, onLogout }) {
 
                     {/* Training dropdown */}
                     <li className="nav-dropdown-wrap" ref={trainingRef}
-                        onMouseEnter={() => { setTrainingOpen(true); setServicesOpen(false); }}
-                        onMouseLeave={() => setTrainingOpen(false)}>
+                        onMouseEnter={handleTrainingEnter}
+                        onMouseLeave={handleTrainingLeave}>
                         <button
                             className={`nav-link nav-dropdown-trigger ${isTrainingActive}`}
                             onClick={() => { setTrainingOpen(o => !o); setServicesOpen(false); }}
@@ -143,7 +173,9 @@ export default function NavBar({ courses = [], authUser, onLogout }) {
                             Training <ChevronDown size={13} className={trainingOpen ? 'chevron-open' : ''} />
                         </button>
                         {trainingOpen && (
-                            <div className="nav-training-dropdown">
+                            <div className="nav-training-dropdown"
+                                 onMouseEnter={handleTrainingEnter}
+                                 onMouseLeave={handleTrainingLeave}>
                                 {/* header */}
                                 <div className="nav-training-header">
                                     <span style={{ fontSize: 12, fontWeight: 700, color: 'rgba(255,255,255,0.4)', textTransform: 'uppercase', letterSpacing: '0.08em' }}>
@@ -199,7 +231,7 @@ export default function NavBar({ courses = [], authUser, onLogout }) {
                         )}
                     </li>
 
-                         <li><Link to="/about" className={`nav-link ${isActive('/about')}`}>About Us</Link></li>
+                    <li><Link to="/about" className={`nav-link ${isActive('/about')}`}>About Us</Link></li>
                     <li><Link to="/contact" className={`nav-link ${isActive('/contact')}`}>Contact Us</Link></li>
                 </ul>
 

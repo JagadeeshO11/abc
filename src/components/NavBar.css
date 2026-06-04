@@ -163,6 +163,23 @@
   transition: transform 0.2s;
 }
 
+.nav-dropdown, .nav-training-dropdown {
+  /* Existing styles... */
+}
+
+/* Bridge the gap between trigger and menu to maintain hover */
+.nav-dropdown::before,
+.nav-training-dropdown::before {
+  content: '';
+  position: absolute;
+  top: -40px; 
+  left: 0;
+  right: 0;
+  height: 40px;
+  background: transparent;
+  z-index: -1;
+}
+
 .nav-dropdown {
   position: fixed;
   top: var(--navbar-bottom, 73px);
