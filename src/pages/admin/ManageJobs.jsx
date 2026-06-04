@@ -2,8 +2,6 @@ import { useState } from 'react';
 import { X, Download } from 'lucide-react';
 import { adminApi } from '../../utils/api.js';
 
-const BASE_URL = import.meta.env.VITE_API_URL?.replace('/api', '') || 'http://localhost:5000';
-
 export default function ManageJobs({ jobs, setJobs, applications, setApplications, triggerToast }) {
   const [jobSubTab, setJobSubTab] = useState('postings');
   const [jobDrawerOpen, setJobDrawerOpen] = useState(false);
@@ -140,7 +138,7 @@ export default function ManageJobs({ jobs, setJobs, applications, setApplication
                   <td>{app.job?.title}</td>
                   <td>{app.experience}</td>
                   <td>
-                    <a href={`${BASE_URL}/uploads/resumes/${app.resumePath}`} target="_blank" rel="noreferrer"
+                    <a href={app.resumePath} target="_blank" rel="noreferrer"
                       style={{ display: 'flex', alignItems: 'center', gap: '4px', color: 'var(--color-sky-blue)', fontSize: '12px' }}>
                       <Download size={12} /> View
                     </a>

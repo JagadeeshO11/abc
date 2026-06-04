@@ -1,12 +1,13 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Database, ChevronRight, BookOpen, BarChart2, Phone, MessageSquare } from 'lucide-react';
-import { FaCloud, FaShieldAlt, FaRocket, FaHandshake, FaChartLine, FaUsers } from 'react-icons/fa';
+import { Database, ChevronRight, BookOpen, BarChart2, Phone, MessageSquare, Play } from 'lucide-react';
+import { FaCloud, FaShieldAlt, FaRocket, FaHandshake, FaUsers } from 'react-icons/fa';
 import { MdOutlineSupport, MdIntegrationInstructions, MdVerified } from 'react-icons/md';
 import { BsArrowRight, BsStarFill } from 'react-icons/bs';
 import { HiLightningBolt } from 'react-icons/hi';
 import homeBg from '../assets/home.png';
 import aboutImg from '../assets/about.png';
+import chartsImg from '../assets/charts.png';
 
 import { publicApi } from '../utils/api.js';
 
@@ -15,21 +16,15 @@ export default function Home({ setInquiries, triggerToast }) {
     const [inqEmail, setInqEmail] = useState('');
     const [inqMessage, setInqMessage] = useState('');
     const [inqLoading, setInqLoading] = useState(false);
+    const [videoPlaying, setVideoPlaying] = useState(false);
+    const YT_ID = 'gNYtC0swvaw';
 
     const handleQuickInquiry = async (e) => {
         e.preventDefault();
-        if (!inqName || !inqEmail || !inqMessage) {
-            alert('Please fill out all fields.');
-            return;
-        }
+        if (!inqName || !inqEmail || !inqMessage) { alert('Please fill out all fields.'); return; }
         setInqLoading(true);
         try {
-            const response = await publicApi.submitInquiry({
-                name: inqName,
-                email: inqEmail,
-                subject: 'Website Inquiry',
-                message: inqMessage
-            });
+            const response = await publicApi.submitInquiry({ name: inqName, email: inqEmail, subject: 'Website Inquiry', message: inqMessage });
             setInquiries(prev => [response.data, ...prev]);
             triggerToast('Thank you! Inquiry submitted successfully.');
             setInqName(''); setInqEmail(''); setInqMessage('');
@@ -59,24 +54,20 @@ export default function Home({ setInquiries, triggerToast }) {
                         <span className="hero-badge-dot"></span>
                         MANAGING SYSTEMS IN THE AGE OF AI
                     </div>
-                    <h1 className="display-lg " style={{ lineHeight: '1' }}>
+                    <h1 className="display-lg" style={{ lineHeight: '1' }}>
                         ACCELERATE BUSINESS WITH SMART CLOUD & DATA ANALYTICS
                     </h1>
                     <p className="page-hero-sub">
                         Integrate next-gen ERP Solutions, automate critical pipelines, and build visual dashboards with ITBEES Global's smart infrastructure.
                     </p>
                     <div className="hero-btns" style={{ marginTop: 'var(--spacing-40)' }}>
-                        <Link to="/contact" className="btn-primary">
-                            📅 Book a Free Demo
-                        </Link>
-                        <Link to="/services" className="btn-ghost-dark">
-                            Explore Our Services
-                        </Link>
+                        <Link to="/contact" className="btn-primary">📅 Book a Free Demo</Link>
+                        <Link to="/services" className="btn-ghost-dark">Explore Our Services</Link>
                     </div>
                 </div>
             </section>
 
-            {/* Trust Bar */}
+            {/* Trust Bar — directly below hero */}
             <section style={{ backgroundColor: 'var(--color-navy-dark)', padding: '20px 0', borderBottom: '1px solid rgba(255,255,255,0.08)' }}>
                 <div className="container">
                     <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '48px', flexWrap: 'wrap' }}>
@@ -92,6 +83,74 @@ export default function Home({ setInquiries, triggerToast }) {
                                 {item.text}
                             </div>
                         ))}
+                    </div>
+                </div>
+            </section>
+
+            {/* YouTube Video — 2 col */}
+            <section style={{ backgroundColor: 'var(--color-navy-dark)', padding: '64px 0', borderBottom: '1px solid rgba(255,255,255,0.08)' }}>
+                <div className="container">
+                    <div className="grid-2" style={{ alignItems: 'center', gap: '48px' }}>
+
+                        {/* Left — text */}
+                        <div>
+                            <div className="badge-mint" style={{ marginBottom: '16px' }}>WATCH US IN ACTION</div>
+                            <h2 className="display-md" style={{ color: 'var(--color-white)', textAlign: 'left', marginBottom: '16px' }}>SEE HOW ITBEES TRANSFORMS BUSINESSES</h2>
+                            <p style={{ color: 'rgba(255,255,255,0.6)', fontSize: '15px', lineHeight: '1.8', marginBottom: '24px' }}>
+                                A quick walkthrough of our ERP solutions, BI dashboards, and cloud infrastructure in real enterprise environments.
+                            </p>
+                            <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                                {[
+                                    'End-to-end ERP integration & automation',
+                                    'Live BI dashboards with real-time data',
+                                    'Cloud infrastructure built for scale',
+                                ].map((point, i) => (
+                                    <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '10px', fontSize: '14px', color: 'rgba(255,255,255,0.75)' }}>
+                                        <span style={{ width: '20px', height: '20px', borderRadius: '50%', background: 'rgba(104,239,63,0.15)', border: '1px solid var(--color-ai-lime)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                                            <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: 'var(--color-ai-lime)', display: 'block' }} />
+                                        </span>
+                                        {point}
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+
+                        {/* Right — video */}
+                        <div style={{ position: 'relative', borderRadius: '16px', overflow: 'hidden', boxShadow: '0 24px 64px rgba(0,0,0,0.5)', aspectRatio: '16/9' }}>
+                            {!videoPlaying ? (
+                                <>
+                                    <img
+                                        src={`https://img.youtube.com/vi/${YT_ID}/maxresdefault.jpg`}
+                                        alt="Video preview"
+                                        style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
+                                    />
+                                    <div style={{ position: 'absolute', inset: 0, background: 'rgba(2,14,49,0.45)' }} />
+                                    <button
+                                        onClick={() => setVideoPlaying(true)}
+                                        style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'none', border: 'none', cursor: 'pointer' }}
+                                    >
+                                        <div
+                                            style={{ width: '64px', height: '64px', borderRadius: '50%', background: 'rgba(255,0,0,0.9)', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 8px 32px rgba(255,0,0,0.4)', transition: 'transform 0.2s' }}
+                                            onMouseEnter={e => e.currentTarget.style.transform = 'scale(1.1)'}
+                                            onMouseLeave={e => e.currentTarget.style.transform = 'scale(1)'}
+                                        >
+                                            <Play size={26} color="#fff" fill="#fff" style={{ marginLeft: '4px' }} />
+                                        </div>
+                                    </button>
+                                </>
+                            ) : (
+                                <iframe
+                                    src={`https://www.youtube.com/embed/${YT_ID}?autoplay=1&rel=0&enablejsapi=1`}
+                                    title="ITBEES Global Introduction"
+                                    frameBorder="0"
+                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                                    referrerPolicy="strict-origin-when-cross-origin"
+                                    allowFullScreen
+                                    style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', border: 'none' }}
+                                />
+                            )}
+                        </div>
+
                     </div>
                 </div>
             </section>
@@ -195,32 +254,8 @@ export default function Home({ setInquiries, triggerToast }) {
                                 </div>
                             </div>
                         </div>
-                        <div className="card-blue-premium">
-                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
-                                <h4 style={{ fontFamily: 'var(--font-aeonik)', fontWeight: '600' }}>Cloud System Monitors</h4>
-                                <span className="badge-dark-accent">LIVE REFRESH</span>
-                            </div>
-                            <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-                                {[
-                                    { label: 'CPU LOAD', value: '48%', width: '48%', color: 'var(--color-ai-lime)', status: 'Optimal' },
-                                    { label: 'DATABASE SYNC LATENCY', value: '12ms', width: '20%', color: 'var(--color-sky-blue)', status: '' },
-                                    { label: 'API ROUTING LOADS', value: '82% Capacity', width: '82%', color: 'var(--color-gold)', status: '' },
-                                ].map((bar, i) => (
-                                    <div key={i}>
-                                        <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '12px', marginBottom: '6px' }}>
-                                            <span>{bar.label}</span>
-                                            <span style={{ color: bar.color }}>{bar.value}{bar.status ? ` (${bar.status})` : ''}</span>
-                                        </div>
-                                        <div style={{ height: '6px', backgroundColor: 'rgba(255,255,255,0.1)', borderRadius: '3px', overflow: 'hidden' }}>
-                                            <div style={{ width: bar.width, height: '100%', backgroundColor: bar.color }}></div>
-                                        </div>
-                                    </div>
-                                ))}
-                            </div>
-                            <div style={{ marginTop: '24px', borderTop: '1px solid rgba(255,255,255,0.1)', paddingTop: '16px', display: 'flex', justifyContent: 'space-between', fontSize: '11px', color: 'var(--color-light-text)' }}>
-                                <span style={{ display: 'flex', alignItems: 'center', gap: '6px' }}><FaChartLine size={12} /> DB Status: Connected</span>
-                                <span>Active Transactions: 812/sec</span>
-                            </div>
+                        <div style={{ borderRadius: '16px', overflow: 'hidden', boxShadow: '0 8px 32px rgba(0,0,0,0.18)' }}>
+                            <img src={chartsImg} alt="Analytics Charts" className="img-responsive" style={{ width: '100%', height: 'auto', display: 'block' }} />
                         </div>
                     </div>
                 </div>
@@ -253,35 +288,6 @@ export default function Home({ setInquiries, triggerToast }) {
                 </div>
             </section>
 
-            {/* Quick Contact Form CTA */}
-            <section className="section-gap" style={{ backgroundColor: 'var(--color-light-canvas)', borderTop: '1px solid var(--color-soft-gray)' }}>
-                <div className="container">
-                    <div className="card-floating" style={{ backgroundColor: 'var(--color-white)' }}>
-                        <h2 className="display-md" style={{ marginBottom: '16px', textAlign: 'center' }}>REQUEST A TAILORED PROPOSAL</h2>
-                        <p style={{ color: 'var(--color-muted-text)', textAlign: 'center', marginBottom: '32px', maxWidth: '600px', margin: '0 auto 32px auto' }}>
-                            Share your business needs, and our lead consultants will analyze your system constraints and reply within one business day.
-                        </p>
-                        <form onSubmit={handleQuickInquiry} style={{ maxWidth: '600px', margin: '0 auto' }}>
-                            <div className="form-group">
-                                <label className="form-label">Your Name</label>
-                                <input type="text" className="input-field" placeholder="e.g. Vikram Seth" value={inqName} onChange={(e) => setInqName(e.target.value)} />
-                            </div>
-                            <div className="form-group">
-                                <label className="form-label">Business Email</label>
-                                <input type="email" className="input-field" placeholder="e.g. name@company.com" value={inqEmail} onChange={(e) => setInqEmail(e.target.value)} />
-                            </div>
-                            <div className="form-group">
-                                <label className="form-label">Message / Requirements</label>
-                                <textarea className="input-field" rows="4" style={{ borderRadius: '16px', resize: 'vertical' }} placeholder="Tell us about your ERP, Cloud, BI, or Corporate training requirements..." value={inqMessage} onChange={(e) => setInqMessage(e.target.value)}></textarea>
-                            </div>
-                            <button type="submit" className="btn-primary" style={{ width: '100%', padding: '14px' }} disabled={inqLoading}>
-                                {inqLoading ? 'Sending...' : 'Submit Consultation Request'}
-                            </button>
-                        </form>
-                    </div>
-                </div>
-            </section>
-
             {/* Direct CTAs */}
             <section style={{ background: 'var(--color-navy-dark)', padding: 'var(--spacing-48) 0', borderTop: '1px solid rgba(35,149,238,0.12)' }}>
                 <div className="container">
@@ -291,12 +297,8 @@ export default function Home({ setInquiries, triggerToast }) {
                             <p style={{ color: 'rgba(255,255,255,0.65)', fontSize: '14px', marginTop: '6px' }}>Click to call our Gachibowli office directly or reach out on WhatsApp.</p>
                         </div>
                         <div style={{ display: 'flex', gap: '16px' }}>
-                            <a href="tel:9963186067" className="btn-ghost-dark">
-                                <Phone size={16} /> Call Now
-                            </a>
-                            <a href="https://wa.me/9963186067" className="btn-primary">
-                                <MessageSquare size={16} /> WhatsApp Us
-                            </a>
+                            <a href="tel:9963186067" className="btn-ghost-dark"><Phone size={16} /> Call Now</a>
+                            <a href="https://wa.me/9963186067" className="btn-primary"><MessageSquare size={16} /> WhatsApp Us</a>
                         </div>
                     </div>
                 </div>

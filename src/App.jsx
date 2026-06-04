@@ -49,6 +49,7 @@ import ManageCourses from './pages/admin/ManageCourses.jsx';
 import Inquiries from './pages/admin/Inquiries.jsx';
 import Transactions from './pages/admin/Transactions.jsx';
 import SystemLogs from './pages/admin/SystemLogs.jsx';
+import ImageToUrl from './pages/admin/ImageToUrl.jsx';
 
 // Styles
 import './components/NavBar.css';
@@ -191,6 +192,7 @@ export default function App() {
                 <Route path="inquiries" element={<Inquiries inquiries={inquiries} setInquiries={setInquiries} triggerToast={triggerToast} />} />
                 <Route path="transactions" element={<Transactions payments={payments} />} />
                 <Route path="logs" element={<SystemLogs logs={logs} />} />
+                <Route path="image-url" element={<ImageToUrl />} />
               </Route>
             </Routes>
           </PageWrapper>

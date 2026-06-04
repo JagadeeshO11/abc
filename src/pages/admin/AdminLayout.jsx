@@ -1,5 +1,5 @@
 import { NavLink, Outlet, useNavigate } from 'react-router-dom';
-import { Grid, Briefcase, BookOpen, Mail, DollarSign, Activity } from 'lucide-react';
+import { Grid, Briefcase, BookOpen, Mail, DollarSign, Activity, ImageIcon } from 'lucide-react';
 import { CheckCircle } from 'lucide-react';
 
 const navItems = [
@@ -9,6 +9,7 @@ const navItems = [
   { to: '/admin/inquiries', label: 'Client Inquiries', icon: <Mail size={16} /> },
   { to: '/admin/transactions', label: 'Transactions', icon: <DollarSign size={16} /> },
   { to: '/admin/logs', label: 'System Logs', icon: <Activity size={16} /> },
+  { to: '/admin/image-url', label: 'Image → URL', icon: <ImageIcon size={16} /> },
 ];
 
 export default function AdminLayout({ onLogout, toast, adminLoading }) {
