@@ -9,12 +9,12 @@ const BASE_URL = import.meta.env.VITE_API_URL?.replace('/api', '') || 'http://lo
 import { adminApi } from '../utils/api.js';
 
 export default function AdminPanel({
-    jobs, setJobs,
-    courses, setCourses,
-    applications, setApplications,
-    inquiries, setInquiries,
-    payments,
-    logs,
+    jobs = [], setJobs,
+    courses = [], setCourses,
+    applications = [], setApplications,
+    inquiries = [], setInquiries,
+    payments = [],
+    logs = [],
     triggerToast,
     authUser,
     onLogout

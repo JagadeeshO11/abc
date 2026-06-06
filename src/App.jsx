@@ -136,7 +136,7 @@ export default function App() {
       if (inqsRes.status === 'fulfilled') setInquiries(inqsRes.value.data || []);
       if (appsRes.status === 'fulfilled') setApplications(appsRes.value.data || []);
       if (purchasesRes.status === 'fulfilled') setPayments(purchasesRes.value.data || []);
-      if (logsRes.status === 'fulfilled') {
+      if (logsRes.status === 'fulfilled' && Array.isArray(logsRes.value?.data)) {
         setLogs(logsRes.value.data.map(l => ({
           id: l.id,
           time: new Date(l.createdAt).toLocaleTimeString(),
