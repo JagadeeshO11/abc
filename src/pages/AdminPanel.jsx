@@ -637,13 +637,3 @@ export default function AdminPanel({
         </div>
     );
 }
-span style={{ color: '#88c0d0' }}>[{log.time}]</span> {log.message}
-                                </div>
-                            ))}
-                        </div>
-                    </div>
-                )}
-            </section>
-        </div>
-    );
-}
