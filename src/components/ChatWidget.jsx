@@ -85,10 +85,11 @@ export default function ChatWidget() {
         <>
             <button className="chatbot-trigger" onClick={() => setIsOpen(o => !o)} aria-label="Chat">
                 {isOpen ? <X size={22} /> : (
-                    <span style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '2px' }}>
-                        <Bot size={22} />
-                        <span style={{ fontSize: '9px', fontFamily: 'var(--font-aeonik)', fontWeight: '600', letterSpacing: '0.04em', lineHeight: 1 }}>CHAT</span>
-                    </span>
+                    <img
+                        src="https://res.cloudinary.com/dwmjz9csc/image/upload/v1780724072/ChatGPT_Image_Jun_6_2026_11_04_11_AM_gxcdsy.png"
+                        alt="ITBEES Chat"
+                        className="chatbot-trigger-icon"
+                    />
                 )}
             </button>
 
@@ -100,7 +101,7 @@ export default function ChatWidget() {
                                 <Bot size={16} color="var(--color-ai-lime)" />
                             </div>
                             <div>
-                                <strong style={{ fontSize: '14px', fontFamily: 'var(--font-aeonik)', display: 'block' }}>ITBEES Support Bot</strong>
+                                <strong style={{ fontSize: '14px', fontFamily: 'var(--font-aeonik)', display: 'block' }}>ITBEES SUPPORT BOT</strong>
                                 <span style={{ fontSize: '11px', color: 'var(--color-ai-lime)', display: 'flex', alignItems: 'center', gap: '4px' }}>
                                     <span style={{ width: '6px', height: '6px', borderRadius: '50%', backgroundColor: 'var(--color-ai-lime)', display: 'inline-block' }} />
                                     Online — typically replies instantly

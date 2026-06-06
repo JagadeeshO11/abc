@@ -27,17 +27,32 @@ export default function Services() {
         { icon: <MdIntegrationInstructions size={24} />, title: 'ERP Integration', desc: 'SAP, Oracle, Microsoft Dynamics ERP implementations.', color: 'var(--color-corporate-blue)' },
     ];
 
+    const heroHeadingMap = {
+        data: 'ENTERPRISE DATA AUTOMATION & BI',
+        training: 'CORPORATE TRAINING FOR ENTERPRISE TEAMS',
+        recruitment: 'HR STAFFING & RECRUITMENT SOLUTIONS',
+    };
+
+    const heroSubtitleMap = {
+        data: 'Review our specializations in data automation, BI dashboards, and enterprise integration.',
+        training: 'Review our specializations in training programs, team upskilling, and certification pathways.',
+        recruitment: 'Review our specializations in talent sourcing, hiring, and workforce scaling.',
+    };
+
+    const heroTitle = heroHeadingMap[activeSubTab] || 'ENTERPRISE SOLUTIONS';
+    const heroSubtitle = heroSubtitleMap[activeSubTab] || 'Review our specializations in database automation, corporate training, and staffing.';
+
     return (
         <>
         {/* Hero */}
         <section className="page-hero hero-text-clip" style={{ backgroundImage: `url(${servicesBg})` }}>
-            <div className="page-hero-inner">
+            <div className="page-hero-inner" >
                 <div className="badge-blue" style={{ marginBottom: '16px' }}>
                     <FaChartBar style={{ display: 'inline', marginRight: '6px' }} />
                     OUR SERVICES
                 </div>
-                <h1 className="display-lg">ENTERPRISE SOLUTIONS</h1>
-                <p className="page-hero-sub">Review our specializations in database automation, corporate training, and staffing.</p>
+                <h1 className="display-lg">{heroTitle}</h1>
+                <p className="page-hero-sub">{heroSubtitle}</p>
             </div>
         </section>
 

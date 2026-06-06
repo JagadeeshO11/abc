@@ -211,3 +211,11 @@
     margin-bottom: 8px;
   }
 }
+
+/* Desktop alignment: Move about banner content closer to the TOP on laptops and desktops */
+@media (min-width: 992px) {
+  .about-banner-content {
+    justify-content: flex-start !important;
+    padding-top: 60px !important;
+  }
+}

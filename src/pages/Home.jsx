@@ -49,7 +49,7 @@ export default function Home({ setInquiries, triggerToast }) {
         <div>
             {/* Hero Section */}
             <section className="page-hero hero-text-clip" style={{ backgroundImage: `url(${homeBg})` }}>
-                <div className="page-hero-inner">
+                <div className="page-hero-inner ">
                     <div className="hero-badge">
                         <span className="hero-badge-dot"></span>
                         MANAGING SYSTEMS IN THE AGE OF AI

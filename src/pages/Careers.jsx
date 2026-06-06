@@ -32,7 +32,7 @@ export default function Careers({ jobs }) {
         <>
         {/* Hero */}
         <section className="page-hero hero-text-clip" style={{ backgroundImage: `url(${careersBg})` }}>
-            <div className="page-hero-inner">
+            <div className="page-hero-inner" >
                 <div className="badge-mint" style={{ marginBottom: '16px' }}>
                     <FaBriefcase style={{ display: 'inline', marginRight: '6px' }} />
                     JOIN OUR TEAM
@@ -66,7 +66,7 @@ export default function Careers({ jobs }) {
             <div className="container">
                 <div style={{ position: 'relative', overflow: 'hidden', height: '240px', borderRadius: 'var(--radius-containers)', boxShadow: 'var(--shadow-md)' }}>
                     <img src={aboutBg} alt="Team Culture" style={{ width: '100%', height: '100%', objectFit: 'cover', filter: 'brightness(0.35)' }} />
-                    <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'column', gap: '12px', padding: '24px' }}>
+                    <div className="careers-banner-content" style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'column', gap: '12px', padding: '24px' }}>
                         <FaHeart size={36} color="#e05c5c" />
                         <h2 style={{ color: 'var(--color-white)', fontFamily: 'var(--font-ozik)', fontSize: '24px', textAlign: 'center' }}>
                             BUILD YOUR CAREER AT ITBEES GLOBAL

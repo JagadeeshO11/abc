@@ -57,8 +57,27 @@ export const apiFetch = async (endpoint, options = {}) => {
   }
 
   if (!response.ok) {
-    const error = await response.json();
-    throw new Error(error.message || 'API request failed');
+    let parsed;
+    try {
+      parsed = await response.json();
+    } catch (_err) {
+      try {
+        const txt = await response.text();
+        const msg = txt ? `${txt}` : `Request failed with status ${response.status}`;
+        const err = new Error(msg);
+        err.status = response.status;
+        throw err;
+      } catch (__err) {
+        const err = new Error(`Request failed with status ${response.status}`);
+        err.status = response.status;
+        throw err;
+      }
+    }
+    const message = parsed && parsed.message ? parsed.message : `Request failed with status ${response.status}`;
+    const err = new Error(message);
+    err.status = response.status;
+    err.body = parsed;
+    throw err;
   }
   return response.json();
 };
@@ -104,6 +123,19 @@ export const adminApi = {
   getPurchases: () => apiFetch('/admin/purchases'),
   getAuditLogs: () => apiFetch('/admin/audit-logs'),
   uploadImage: (formData) => apiFetch('/admin/upload/image', { method: 'POST', body: formData }),
+  uploadTemplate: async (formData) => {
+    try {
+      return await apiFetch('/admin/upload/template', { method: 'POST', body: formData });
+    } catch (err) {
+      if (err.status === 404) {
+        const file = formData.get('template');
+        const fallbackForm = new FormData();
+        fallbackForm.append('image', file);
+        return await apiFetch('/admin/upload/image', { method: 'POST', body: fallbackForm });
+      }
+      throw err;
+    }
+  },
 
   // Assessment Management
   createCategory: (data) => apiFetch('/admin/assessments/categories', { method: 'POST', body: JSON.stringify(data) }),

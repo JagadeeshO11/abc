@@ -115,7 +115,7 @@ export default function Training({ courses, setEnrollments, setPayments, trigger
             <div className="container">
                 <div style={{ position: 'relative', overflow: 'hidden', height: '280px', borderRadius: 'var(--radius-containers)' }}>
                     <img src={trainingBg} alt="Training Programs" style={{ width: '100%', height: '100%', objectFit: 'cover', filter: 'brightness(0.4)' }} />
-                    <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'column', gap: '12px', padding: '24px' }}>
+                    <div className="training-banner-content" style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'column', gap: '12px', padding: '24px' }}>
                         <MdSchool size={48} color="var(--color-ai-lime)" />
                         <h2 style={{ color: 'var(--color-white)', fontFamily: 'var(--font-ozik)', fontSize: '28px', textAlign: 'center' }}>
                             WORLD-CLASS TRAINING FOR MODERN ENTERPRISES

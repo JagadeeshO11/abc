@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { X, Download } from 'lucide-react';
+import { X, Download, Filter } from 'lucide-react';
 import { adminApi } from '../../utils/api.js';
 
 export default function ManageJobs({ jobs, setJobs, applications, setApplications, triggerToast }) {
@@ -11,6 +11,126 @@ export default function ManageJobs({ jobs, setJobs, applications, setApplication
   const [newJobSalary, setNewJobSalary] = useState('');
   const [newJobDesc, setNewJobDesc] = useState('');
   const [isSaving, setIsSaving] = useState(false);
+
+  const [activeFilters, setActiveFilters] = useState({
+    candidate: false,
+    email: false,
+    phone: false,
+    job: false,
+    experience: false,
+    applied: false
+  });
+  const [filterValues, setFilterValues] = useState({
+    candidate: '',
+    email: '',
+    phone: '',
+    job: '',
+    experience: '',
+    applied: ''
+  });
+
+  const filteredApplications = applications.filter(app => {
+    if (filterValues.candidate) {
+      const val = filterValues.candidate.toLowerCase();
+      if (!app.name?.toLowerCase().includes(val)) return false;
+    }
+    if (filterValues.email) {
+      const val = filterValues.email.toLowerCase();
+      if (!app.email?.toLowerCase().includes(val)) return false;
+    }
+    if (filterValues.phone) {
+      const val = filterValues.phone.toLowerCase();
+      if (!app.phone?.toLowerCase().includes(val)) return false;
+    }
+    if (filterValues.job) {
+      const val = filterValues.job.toLowerCase();
+      if (!app.job?.title?.toLowerCase().includes(val)) return false;
+    }
+    if (filterValues.experience) {
+      const val = filterValues.experience.toLowerCase();
+      if (!String(app.experience || '').toLowerCase().includes(val)) return false;
+    }
+    if (filterValues.applied) {
+      const val = filterValues.applied.toLowerCase();
+      const dateStr = new Date(app.createdAt).toLocaleDateString('en-IN').toLowerCase();
+      if (!dateStr.includes(val)) return false;
+    }
+    return true;
+  });
+
+  const renderFilterHeader = (key, label, placeholder) => {
+    const isActive = activeFilters[key];
+    const value = filterValues[key];
+
+    return (
+      <th style={{ verticalAlign: 'middle', minWidth: '135px' }}>
+        {isActive ? (
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', width: '100%' }}>
+            <input
+              type="text"
+              placeholder={placeholder}
+              value={value}
+              onChange={e => setFilterValues(prev => ({ ...prev, [key]: e.target.value }))}
+              style={{
+                flex: 1,
+                padding: '4px 8px',
+                borderRadius: '6px',
+                border: '1px solid rgba(35, 149, 238, 0.3)',
+                background: 'rgba(255, 255, 255, 0.08)',
+                color: '#fff',
+                fontSize: '12px',
+                outline: 'none',
+                width: '100%'
+              }}
+              autoFocus
+            />
+            <button
+              onClick={() => {
+                setActiveFilters(prev => ({ ...prev, [key]: false }));
+                setFilterValues(prev => ({ ...prev, [key]: '' }));
+              }}
+              style={{
+                background: 'none',
+                border: 'none',
+                cursor: 'pointer',
+                color: 'var(--color-sky-blue)',
+                padding: '4px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center'
+              }}
+              title="Close filter"
+            >
+              <Filter size={14} />
+            </button>
+          </div>
+        ) : (
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '8px' }}>
+            <span>{label}</span>
+            <button
+              onClick={() => {
+                setActiveFilters(prev => ({ ...prev, [key]: true }));
+              }}
+              style={{
+                background: 'none',
+                border: 'none',
+                cursor: 'pointer',
+                color: value ? 'var(--color-sky-blue)' : 'rgba(255, 255, 255, 0.3)',
+                padding: '4px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                transition: 'color 0.2s'
+              }}
+              title="Filter column"
+            >
+              <Filter size={14} />
+            </button>
+          </div>
+        )}
+      </th>
+    );
+  };
 
   const handleSelectJob = (job) => {
     setEditingJobId(job.id);
@@ -128,9 +248,20 @@ export default function ManageJobs({ jobs, setJobs, applications, setApplication
       {jobSubTab === 'applicants' && (
         <div className="admin-table-container">
           <table className="admin-table">
-            <thead><tr><th>Candidate</th><th>Email</th><th>Phone</th><th>Job</th><th>Experience</th><th>Resume</th><th>Applied</th><th>Action</th></tr></thead>
+            <thead>
+              <tr>
+                {renderFilterHeader('candidate', 'Candidate', 'Filter Candidate...')}
+                {renderFilterHeader('email', 'Email', 'Filter Email...')}
+                {renderFilterHeader('phone', 'Phone', 'Filter Phone...')}
+                {renderFilterHeader('job', 'Job', 'Filter Job...')}
+                {renderFilterHeader('experience', 'Experience', 'Filter Exp...')}
+                <th>Resume</th>
+                {renderFilterHeader('applied', 'Applied', 'Filter Date...')}
+                <th>Action</th>
+              </tr>
+            </thead>
             <tbody>
-              {applications.map(app => (
+              {filteredApplications.map(app => (
                 <tr key={app.id}>
                   <td><strong>{app.name}</strong><br /><span style={{ fontSize: '11px', color: 'rgba(255,255,255,0.35)' }}>{app.location}</span></td>
                   <td>{app.email}</td>
@@ -147,7 +278,7 @@ export default function ManageJobs({ jobs, setJobs, applications, setApplication
                   <td><button className="btn-mini" style={{ color: '#ff6b6b' }} onClick={() => handleDeleteApp(app.id)}>Delete</button></td>
                 </tr>
               ))}
-              {applications.length === 0 && <tr><td colSpan="8" style={{ textAlign: 'center', padding: '40px', color: 'rgba(255,255,255,0.3)' }}>No applications yet.</td></tr>}
+              {filteredApplications.length === 0 && <tr><td colSpan="8" style={{ textAlign: 'center', padding: '40px', color: 'rgba(255,255,255,0.3)' }}>No applications yet.</td></tr>}
             </tbody>
           </table>
         </div>

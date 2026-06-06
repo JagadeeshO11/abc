@@ -107,3 +107,11 @@
     grid-template-columns: 1fr !important;
   }
 }
+
+/* Desktop alignment: Move careers banner content closer to the TOP on laptops and desktops */
+@media (min-width: 992px) {
+  .careers-banner-content {
+    justify-content: flex-start !important;
+    padding-top: 60px !important;
+  }
+}

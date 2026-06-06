@@ -134,3 +134,19 @@
   }
   .training-cta-banner > div { min-width: unset !important; }
 }
+
+/* Desktop alignment: Move training CTA banner content closer to the TOP on laptops and desktops */
+@media (min-width: 992px) {
+  .training-cta-banner {
+    align-items: flex-start;
+    padding-top: 60px;
+  }
+}
+
+/* Desktop alignment: Move training banner content closer to the TOP on laptops and desktops */
+@media (min-width: 992px) {
+  .training-banner-content {
+    justify-content: flex-start !important;
+    padding-top: 60px !important;
+  }
+}

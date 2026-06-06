@@ -26,7 +26,7 @@ export default function AboutUs() {
         <div>
             {/* Hero */}
             <section className="page-hero hero-text-clip" style={{ backgroundImage: `url(${aboutBg})` }}>
-                <div className="page-hero-inner">
+                <div className="page-hero-inner" >
                     <div className="badge-mint" style={{ marginBottom: '16px' }}>
                         <HiOfficeBuilding style={{ display: 'inline', marginRight: '6px' }} />
                         WHO WE ARE
@@ -102,7 +102,7 @@ export default function AboutUs() {
                 {/* Services Image Banner */}
                 <div style={{ position: 'relative', borderRadius: '16px', overflow: 'hidden', marginBottom: '64px', height: '240px' }}>
                     <img src={servicesBg} alt="Our Services" style={{ width: '100%', height: '100%', objectFit: 'cover', filter: 'brightness(0.35)' }} />
-                    <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'column', gap: '12px', padding: '24px' }}>
+                    <div className="about-banner-content" style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'column', gap: '12px', padding: '24px' }}>
                         <FaGlobe size={40} color="var(--color-ai-lime)" />
                         <h3 style={{ color: 'var(--color-white)', fontFamily: 'var(--font-ozik)', fontSize: '24px', textAlign: 'center' }}>SERVING ENTERPRISES ACROSS INDIA & SOUTHEAST ASIA</h3>
                         <p style={{ color: 'rgba(255,255,255,0.7)', fontSize: '14px', textAlign: 'center', maxWidth: '500px' }}>

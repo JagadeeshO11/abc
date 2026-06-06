@@ -189,7 +189,7 @@ export default function App() {
               }>
                 <Route index element={<Overview inquiries={inquiries} applications={applications} payments={payments} />} />
                 <Route path="jobs" element={<ManageJobs jobs={jobs} setJobs={setJobs} applications={applications} setApplications={setApplications} triggerToast={triggerToast} />} />
-                <Route path="courses" element={<ManageCourses courses={courses} setCourses={setCourses} triggerToast={triggerToast} />} />
+                <Route path="courses" element={<ManageCourses courses={courses} setCourses={setCourses} payments={payments} triggerToast={triggerToast} />} />
                 <Route path="inquiries" element={<Inquiries inquiries={inquiries} setInquiries={setInquiries} triggerToast={triggerToast} />} />
                 <Route path="transactions" element={<Transactions payments={payments} />} />
                 <Route path="logs" element={<SystemLogs logs={logs} />} />

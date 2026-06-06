@@ -1,64 +1,235 @@
 import { Link } from 'react-router-dom';
 import logoImg from '../assets/logo.png';
+import {
+    FaWhatsapp,
+    FaLinkedin,
+    FaTwitter,
+    FaYoutube,
+    FaInstagram,
+    FaFacebook
+} from 'react-icons/fa';
 
 export default function Footer() {
     return (
         <footer className="footer">
             <div className="container">
                 <div className="footer-grid">
+
+                    {/* Company Info */}
                     <div>
-                        {/* Footer Logo */}
                         <img
                             src={logoImg}
                             alt="ITBEES Global Pvt. Ltd."
-                            style={{ height: '64px', width: '64px', objectFit: 'cover', objectPosition: 'center', borderRadius: '50%', marginBottom: '16px', display: 'block' }}
-                            onError={e => { e.target.onerror = null; e.target.style.display = 'none'; }}
+                            style={{
+                                height: '64px',
+                                width: '64px',
+                                objectFit: 'cover',
+                                objectPosition: 'center',
+                                borderRadius: '50%',
+                                marginBottom: '16px',
+                                display: 'block'
+                            }}
+                            onError={(e) => {
+                                e.target.onerror = null;
+                                e.target.style.display = 'none';
+                            }}
                         />
+
                         <p className="footer-brand-desc">
-                            Empowering professionals &amp; enterprises with Smart Cloud, BI Analytics, ERP Solutions, and industry-oriented training programs.
+                            Empowering professionals &amp; enterprises with Smart Cloud,
+                            BI Analytics, ERP Solutions, and industry-oriented training
+                            programs.
                         </p>
-                        <p style={{ fontSize: '12px', color: 'var(--color-dark-olive)', marginTop: '12px' }}>
+
+                        <p
+                            style={{
+                                fontSize: '12px',
+                                color: 'var(--color-dark-olive)',
+                                marginTop: '12px'
+                            }}
+                        >
                             Smart Cloud | BI Analytics | ERP Solutions
                         </p>
+                        <p
+                            className="footer-contact"
+                            style={{
+                                fontSize: '12px',
+                                marginTop: '12px'
+                            }}
+                        >
+                            Door No.1-60/8/A&amp;B, 3rd Floor, KNR Square,
+                            <br />
+                            Opp. The Platina, Gachibowli,
+                            <br />
+                            Hyderabad - 500032
+                        </p>
                     </div>
+
+                    {/* Follow Us */}
+                    <div>
+                        <h5 className="footer-title">Follow Us</h5>
+
+                        <div
+                            style={{
+                                display: 'flex',
+                                gap: '14px',
+                                flexWrap: 'wrap',
+                                marginTop: '12px'
+                            }}
+                        >
+                            <a
+                                href="https://wa.me/9963186067"
+                                target="_blank"
+                                rel="noreferrer"
+                                style={{ color: '#25D366' }}
+                            >
+                                <FaWhatsapp size={22} />
+                            </a>
+
+                            <a href="#" target="_blank" rel="noreferrer" style={{ color: '#FF0000' }}>
+                                <FaYoutube size={22} />
+                            </a>
+
+                            <a href="#" target="_blank" rel="noreferrer" style={{ color: '#0077B5' }}>
+                                <FaLinkedin size={22} />
+                            </a>
+
+                            <a href="#" target="_blank" rel="noreferrer" style={{ color: '#E4405F' }}>
+                                <FaInstagram size={22} />
+                            </a>
+
+                            <a href="#" target="_blank" rel="noreferrer" style={{ color: '#1DA1F2' }}>
+                                <FaTwitter size={22} />
+                            </a>
+
+                            <a href="#" target="_blank" rel="noreferrer" style={{ color: '#1877F2' }}>
+                                <FaFacebook size={22} />
+                            </a>
+                        </div>
+                    </div>
+
+                    {/* Courses */}
                     <div>
                         <h5 className="footer-title">Courses</h5>
+
                         <ul className="footer-links">
-                            <li className="footer-link-item"><Link to="/training" className="footer-link">Excel Basic &amp; Advanced</Link></li>
-                            <li className="footer-link-item"><Link to="/training" className="footer-link">Power Query</Link></li>
-                            <li className="footer-link-item"><Link to="/training" className="footer-link">VBA Automation</Link></li>
-                            <li className="footer-link-item"><Link to="/training" className="footer-link">Python for Analytics</Link></li>
-                            <li className="footer-link-item"><Link to="/training" className="footer-link">Power BI</Link></li>
+                            <li className="footer-link-item">
+                                <Link to="/training" className="footer-link">
+                                    Excel Basic &amp; Advanced
+                                </Link>
+                            </li>
+
+                            <li className="footer-link-item">
+                                <Link to="/training" className="footer-link">
+                                    Power Query
+                                </Link>
+                            </li>
+
+                            <li className="footer-link-item">
+                                <Link to="/training" className="footer-link">
+                                    VBA Automation
+                                </Link>
+                            </li>
+
+                            <li className="footer-link-item">
+                                <Link to="/training" className="footer-link">
+                                    Python for Analytics
+                                </Link>
+                            </li>
+
+                            <li className="footer-link-item">
+                                <Link to="/training" className="footer-link">
+                                    Power BI
+                                </Link>
+                            </li>
                         </ul>
                     </div>
+
+                    {/* Company */}
                     <div>
                         <h5 className="footer-title">Company</h5>
+
                         <ul className="footer-links">
-                            <li className="footer-link-item"><Link to="/about" className="footer-link">About Us</Link></li>
-                            <li className="footer-link-item"><Link to="/services" className="footer-link">Services</Link></li>
-                            <li className="footer-link-item"><Link to="/careers" className="footer-link">Talent Acquisition</Link></li>
-                            <li className="footer-link-item"><Link to="/contact" className="footer-link">Contact Us</Link></li>
-                            <li className="footer-link-item"><Link to="/login" className="footer-link">Admin Portal</Link></li>
+                            <li className="footer-link-item">
+                                <Link to="/about" className="footer-link">
+                                    About Us
+                                </Link>
+                            </li>
+
+                            <li className="footer-link-item">
+                                <Link to="/services" className="footer-link">
+                                    Services
+                                </Link>
+                            </li>
+
+                            <li className="footer-link-item">
+                                <Link to="/careers" className="footer-link">
+                                    Talent Acquisition
+                                </Link>
+                            </li>
+
+                            <li className="footer-link-item">
+                                <Link to="/contact" className="footer-link">
+                                    Contact Us
+                                </Link>
+                            </li>
+
+                            <li className="footer-link-item">
+                                <Link to="/login" className="footer-link">
+                                    Admin Portal
+                                </Link>
+                            </li>
                         </ul>
                     </div>
+
+                    {/* Contact */}
                     <div>
                         <h5 className="footer-title">Contact Us</h5>
-                        <p className="footer-contact" style={{ marginBottom: '12px' }}>
-                            <strong>📞 Call / WhatsApp:</strong><br />+91 96181 83234<br />+91 9963186067
+
+                        <p className="footer-contact">
+                            <strong>📞 Call / WhatsApp:</strong><br />
+                            +91 9963186067
                         </p>
-                        <p className="footer-contact" style={{ marginBottom: '12px' }}>
-                            <strong>📧 Email:</strong><br />rama.maruvada@itbeesglobal.com<br />support@itbeesglobal.com
+
+                        {/* <p className="footer-contact">
+                            <strong>📧 General:</strong><br />
+                            admin@itbeesglobal.com
+                        </p> */}
+
+                        <p className="footer-contact">
+                            <strong>📊 Data Automation & BI:</strong><br />
+                            corporate@itbeesglobal.com
                         </p>
-                        <p className="footer-contact" style={{ fontSize: '12px' }}>
-                            Door No.1-60/8/A&amp;B, 3rd Floor, KNR Square,<br />Opp. The Platina, Gachibowli,<br />Hyderabad - 500032
+
+                        <p className="footer-contact">
+                            <strong>🎓 Corporate Training:</strong><br />
+                            corporatetrainings@itbeesglobal.com
                         </p>
+
+                        <p className="footer-contact">
+                            <strong>👥 HR Staffing:</strong><br />
+                            hr@itbeesglobal.com
+                        </p>
+
+                        
                     </div>
+
                 </div>
+
                 <div className="footer-bottom">
-                    <p>&copy; {new Date().getFullYear()} ITBEES Global Pvt. Ltd. All rights reserved.</p>
+                    <p>
+                        &copy; {new Date().getFullYear()} ITBEES Global Pvt. Ltd.
+                        All rights reserved.
+                    </p>
+
                     <div style={{ display: 'flex', gap: '24px' }}>
-                        <span style={{ color: 'var(--color-dark-olive)' }}>ISO 27001 Certified</span>
-                        <span style={{ color: 'var(--color-dark-olive)' }}>Privacy Policy</span>
+                        <span style={{ color: 'var(--color-dark-olive)' }}>
+                            ISO 27001 Certified
+                        </span>
+
+                        <span style={{ color: 'var(--color-dark-olive)' }}>
+                            Privacy Policy
+                        </span>
                     </div>
                 </div>
             </div>

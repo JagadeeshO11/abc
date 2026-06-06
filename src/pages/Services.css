@@ -91,3 +91,11 @@
     overflow: hidden;
   }
 }
+
+/* Desktop alignment: Move services banner content closer to the TOP on laptops and desktops */
+@media (min-width: 992px) {
+  .services-banner-content {
+    align-items: flex-start !important;
+    padding-top: 60px !important;
+  }
+}

@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { MapPin, Phone, Mail, CheckCircle, Send, ArrowUpRight } from 'lucide-react';
-import { FaWhatsapp, FaLinkedin, FaTwitter, FaClock, FaHeadset, FaBuilding, FaUserTie, FaChalkboardTeacher } from 'react-icons/fa';
+import { FaWhatsapp, FaLinkedin, FaTwitter, FaYoutube, FaInstagram, FaFacebook, FaClock, FaHeadset, FaBuilding, FaUserTie, FaChalkboardTeacher } from 'react-icons/fa';
 import { MdVerified, MdSupportAgent, MdBusiness } from 'react-icons/md';
 import { BsArrowRight, BsStarFill, BsCheckCircleFill } from 'react-icons/bs';
 import contactBg from '../assets/contact.png';
@@ -85,13 +85,18 @@ export default function ContactUs({ setInquiries, triggerToast }) {
     ];
 
     const serviceLinks = [
-        { icon: <MdBusiness size={20} />, title: 'Data Automation & BI', desc: 'Live dashboards, ETL pipelines, and BI reports.', color: 'var(--color-corporate-blue)', link: '/services?tab=data' },
-        { icon: <FaChalkboardTeacher size={18} />, title: 'Corporate Training', desc: 'Excel, Power BI, Python, VBA & SQL with certification.', color: 'var(--color-evergreen-glow)', link: '/training' },
-        { icon: <FaUserTie size={18} />, title: 'HR Staffing & Recruitment', desc: 'Pre-screened engineers and analysts for your projects.', color: 'var(--color-gold)', link: '/services?tab=recruitment' },
-        { icon: <FaBuilding size={18} />, title: 'ERP Consulting', desc: 'SAP, Oracle & Microsoft Dynamics implementation.', color: '#9b59b6', link: '/contact' },
-        { icon: <MdSupportAgent size={20} />, title: 'Technical Support', desc: 'SLA-backed maintenance for ITBEES deployments.', color: '#e05c5c', link: '/contact' },
-        { icon: <FaHeadset size={18} />, title: 'General Enquiry', desc: "Not sure where to start? We'll guide you.", color: 'var(--color-sky-blue)', link: '/contact' },
-    ];
+    { icon: <MdBusiness size={20} />, title: 'Data Automation & BI', desc: 'Live dashboards, ETL pipelines, and BI reports.', color: 'var(--color-corporate-blue)', link: 'mailto:corporate@itbeesglobal.com' },
+
+    { icon: <FaChalkboardTeacher size={18} />, title: 'Corporate Training', desc: 'Excel, Power BI, Python, VBA & SQL with certification.', color: 'var(--color-evergreen-glow)', link: 'mailto:corporatetrainings@itbeesglobal.com' },
+
+    { icon: <FaUserTie size={18} />, title: 'HR Staffing & Recruitment', desc: 'Pre-screened engineers and analysts for your projects.', color: 'var(--color-gold)', link: 'mailto:hr@itbeesglobal.com' },
+
+    { icon: <FaBuilding size={18} />, title: 'ERP Consulting', desc: 'SAP, Oracle & Microsoft Dynamics implementation.', color: '#9b59b6', link: 'mailto:admin@itbeesglobal.com' },
+
+    { icon: <MdSupportAgent size={20} />, title: 'Technical Support', desc: 'SLA-backed maintenance for ITBEES deployments.', color: '#e05c5c', link: 'mailto:admin@itbeesglobal.com' },
+
+    { icon: <FaHeadset size={18} />, title: 'General Enquiry', desc: "Not sure where to start? We'll guide you.", color: 'var(--color-sky-blue)', link: 'mailto:admin@itbeesglobal.com' },
+];
 
     const faqs = [
         { q: 'How fast do you respond?', a: 'Within one business day. Urgent matters via WhatsApp are handled within 2 hours.' },
@@ -235,7 +240,7 @@ export default function ContactUs({ setInquiries, triggerToast }) {
                     </div>
 
                     {/* Social — clickable links with hover */}
-                    <div style={{ background: 'var(--color-light-canvas)', border: '1px solid var(--color-soft-gray)', borderRadius: 14, padding: '16px 18px' }}>
+                    {/* <div style={{ background: 'var(--color-light-canvas)', border: '1px solid var(--color-soft-gray)', borderRadius: 14, padding: '16px 18px' }}>
                         <p style={{ fontSize: 10, color: 'var(--color-muted-text)', marginBottom: 12, textTransform: 'uppercase', letterSpacing: '0.1em', fontWeight: 700 }}>Connect With Us</p>
                         <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
                             {[
@@ -253,7 +258,51 @@ export default function ContactUs({ setInquiries, triggerToast }) {
                                 </a>
                             ))}
                         </div>
-                    </div>
+                    </div> */}
+                        <div style={{ background: 'var(--color-light-canvas)', border: '1px solid var(--color-soft-gray)', borderRadius: 14, padding: '16px 18px' }}>
+    <p style={{ fontSize: 10, color: 'var(--color-muted-text)', marginBottom: 12, textTransform: 'uppercase', letterSpacing: '0.1em', fontWeight: 700 }}>
+        Connect With Us
+    </p>
+
+    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 4 }}>
+        {[
+            { icon: <FaWhatsapp size={15} />, label: 'WhatsApp Direct', color: '#25D366', href: 'https://wa.me/9963186067' },
+            { icon: <FaYoutube size={15} />, label: 'YouTube Channel', color: '#FF0000', href: '#' },
+
+            { icon: <FaLinkedin size={15} />, label: 'LinkedIn Page', color: '#0077B5', href: '#' },
+            { icon: <FaInstagram size={15} />, label: 'Instagram', color: '#E4405F', href: '#' },
+
+            { icon: <FaTwitter size={15} />, label: 'Twitter / X', color: '#1DA1F2', href: '#' },
+            { icon: <FaFacebook size={15} />, label: 'Facebook Page', color: '#1877F2', href: '#' },
+        ]
+        .map((s, i) => (
+            <a
+                key={i}
+                href={s.href}
+                style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    gap: 8,
+                    fontSize: 12,
+                    color: s.color,
+                    textDecoration: 'none',
+                    fontWeight: 600,
+                    padding: '7px 10px',
+                    borderRadius: 7,
+                    transition: 'background 0.15s'
+                }}
+                onMouseEnter={e => e.currentTarget.style.background = `${s.color}14`}
+                onMouseLeave={e => e.currentTarget.style.background = 'transparent'}
+            >
+                <span style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                    {s.icon}{s.label}
+                </span>
+                <ArrowUpRight size={12} style={{ opacity: 0.6 }} />
+            </a>
+        ))}
+    </div>
+</div>
                 </div>
             </div>
 
@@ -307,7 +356,7 @@ export default function ContactUs({ setInquiries, triggerToast }) {
                     ))}
                 </div>
                 <div style={{ borderRadius: 16, overflow: 'hidden', border: '1px solid var(--color-soft-gray)' }}>
-                    <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3806.2891963953!2d78.3619583!3d17.4475441!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3bcb93952d708309%3A0xc33e07d0f9547d52!2sKNR%20Square!5e0!3m2!1sen!2sin!4v1717056000000!5m2!1sen!2sin"
+                    <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d7612.470983534224!2d78.3639803!3d17.448439299999997!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3bcb93f140246ed3%3A0x41b704479010978b!2sCS%20Coworking%20Spaces%20-%20Gachibowli%20%7C%20Virtual%20Office%2C%20Private%20Cabins%20%26%20Open%20Desk%20-%2024*2A7!5e0!3m2!1sen!2sin!4v1780666656455!5m2!1sen!2sin"
                         width="100%" height="100%" style={{ border: 0, display: 'block' }} allowFullScreen="" loading="lazy" title="ITBEES Global Office" />
                 </div>
             </div>

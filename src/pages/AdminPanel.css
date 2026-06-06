@@ -191,7 +191,7 @@
   border: 1px solid rgba(255, 193, 7, 0.25);
 }
 
-.status-approved, .status-hired {
+.status-approved, .status-hired, .status-success {
   background: rgba(104, 239, 63, 0.1);
   color: var(--color-ai-lime);
   border: 1px solid rgba(104, 239, 63, 0.25);
@@ -203,11 +203,12 @@
   border: 1px solid rgba(35, 149, 238, 0.25);
 }
 
-.status-rejected {
+.status-rejected, .status-failed {
   background: rgba(255, 107, 107, 0.1);
   color: #ff6b6b;
   border: 1px solid rgba(255, 107, 107, 0.25);
 }
+
 
 /* ── Cards inside admin content ── */
 .admin-content .card-neutral,
