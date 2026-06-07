@@ -39,7 +39,7 @@ export default function AdminLayout({ onLogout, toast, adminLoading }) {
       <aside className={`admin-sidebar${mobileMenuOpen ? ' mobile-open' : ''}`}>
         <div className="admin-sidebar-header">
           <div className="admin-logo-container">
-            <img src={logoImg} alt="ITBEES" className="admin-logo" />
+            <img src={logoImg} alt="ITBEES" className="admin-logo" style={{ width: '250px', height: 'auto' }} />
             <span style={{ color: '#e4ebefff', fontWeight: '700' }}>
               ITBEES Global
             </span>
