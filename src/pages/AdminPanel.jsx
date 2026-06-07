@@ -1,8 +1,9 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { Grid, Briefcase, BookOpen, Mail, Users, DollarSign, Activity, X, Download } from 'lucide-react';
 import { MdVerified } from 'react-icons/md';
 import { FaClock, FaStar } from 'react-icons/fa';
 import { BsPeopleFill } from 'react-icons/bs';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
 
 const BASE_URL = import.meta.env.VITE_API_URL?.replace('/api', '') || 'http://localhost:5000';
 
@@ -248,18 +249,154 @@ export default function AdminPanel({
                 {activeTab === 'overview' && (
                     <div>
                         <h2 className="heading-lg" style={{ color: 'var(--color-navy-dark)', marginBottom: '24px' }}>ADMINISTRATIVE OVERVIEW</h2>
-                        <div className="analytics-grid">
-                            <div className="stat-card">
-                                <div className="stat-label">Inquiries</div>
+                        
+                        {/* Stat cards */}
+                        <div className="analytics-grid" style={{ marginBottom: '28px' }}>
+                            <div className="stat-card" style={{ borderLeft: '4px solid var(--color-corporate-blue)' }}>
+                                <div className="stat-label">📩 Inquiries</div>
                                 <div className="stat-value">{inquiries.length}</div>
                             </div>
-                            <div className="stat-card">
-                                <div className="stat-label">Job Applications</div>
+                            <div className="stat-card" style={{ borderLeft: '4px solid var(--color-gold)' }}>
+                                <div className="stat-label">👔 Job Applications</div>
                                 <div className="stat-value">{applications.length}</div>
                             </div>
-                            <div className="stat-card">
-                                <div className="stat-label">Transactions</div>
+                            <div className="stat-card" style={{ borderLeft: '4px solid var(--color-evergreen-glow)' }}>
+                                <div className="stat-label">💳 Total Transactions</div>
                                 <div className="stat-value">{payments.length}</div>
+                            </div>
+                            <div className="stat-card" style={{ borderLeft: '4px solid var(--color-ai-lime)' }}>
+                                <div className="stat-label">💰 Total Revenue</div>
+                                <div className="stat-value">₹{payments.reduce((sum, p) => sum + (parseFloat(p.amount) || 0), 0).toLocaleString('en-IN')}</div>
+                            </div>
+                            <div className="stat-card" style={{ borderLeft: '4px solid #f59e0b' }}>
+                                <div className="stat-label">📚 Courses Published</div>
+                                <div className="stat-value">{courses.length}</div>
+                            </div>
+                            <div className="stat-card" style={{ borderLeft: '4px solid #9b59b6' }}>
+                                <div className="stat-label">📦 Templates</div>
+                                <div className="stat-value">{templates ? templates.length : 0}</div>
+                            </div>
+                            <div className="stat-card" style={{ borderLeft: '4px solid #e05c5c' }}>
+                                <div className="stat-label">💼 Job Postings</div>
+                                <div className="stat-value">{jobs.length}</div>
+                            </div>
+                            <div className="stat-card" style={{ borderLeft: '4px solid #1abc9c' }}>
+                                <div className="stat-label">📊 Avg Transaction</div>
+                                <div className="stat-value">₹{payments.length > 0 ? Math.round(payments.reduce((sum, p) => sum + (parseFloat(p.amount) || 0), 0) / payments.length).toLocaleString('en-IN') : 0}</div>
+                            </div>
+                        </div>
+
+                        {/* Charts row */}
+                        <div style={{ display: 'flex', gap: '24px', flexWrap: 'wrap' }}>
+                            {/* Course vs Template Sales Bar Chart */}
+                            <div style={{ flex: '1 1 380px', background: '#fff', borderRadius: '12px', padding: '20px', boxShadow: '0 2px 12px rgba(0,0,0,0.06)' }}>
+                                <h3 style={{ fontSize: '14px', fontWeight: 700, color: '#1a1a2e', marginBottom: '16px' }}>
+                                    Course vs Template Sales
+                                </h3>
+                                <ResponsiveContainer width="100%" height={260}>
+                                    <BarChart data={(() => {
+                                        const courseSales = payments.filter(p => p.type === 'COURSE' || !p.type).reduce((s, p) => s + (parseFloat(p.amount) || 0), 0);
+                                        const templateSales = payments.filter(p => p.type === 'TEMPLATE').reduce((s, p) => s + (parseFloat(p.amount) || 0), 0);
+                                        const courseCount = payments.filter(p => p.type === 'COURSE' || !p.type).length;
+                                        const templateCount = payments.filter(p => p.type === 'TEMPLATE').length;
+                                        return [
+                                            { name: 'Courses', amount: courseSales, count: courseCount },
+                                            { name: 'Templates', amount: templateSales, count: templateCount },
+                                        ];
+                                    })()} margin={{ top: 10, right: 20, left: 10, bottom: 5 }}>
+                                        <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
+                                        <XAxis dataKey="name" tick={{ fontSize: 12, fill: '#666' }} />
+                                        <YAxis tick={{ fontSize: 12, fill: '#666' }} />
+                                        <Tooltip 
+                                            contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 16px rgba(0,0,0,0.12)' }}
+                                            formatter={(value, name) => [name === 'amount' ? `₹${value.toLocaleString('en-IN')}` : value, name === 'amount' ? 'Revenue' : 'Count']}
+                                        />
+                                        <Legend formatter={(value) => <span style={{ fontSize: '12px' }}>{value === 'amount' ? 'Revenue (₹)' : 'Count'}</span>} />
+                                        <Bar dataKey="amount" fill="#2395ee" radius={[6, 6, 0, 0]} name="amount" />
+                                        <Bar dataKey="count" fill="#68ef3f" radius={[6, 6, 0, 0]} name="count" />
+                                    </BarChart>
+                                </ResponsiveContainer>
+                            </div>
+
+                            {/* Transactions by Type Pie Chart */}
+                            <div style={{ flex: '1 1 320px', background: '#fff', borderRadius: '12px', padding: '20px', boxShadow: '0 2px 12px rgba(0,0,0,0.06)' }}>
+                                <h3 style={{ fontSize: '14px', fontWeight: 700, color: '#1a1a2e', marginBottom: '16px' }}>
+                                    Transactions by Type
+                                </h3>
+                                <ResponsiveContainer width="100%" height={260}>
+                                    <PieChart>
+                                        <Pie
+                                            data={(() => {
+                                                const coursePays = payments.filter(p => p.type === 'COURSE' || !p.type);
+                                                const templatePays = payments.filter(p => p.type === 'TEMPLATE');
+                                                const otherCount = payments.length - coursePays.length - templatePays.length;
+                                                const items = [];
+                                                if (coursePays.length) items.push({ name: 'Course Payments', value: coursePays.length, color: '#2395ee' });
+                                                if (templatePays.length) items.push({ name: 'Template Purchases', value: templatePays.length, color: '#68ef3f' });
+                                                if (otherCount > 0) items.push({ name: 'Other', value: otherCount, color: '#f59e0b' });
+                                                return items.length ? items : [{ name: 'No Data', value: 1, color: '#e0e0e0' }];
+                                            })()}
+                                            cx="50%" cy="50%"
+                                            innerRadius={60}
+                                            outerRadius={90}
+                                            paddingAngle={4}
+                                            dataKey="value"
+                                            label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
+                                            labelLine={false}
+                                        >
+                                            {(() => {
+                                                const data = (() => {
+                                                    const coursePays = payments.filter(p => p.type === 'COURSE' || !p.type);
+                                                    const templatePays = payments.filter(p => p.type === 'TEMPLATE');
+                                                    const otherCount = payments.length - coursePays.length - templatePays.length;
+                                                    const items = [];
+                                                    if (coursePays.length) items.push({ name: 'Course Payments', value: coursePays.length, color: '#2395ee' });
+                                                    if (templatePays.length) items.push({ name: 'Template Purchases', value: templatePays.length, color: '#68ef3f' });
+                                                    if (otherCount > 0) items.push({ name: 'Other', value: otherCount, color: '#f59e0b' });
+                                                    return items.length ? items : [{ name: 'No Data', value: 1, color: '#e0e0e0' }];
+                                                })();
+                                                return data.map((entry, index) => (
+                                                    <Cell key={`cell-${index}`} fill={entry.color} />
+                                                ));
+                                            })()}
+                                        </Pie>
+                                        <Tooltip 
+                                            contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 16px rgba(0,0,0,0.12)' }}
+                                        />
+                                    </PieChart>
+                                </ResponsiveContainer>
+                            </div>
+
+                            {/* Recent Transactions Summary */}
+                            <div style={{ flex: '1 1 300px', background: '#fff', borderRadius: '12px', padding: '20px', boxShadow: '0 2px 12px rgba(0,0,0,0.06)' }}>
+                                <h3 style={{ fontSize: '14px', fontWeight: 700, color: '#1a1a2e', marginBottom: '16px' }}>
+                                    Recent Activity
+                                </h3>
+                                <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                                    {payments.slice(0, 5).map((p, i) => (
+                                        <div key={p.id || i} style={{ display: 'flex', alignItems: 'center', gap: '10px', padding: '8px 10px', borderRadius: '8px', background: i % 2 === 0 ? '#f8f9fc' : 'transparent' }}>
+                                            <div style={{ width: '28px', height: '28px', borderRadius: '6px', display: 'flex', alignItems: 'center', justifyContent: 'center', background: p.type === 'TEMPLATE' ? 'rgba(104,239,63,0.12)' : 'rgba(35,149,238,0.12)', flexShrink: 0 }}>
+                                                {p.type === 'TEMPLATE' ? <Download size={14} color="#68ef3f" /> : <BookOpen size={14} color="#2395ee" />}
+                                            </div>
+                                            <div style={{ flex: 1, minWidth: 0 }}>
+                                                <div style={{ fontSize: '12px', fontWeight: 600, color: '#1a1a2e', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                                                    {p.name || p.customerName || p.email || 'Unknown'}
+                                                </div>
+                                                <div style={{ fontSize: '10px', color: '#999' }}>
+                                                    {p.course?.title || p.itemTitle || p.templateName || '—'} · {new Date(p.createdAt).toLocaleDateString('en-IN')}
+                                                </div>
+                                            </div>
+                                            <div style={{ fontSize: '12px', fontWeight: 700, color: p.type === 'TEMPLATE' ? '#68ef3f' : '#2395ee', whiteSpace: 'nowrap' }}>
+                                                ₹{Number(p.amount || 0).toLocaleString('en-IN')}
+                                            </div>
+                                        </div>
+                                    ))}
+                                    {payments.length === 0 && (
+                                        <div style={{ textAlign: 'center', padding: '40px 0', color: '#aaa', fontSize: '13px' }}>
+                                            No transactions yet.
+                                        </div>
+                                    )}
+                                </div>
                             </div>
                         </div>
                     </div>

@@ -17,9 +17,6 @@ export default function ManageCourses({ courses, setCourses, payments = [], trig
   const [hours, setHours] = useState(20);
   const [imageUploading, setImageUploading] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
-  const [templateUrl, setTemplateUrl] = useState('');
-  const [template, setTemplate] = useState('');
-  const [templateName, setTemplateName] = useState('');
 
   const getTraineeId = (pay) => {
     const dateObj = new Date(pay.createdAt);
@@ -167,10 +164,6 @@ export default function ManageCourses({ courses, setCourses, payments = [], trig
     setImage(course.image || '');
     setDuration(course.duration || '6 weeks');
     setHours(course.hours || 20);
-    // Use templateUrl from backend
-    setTemplateUrl(course.templateUrl || '');
-    setTemplate(course.templateUrl || '');
-    setTemplateName(course.templateUrl ? 'Existing template' : '');
     setDrawerOpen(true);
   };
 
@@ -178,7 +171,6 @@ export default function ManageCourses({ courses, setCourses, payments = [], trig
     setEditingId(null);
     setTitle(''); setPrice(''); setDesc('');
     setImage(''); setDuration('6 weeks'); setHours(20);
-    setTemplate(''); setTemplateUrl(''); setTemplateName('');
     setDrawerOpen(false);
   };
 
@@ -198,8 +190,6 @@ export default function ManageCourses({ courses, setCourses, payments = [], trig
     }
   };
 
-  // Template is provided via URL only (no file uploads)
-
   const resolveUploadUrl = (url) => {
     if (!url) return url;
     if (url.startsWith('http://') || url.startsWith('https://')) return url;
@@ -207,46 +197,9 @@ export default function ManageCourses({ courses, setCourses, payments = [], trig
     return `${BASE_URL}/${url}`;
   };
 
-const normalizeTemplateUrl = (t) => {
-  if (!t) return null;
-  if (typeof t !== 'string') return null;
-  let v = t.trim();
-
-  // Convert common Google Drive share links to direct-download for files
-  try {
-    const driveShare = v.match(/(?:drive.google.com\/file\/d\/|drive.google.com\/open\?id=|drive.google.com\/.*?id=)([a-zA-Z0-9_-]{10,})/);
-    if (driveShare && driveShare[1]) {
-      v = `https://drive.google.com/uc?export=download&id=${driveShare[1]}`;
-    }
-  } catch (e) { }
-
-  // Allow Google Drive folder URLs (no conversion)
-  try {
-    const folderMatch = v.match(/drive\.google\.com\/drive\/folders\/([a-zA-Z0-9_-]{10,})/);
-    if (folderMatch && folderMatch[1]) {
-      // Return the original folder URL
-      return v;
-    }
-  } catch (e) { }
-
-  // Basic URL validation
-  try {
-    const u = new URL(v);
-    if (u.protocol !== 'http:' && u.protocol !== 'https:') return null;
-    return v;
-  } catch (err) {
-    return null;
-  }
-};
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsSaving(true);
-      const resolvedTemplateUrl = normalizeTemplateUrl(templateUrl);
-      if (templateUrl && !resolvedTemplateUrl) {
-        const cont = window.confirm('The template URL looks invalid. Continue and save without a template?');
-        if (!cont) { setIsSaving(false); return; }
-      }
 
       const payload = {
         title,
@@ -258,7 +211,6 @@ const normalizeTemplateUrl = (t) => {
         image: image || null,
         rating: 'New',
         icon: '📚',
-        templateUrl: resolvedTemplateUrl || null,
       };
     if (editingId) {
       try {
@@ -318,7 +270,7 @@ const normalizeTemplateUrl = (t) => {
       {activeTab === 'courses' && (
         <div className="admin-table-container">
           <table className="admin-table">
-            <thead><tr><th>Image</th><th>Title</th><th>Category</th><th>Duration</th><th>Hours</th><th>Price</th><th>Added</th><th>Template</th><th>Action</th></tr></thead>
+            <thead><tr><th>Image</th><th>Title</th><th>Category</th><th>Duration</th><th>Hours</th><th>Price</th><th>Added</th><th>Action</th></tr></thead>
             <tbody>
               {courses.map(course => (
                 <tr key={course.id} style={{ background: editingId === course.id ? 'rgba(35,149,238,0.08)' : undefined }}>
@@ -335,18 +287,6 @@ const normalizeTemplateUrl = (t) => {
                   <td style={{ fontWeight: '700', color: 'var(--color-sky-blue)' }}>₹{Number(course.price).toLocaleString('en-IN')}</td>
                   <td style={{ fontSize: '12px' }}>{new Date(course.createdAt).toLocaleDateString('en-IN')}</td>
                   <td>
-                    {course.templateUrl
-                      ? (
-                        <a href={resolveUploadUrl(course.templateUrl)} target="_blank" rel="noreferrer"
-                          style={{ display: 'inline-flex', alignItems: 'center', gap: '4px', color: 'var(--color-sky-blue)', fontSize: '12px', textDecoration: 'none' }}
-                          title="Download template">
-                          📄 View
-                        </a>
-                      )
-                      : <span style={{ color: 'rgba(255,255,255,0.2)', fontSize: '12px' }}>—</span>
-                    }
-                  </td>
-                  <td>
                     <div style={{ display: 'flex', gap: '6px' }}>
                       <button className="btn-mini" style={{ color: 'var(--color-sky-blue)' }} onClick={() => handleSelect(course)}>Edit</button>
                       <button className="btn-mini" style={{ color: '#ff6b6b' }} onClick={() => handleRemove(course.id)}>Remove</button>
@@ -354,7 +294,7 @@ const normalizeTemplateUrl = (t) => {
                   </td>
                 </tr>
               ))}
-              {courses.length === 0 && <tr><td colSpan="9" style={{ textAlign: 'center', padding: '40px', color: 'rgba(255,255,255,0.3)' }}>No courses yet. Click › Add Course to get started.</td></tr>}
+              {courses.length === 0 && <tr><td colSpan="8" style={{ textAlign: 'center', padding: '40px', color: 'rgba(255,255,255,0.3)' }}>No courses yet. Click › Add Course to get started.</td></tr>}
             </tbody>
           </table>
         </div>
@@ -445,36 +385,6 @@ const normalizeTemplateUrl = (t) => {
                 <div className="form-group">
                   <label className="form-label" style={{ color: 'rgba(255,255,255,0.8)' }}>Description</label>
                   <textarea className="input-field" rows="3" required value={desc} onChange={e => setDesc(e.target.value)} />
-                </div>
-                {/* Template URL only (no file uploads) */}
-                <div className="form-group">
-                  <label className="form-label" style={{ color: 'rgba(255,255,255,0.8)' }}>
-                    Course Template URL
-                    <span style={{ fontSize: '11px', color: 'rgba(255,255,255,0.45)', fontWeight: 400, marginLeft: '8px' }}>(Paste a direct/download link)</span>
-                  </label>
-                  <div style={{ marginTop: 8 }}>
-                    <input
-                      type="text"
-                      placeholder="Paste template URL (Google Drive / direct link)"
-                      value={templateUrl}
-                      onChange={e => {
-                        const v = e.target.value;
-                        setTemplateUrl(v);
-                        setTemplate(v);
-                        setTemplateName(v ? (v.split('/').pop() || 'Template URL') : '');
-                      }}
-                      style={{ width: '100%', padding: '8px 10px', borderRadius: '8px', border: '1px solid rgba(255,255,255,0.12)', background: 'rgba(255,255,255,0.02)', color: '#fff' }}
-                    />
-                  </div>
-                  {template && (
-                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: '6px', padding: '6px 10px', background: 'rgba(163,230,53,0.08)', borderRadius: '6px', border: '1px solid rgba(163,230,53,0.2)' }}>
-                      <span style={{ fontSize: '12px', color: 'rgba(255,255,255,0.7)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', maxWidth: '70%' }}>🔗 {templateName}</span>
-                      <div style={{ display: 'flex', gap: '8px', flexShrink: 0 }}>
-                        <a href={resolveUploadUrl(template)} target="_blank" rel="noreferrer" style={{ fontSize: '11px', color: 'var(--color-sky-blue)', textDecoration: 'none' }}>Preview</a>
-                        <button type="button" onClick={() => { setTemplate(''); setTemplateName(''); setTemplateUrl(''); }} style={{ background: 'none', border: 'none', color: '#ff6b6b', fontSize: '11px', cursor: 'pointer', padding: 0 }}>Remove</button>
-                      </div>
-                    </div>
-                  )}
                 </div>
                 {/* Image Upload */}
                 <div className="form-group">

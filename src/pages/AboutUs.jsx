@@ -1,3 +1,5 @@
+import { useState } from 'react';
+import { Play } from 'lucide-react';
 import { FaBuilding, FaUsers, FaGlobe, FaAward, FaLightbulb, FaHandshake } from 'react-icons/fa';
 import { MdVerified, MdTimeline, MdSecurity } from 'react-icons/md';
 import { BsStarFill, BsGraphUpArrow } from 'react-icons/bs';
@@ -6,6 +8,8 @@ import aboutBg from '../assets/about.png';
 import servicesBg from '../assets/services.png';
 
 export default function AboutUs() {
+    const [videoPlaying, setVideoPlaying] = useState(false);
+    const YT_ID = 'gNYtC0swvaw';
     const team = [
         { name: 'Suresh Babu', role: 'CEO & Founder', icon: <FaBuilding size={28} />, color: 'var(--color-corporate-blue)' },
         { name: 'Anitha Reddy', role: 'CTO', icon: <MdSecurity size={28} />, color: 'var(--color-evergreen-glow)' },
@@ -23,9 +27,10 @@ export default function AboutUs() {
     ];
 
     return (
-        <div>
+        <>
             {/* Hero */}
             <section className="page-hero hero-text-clip" style={{ backgroundImage: `url(${aboutBg})` }}>
+                
                 <div className="page-hero-inner" >
                     <div className="badge-mint" style={{ marginBottom: '16px' }}>
                         <HiOfficeBuilding style={{ display: 'inline', marginRight: '6px' }} />
@@ -59,7 +64,6 @@ export default function AboutUs() {
             </section>
 
             <div className="container section-gap">
-
                 {/* Company Overview with Image */}
                 <div className="grid-2" style={{ alignItems: 'center', gap: '48px', marginBottom: '64px' }}>
                     <div style={{ borderRadius: '16px', overflow: 'hidden', boxShadow: '0 8px 32px rgba(0,0,0,0.12)' }}>
@@ -120,9 +124,7 @@ export default function AboutUs() {
                     <div className="journey-timeline">
                         {milestones.map((m, i) => (
                             <div key={i} className="journey-item">
-                                <div className="journey-dot">
-                                    {m.icon}
-                                </div>
+                                <div className="journey-dot">{m.icon}</div>
                                 <div className="journey-content">
                                     <div style={{ fontSize: '13px', fontWeight: '800', color: i % 2 === 0 ? 'var(--color-corporate-blue)' : 'var(--color-evergreen-glow)', textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '8px' }}>{m.year}</div>
                                     <p style={{ fontSize: '15px', color: 'var(--color-ink)', lineHeight: '1.6', fontWeight: '500' }}>{m.event}</p>
@@ -141,9 +143,7 @@ export default function AboutUs() {
                     <div className="grid-2">
                         {team.map((member, i) => (
                             <div key={i} className="leadership-card" style={{ '--accent-color': member.color }}>
-                                <div className="leadership-icon-wrapper">
-                                    {member.icon}
-                                </div>
+                                <div className="leadership-icon-wrapper">{member.icon}</div>
                                 <div className="leadership-info">
                                     <h4 className="heading-md" style={{ color: 'var(--color-ink)', marginBottom: '4px', fontWeight: '700' }}>{member.name}</h4>
                                     <p style={{ fontSize: '12px', color: 'var(--color-muted-text)', fontWeight: '600', textTransform: 'uppercase', letterSpacing: '0.05em' }}>{member.role}</p>
@@ -155,8 +155,54 @@ export default function AboutUs() {
                         ))}
                     </div>
                 </div>
-
             </div>
-        </div>
+
+            {/* YouTube Video — 2 col */}
+            <section style={{ backgroundColor: 'var(--color-navy-dark)', padding: '64px 0', borderBottom: '1px solid rgba(255,255,255,0.08)' }}>
+                <div className="container">
+                    <div className="grid-2" style={{ alignItems: 'center', gap: '48px' }}>
+                        <div>
+                            <div className="badge-mint" style={{ marginBottom: '16px' }}>WATCH US IN ACTION</div>
+                            <h2 className="display-md" style={{ color: 'var(--color-white)', textAlign: 'left', marginBottom: '16px' }}>SEE HOW ITBEES GLOBAL IS TRANSFORMING ENTERPRISES</h2>
+                            <p style={{ color: 'rgba(255,255,255,0.6)', fontSize: '15px', lineHeight: '1.8', marginBottom: '24px' }}>
+                                Discover the team, technology, and training behind 150+ successful enterprise transformations across India and Southeast Asia.
+                            </p>
+                            <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                                {[
+                                    '10+ years of enterprise expertise & innovation',
+                                    '150+ successful client deployments across industries',
+                                    'ISO-certified processes with 24/7 support infrastructure',
+                                ].map((point, i) => (
+                                    <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '10px', fontSize: '14px', color: 'rgba(255,255,255,0.75)' }}>
+                                        <span style={{ width: '20px', height: '20px', borderRadius: '50%', background: 'rgba(104,239,63,0.15)', border: '1px solid var(--color-ai-lime)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                                            <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: 'var(--color-ai-lime)', display: 'block' }} />
+                                        </span>
+                                        {point}
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                        <div style={{ position: 'relative', borderRadius: '16px', overflow: 'hidden', boxShadow: '0 24px 64px rgba(0,0,0,0.5)', aspectRatio: '16/9' }}>
+                            {!videoPlaying ? (
+                                <>
+                                    <img src={`https://img.youtube.com/vi/${YT_ID}/maxresdefault.jpg`} alt="Video preview" style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
+                                    <div style={{ position: 'absolute', inset: 0, background: 'rgba(2,14,49,0.45)' }} />
+                                    <button onClick={() => setVideoPlaying(true)} style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'none', border: 'none', cursor: 'pointer' }}>
+                                        <div style={{ width: '64px', height: '64px', borderRadius: '50%', background: 'rgba(255,0,0,0.9)', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 8px 32px rgba(255,0,0,0.4)', transition: 'transform 0.2s' }}
+                                            onMouseEnter={e => e.currentTarget.style.transform = 'scale(1.1)'}
+                                            onMouseLeave={e => e.currentTarget.style.transform = 'scale(1)'}
+                                        >
+                                            <Play size={26} color="#fff" fill="#fff" style={{ marginLeft: '4px' }} />
+                                        </div>
+                                    </button>
+                                </>
+                            ) : (
+                                <iframe src={`https://www.youtube.com/embed/${YT_ID}?autoplay=1&rel=0&enablejsapi=1`} title="ITBEES Global About" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerPolicy="strict-origin-when-cross-origin" allowFullScreen style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', border: 'none' }} />
+                            )}
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </>
     );
 }

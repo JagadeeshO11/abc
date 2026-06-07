@@ -86,25 +86,25 @@ export default function Footer() {
                                 <FaWhatsapp size={22} />
                             </a>
 
-                            <a href="#" target="_blank" rel="noreferrer" style={{ color: '#FF0000' }}>
+                            <a href="https://youtube.com/@itbeesglobalaidatahub?si=CdA8f2mdb7CY05Mf" target="_blank" rel="noreferrer" style={{ color: '#FF0000' }}>
                                 <FaYoutube size={22} />
                             </a>
 
-                            <a href="#" target="_blank" rel="noreferrer" style={{ color: '#0077B5' }}>
+                            {/* <a href="#" target="_blank" rel="noreferrer" style={{ color: '#0077B5' }}>
                                 <FaLinkedin size={22} />
-                            </a>
+                            </a> */}
 
-                            <a href="#" target="_blank" rel="noreferrer" style={{ color: '#E4405F' }}>
+                            <a href="https://instagram.com/itbeesglobalaidatahub?igshid=ZDdkNTZiNTM=" target="_blank" rel="noreferrer" style={{ color: '#E4405F' }}>
                                 <FaInstagram size={22} />
                             </a>
 
-                            <a href="#" target="_blank" rel="noreferrer" style={{ color: '#1DA1F2' }}>
+                            {/* <a href="#" target="_blank" rel="noreferrer" style={{ color: '#1DA1F2' }}>
                                 <FaTwitter size={22} />
-                            </a>
+                            </a> */}
 
-                            <a href="#" target="_blank" rel="noreferrer" style={{ color: '#1877F2' }}>
+                            {/* <a href="#" target="_blank" rel="noreferrer" style={{ color: '#1877F2' }}>
                                 <FaFacebook size={22} />
-                            </a>
+                            </a> */}
                         </div>
                     </div>
 

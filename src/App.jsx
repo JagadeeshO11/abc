@@ -42,11 +42,14 @@ import Careers from './pages/Careers.jsx';
 import JobApply from './pages/JobApply.jsx';
 import Training from './pages/Training.jsx';
 import Checkout from './pages/Checkout.jsx';
+import TemplateCheckout from './pages/TemplateCheckout.jsx';
+import OrderConfirmation from './pages/OrderConfirmation.jsx';
 import ContactUs from './pages/ContactUs.jsx';
 import AdminLayout from './pages/admin/AdminLayout.jsx';
 import Overview from './pages/admin/Overview.jsx';
 import ManageJobs from './pages/admin/ManageJobs.jsx';
 import ManageCourses from './pages/admin/ManageCourses.jsx';
+import ManageTemplates from './pages/admin/ManageTemplates.jsx';
 import Inquiries from './pages/admin/Inquiries.jsx';
 import Transactions from './pages/admin/Transactions.jsx';
 import SystemLogs from './pages/admin/SystemLogs.jsx';
@@ -62,6 +65,7 @@ import './pages/AboutUs.css';
 import './pages/Services.css';
 import './pages/Careers.css';
 import './pages/Training.css';
+import './pages/TemplateCheckout.css';
 import './pages/AdminPanel.css';
 import './pages/Auth.css';
 
@@ -69,7 +73,7 @@ import { publicApi, adminApi } from './utils/api.js';
 
 const VALID_PATHS = ['/', '/about', '/services', '/careers', '/training', '/contact', '/login'];
 
-function Shell({ children, toast, courses, authUser, onLogout }) {
+function Shell({ children, toast, courses, templates = [], authUser, onLogout }) {
   const { pathname } = useLocation();
   const isValid = VALID_PATHS.includes(pathname) || pathname.startsWith('/admin') || pathname.startsWith('/careers/apply/') || pathname.startsWith('/training');
   if (!isValid) {
@@ -77,7 +81,7 @@ function Shell({ children, toast, courses, authUser, onLogout }) {
       <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', textAlign: 'center', padding: '48px 24px', backgroundColor: 'var(--color-navy-dark)' }}>
         <div style={{ fontSize: '120px', fontFamily: 'var(--font-ozik)', fontWeight: '700', color: 'var(--color-ai-lime)', lineHeight: 1 }}>404</div>
         <h2 style={{ fontFamily: 'var(--font-ozik)', fontSize: '28px', color: 'var(--color-white)', margin: '16px 0 8px' }}>PAGE NOT FOUND</h2>
-        <p style={{ color: 'rgba(255,255,255,0.55)', fontSize: '15px', marginBottom: '32px', maxWidth: '400px' }}>The page you&apos;re looking for doesn&apos;t exist or has been moved.</p>
+        <p style={{ color: 'rgba(255,255,255,0.55)', fontSize: '15px', marginBottom: '32px', maxWidth: '400px' }}>The page you're looking for doesn't exist or has been moved.</p>
         <Link to="/" style={{ backgroundColor: 'var(--color-ai-lime)', color: 'var(--color-deep-moss)', padding: '12px 28px', borderRadius: '28px', fontFamily: 'var(--font-aeonik)', fontWeight: '600', fontSize: '15px', textDecoration: 'none' }}>Back to Home</Link>
       </div>
     );
@@ -85,7 +89,7 @@ function Shell({ children, toast, courses, authUser, onLogout }) {
   const isAdmin = pathname.startsWith('/admin') || pathname === '/login';
   return (
     <>
-      {!isAdmin && <NavBar courses={courses} authUser={authUser} onLogout={onLogout} />}
+      {!isAdmin && <NavBar courses={courses} templates={templates} authUser={authUser} onLogout={onLogout} />}
       <main style={{ flex: 1 }}>{children}</main>
       {!isAdmin && <Footer />}
       {!isAdmin && <ChatWidget />}
@@ -103,6 +107,7 @@ export default function App() {
   const [authUser, setAuthUser] = useState(getAuthUser());
   const [jobs, setJobs] = useState([]);
   const [courses, setCourses] = useState([]);
+  const [templates, setTemplates] = useState([]);
   const [applications, setApplications] = useState([]);
   const [enrollments, setEnrollments] = useState([]);
   const [inquiries, setInquiries] = useState([]);
@@ -113,12 +118,14 @@ export default function App() {
 
   useEffect(() => {
     const fetchData = async () => {
-      const [coursesRes, jobsRes] = await Promise.allSettled([
+      const [coursesRes, jobsRes, templatesRes] = await Promise.allSettled([
         publicApi.getCourses(),
-        publicApi.getJobs()
+        publicApi.getJobs(),
+        publicApi.getTemplates()
       ]);
       if (coursesRes.status === 'fulfilled') setCourses(coursesRes.value.data || []);
       if (jobsRes.status === 'fulfilled') setJobs(jobsRes.value.data || []);
+      if (templatesRes.status === 'fulfilled') setTemplates(templatesRes.value.data || []);
     };
     fetchData();
   }, []);
@@ -127,15 +134,17 @@ export default function App() {
     if (!authUser) return;
     const fetchAdminData = async () => {
       setAdminLoading(true);
-      const [inqsRes, appsRes, purchasesRes, logsRes] = await Promise.allSettled([
+      const [inqsRes, appsRes, purchasesRes, logsRes, tmplRes] = await Promise.allSettled([
         adminApi.getInquiries(),
         adminApi.getApplications(),
         adminApi.getPurchases(),
-        adminApi.getAuditLogs()
+        adminApi.getAuditLogs(),
+        adminApi.getTemplates()
       ]);
       if (inqsRes.status === 'fulfilled') setInquiries(inqsRes.value.data || []);
       if (appsRes.status === 'fulfilled') setApplications(appsRes.value.data || []);
       if (purchasesRes.status === 'fulfilled') setPayments(purchasesRes.value.data || []);
+      if (tmplRes.status === 'fulfilled') setTemplates(tmplRes.value.data || []);
       if (logsRes.status === 'fulfilled' && Array.isArray(logsRes.value?.data)) {
         setLogs(logsRes.value.data.map(l => ({
           id: l.id,
@@ -170,7 +179,7 @@ export default function App() {
     <Router>
       <div className="app-wrapper" style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', position: 'relative' }}>
         <ScrollToTop />
-        <Shell toast={toast} courses={courses} authUser={authUser} onLogout={handleLogout}>
+        <Shell toast={toast} courses={courses} templates={templates} authUser={authUser} onLogout={handleLogout}>
           <PageWrapper>
             <Routes>
               <Route path="/" element={<Home setInquiries={setInquiries} triggerToast={triggerToast} />} />
@@ -178,8 +187,10 @@ export default function App() {
               <Route path="/services" element={<Services />} />
               <Route path="/careers" element={<Careers jobs={jobs} />} />
               <Route path="/careers/apply/:jobId" element={<JobApply jobs={jobs} triggerToast={triggerToast} />} />
-              <Route path="/training" element={<Training courses={courses} triggerToast={triggerToast} />} />
+              <Route path="/training" element={<Training courses={courses} templates={templates} triggerToast={triggerToast} />} />
               <Route path="/training/checkout" element={<Checkout triggerToast={triggerToast} setPayments={setPayments} />} />
+              <Route path="/training/template-checkout" element={<TemplateCheckout triggerToast={triggerToast} setPayments={setPayments} />} />
+              <Route path="/training/order-confirmation" element={<OrderConfirmation />} />
               <Route path="/contact" element={<ContactUs setInquiries={setInquiries} triggerToast={triggerToast} />} />
               <Route path="/login" element={<AuthPage setAuthUser={setAuthUser} />} />
               <Route path="/admin" element={
@@ -187,12 +198,13 @@ export default function App() {
                   <AdminLayout onLogout={handleLogout} toast={toast} adminLoading={adminLoading} />
                 </ProtectedRoute>
               }>
-                <Route index element={<Overview inquiries={inquiries} applications={applications} payments={payments} />} />
+                <Route index element={<Overview inquiries={inquiries} applications={applications} payments={payments} courses={courses} jobs={jobs} templates={templates} />} />
                 <Route path="jobs" element={<ManageJobs jobs={jobs} setJobs={setJobs} applications={applications} setApplications={setApplications} triggerToast={triggerToast} />} />
                 <Route path="courses" element={<ManageCourses courses={courses} setCourses={setCourses} payments={payments} triggerToast={triggerToast} />} />
                 <Route path="inquiries" element={<Inquiries inquiries={inquiries} setInquiries={setInquiries} triggerToast={triggerToast} />} />
                 <Route path="transactions" element={<Transactions payments={payments} />} />
                 <Route path="logs" element={<SystemLogs logs={logs} />} />
+                <Route path="templates" element={<ManageTemplates templates={templates} setTemplates={setTemplates} triggerToast={triggerToast} />} />
                 <Route path="image-url" element={<ImageToUrl />} />
               </Route>
             </Routes>

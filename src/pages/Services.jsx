@@ -1,6 +1,6 @@
 import { useSearchParams, Link } from 'react-router-dom';
-import { useEffect } from 'react';
-import { Award, Users, Briefcase, BarChart2, Database } from 'lucide-react';
+import { useEffect, useState } from 'react';
+import { Award, Users, Briefcase, BarChart2, Database, Play } from 'lucide-react';
 import { FaDatabase, FaChartBar, FaUserTie, FaCogs, FaCloud, FaShieldAlt, FaRocket, FaCheckCircle } from 'react-icons/fa';
 import { MdIntegrationInstructions, MdAnalytics, MdVerified, MdAutoGraph, MdSpeed } from 'react-icons/md';
 import { BsGraphUp, BsArrowRight } from 'react-icons/bs';
@@ -13,6 +13,8 @@ import aboutBg from '../assets/about.png';
 export default function Services() {
     const [searchParams] = useSearchParams();
     const activeSubTab = searchParams.get('tab') || 'data';
+    const [videoPlaying, setVideoPlaying] = useState(false);
+    const YT_ID = '69JXE18_gUg';
 
     useEffect(() => {
         window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -55,6 +57,53 @@ export default function Services() {
                 <p className="page-hero-sub">{heroSubtitle}</p>
             </div>
         </section>
+
+            {/* YouTube Video — 2 col */}
+            <section style={{ backgroundColor: 'var(--color-navy-dark)', padding: '64px 0', borderBottom: '1px solid rgba(255,255,255,0.08)' }}>
+                <div className="container">
+                    <div className="grid-2" style={{ alignItems: 'center', gap: '48px' }}>
+                        <div>
+                            <div className="badge-mint" style={{ marginBottom: '16px' }}>WATCH US IN ACTION</div>
+                            <h2 className="display-md" style={{ color: 'var(--color-white)', textAlign: 'left', marginBottom: '16px' }}>SEE HOW WE DELIVER ENTERPRISE SOLUTIONS</h2>
+                            <p style={{ color: 'rgba(255,255,255,0.6)', fontSize: '15px', lineHeight: '1.8', marginBottom: '24px' }}>
+                                Watch how ITBEES Global architects data pipelines, builds BI dashboards, and deploys cloud infrastructure for enterprise clients.
+                            </p>
+                            <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                                {[
+                                    'End-to-end data pipeline engineering & automation',
+                                    'Executive-ready PowerBI & Tableau dashboards',
+                                    'Cloud-native infrastructure for mission-critical systems',
+                                ].map((point, i) => (
+                                    <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '10px', fontSize: '14px', color: 'rgba(255,255,255,0.75)' }}>
+                                        <span style={{ width: '20px', height: '20px', borderRadius: '50%', background: 'rgba(104,239,63,0.15)', border: '1px solid var(--color-ai-lime)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                                            <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: 'var(--color-ai-lime)', display: 'block' }} />
+                                        </span>
+                                        {point}
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                        <div style={{ position: 'relative', borderRadius: '16px', overflow: 'hidden', boxShadow: '0 24px 64px rgba(0,0,0,0.5)', aspectRatio: '16/9' }}>
+                            {!videoPlaying ? (
+                                <>
+                                    <img src={`https://img.youtube.com/vi/${YT_ID}/maxresdefault.jpg`} alt="Video preview" style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
+                                    <div style={{ position: 'absolute', inset: 0, background: 'rgba(2,14,49,0.45)' }} />
+                                    <button onClick={() => setVideoPlaying(true)} style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'none', border: 'none', cursor: 'pointer' }}>
+                                        <div style={{ width: '64px', height: '64px', borderRadius: '50%', background: 'rgba(255,0,0,0.9)', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 8px 32px rgba(255,0,0,0.4)', transition: 'transform 0.2s' }}
+                                            onMouseEnter={e => e.currentTarget.style.transform = 'scale(1.1)'}
+                                            onMouseLeave={e => e.currentTarget.style.transform = 'scale(1)'}
+                                        >
+                                            <Play size={26} color="#fff" fill="#fff" style={{ marginLeft: '4px' }} />
+                                        </div>
+                                    </button>
+                                </>
+                            ) : (
+                                <iframe src={`https://www.youtube.com/embed/${YT_ID}?autoplay=1&rel=0&enablejsapi=1`} title="ITBEES Global Services" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerPolicy="strict-origin-when-cross-origin" allowFullScreen style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', border: 'none' }} />
+                            )}
+                        </div>
+                    </div>
+                </div>
+            </section>
 
         {/* Service Highlights Bar */}
         <section style={{ backgroundColor: 'var(--color-white)', borderBottom: '1px solid var(--color-soft-gray)', padding: '40px 0' }}>
@@ -422,6 +471,7 @@ export default function Services() {
                     </div>
                 </div>
             )}
+
         </div>
         </>
     );

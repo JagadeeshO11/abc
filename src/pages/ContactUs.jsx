@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { MapPin, Phone, Mail, CheckCircle, Send, ArrowUpRight } from 'lucide-react';
+import { MapPin, Phone, Mail, CheckCircle, Send, ArrowUpRight, Play } from 'lucide-react';
 import { FaWhatsapp, FaLinkedin, FaTwitter, FaYoutube, FaInstagram, FaFacebook, FaClock, FaHeadset, FaBuilding, FaUserTie, FaChalkboardTeacher } from 'react-icons/fa';
 import { MdVerified, MdSupportAgent, MdBusiness } from 'react-icons/md';
 import { BsArrowRight, BsStarFill, BsCheckCircleFill } from 'react-icons/bs';
@@ -38,6 +38,8 @@ import { publicApi } from '../utils/api.js';
 
 export default function ContactUs({ setInquiries, triggerToast }) {
     const [form, setForm] = useState({ name: '', email: '', company: '', phone: '', service: '', message: '' });
+    const [videoPlaying, setVideoPlaying] = useState(false);
+    const YT_ID = 'gNYtC0swvaw';
     const [submitted, setSubmitted] = useState(false);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const set = k => e => setForm(f => ({ ...f, [k]: e.target.value }));
@@ -267,13 +269,13 @@ export default function ContactUs({ setInquiries, triggerToast }) {
     <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 4 }}>
         {[
             { icon: <FaWhatsapp size={15} />, label: 'WhatsApp Direct', color: '#25D366', href: 'https://wa.me/9963186067' },
-            { icon: <FaYoutube size={15} />, label: 'YouTube Channel', color: '#FF0000', href: '#' },
+            { icon: <FaYoutube size={15} />, label: 'YouTube Channel', color: '#FF0000', href: 'https://youtube.com/@itbeesglobalaidatahub?si=CdA8f2mdb7CY05Mf' },
 
-            { icon: <FaLinkedin size={15} />, label: 'LinkedIn Page', color: '#0077B5', href: '#' },
-            { icon: <FaInstagram size={15} />, label: 'Instagram', color: '#E4405F', href: '#' },
+            // { icon: <FaLinkedin size={15} />, label: 'LinkedIn Page', color: '#0077B5', href: '#' },
+            { icon: <FaInstagram size={15} />, label: 'Instagram', color: '#E4405F', href: 'https://instagram.com/itbeesglobalaidatahub?igshid=ZDdkNTZiNTM=' },
 
-            { icon: <FaTwitter size={15} />, label: 'Twitter / X', color: '#1DA1F2', href: '#' },
-            { icon: <FaFacebook size={15} />, label: 'Facebook Page', color: '#1877F2', href: '#' },
+            // { icon: <FaTwitter size={15} />, label: 'Twitter / X', color: '#1DA1F2', href: '#' },
+            // { icon: <FaFacebook size={15} />, label: 'Facebook Page', color: '#1877F2', href: '#' },
         ]
         .map((s, i) => (
             <a
@@ -398,6 +400,53 @@ export default function ContactUs({ setInquiries, triggerToast }) {
             </div>
 
         </div>
+
+            {/* YouTube Video — 2 col
+            <section style={{ backgroundColor: 'var(--color-navy-dark)', padding: '64px 0', borderBottom: '1px solid rgba(255,255,255,0.08)' }}>
+                <div className="container">
+                    <div className="grid-2" style={{ alignItems: 'center', gap: '48px' }}>
+                        <div>
+                            <div className="badge-mint" style={{ marginBottom: '16px' }}>WATCH US IN ACTION</div>
+                            <h2 className="display-md" style={{ color: 'var(--color-white)', textAlign: 'left', marginBottom: '16px' }}>SEE HOW ITBEES CAN HELP YOUR BUSINESS</h2>
+                            <p style={{ color: 'rgba(255,255,255,0.6)', fontSize: '15px', lineHeight: '1.8', marginBottom: '24px' }}>
+                                Get a quick overview of our ERP solutions, BI dashboards, corporate training programs, and staffing services — all in one place.
+                            </p>
+                            <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                                {[
+                                    'Enterprise data automation & BI dashboard consulting',
+                                    'Corporate training with certified instructors & live labs',
+                                    'HR staffing with pre-screened talent placed in 48 hours',
+                                ].map((point, i) => (
+                                    <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '10px', fontSize: '14px', color: 'rgba(255,255,255,0.75)' }}>
+                                        <span style={{ width: '20px', height: '20px', borderRadius: '50%', background: 'rgba(104,239,63,0.15)', border: '1px solid var(--color-ai-lime)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                                            <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: 'var(--color-ai-lime)', display: 'block' }} />
+                                        </span>
+                                        {point}
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                        <div style={{ position: 'relative', borderRadius: '16px', overflow: 'hidden', boxShadow: '0 24px 64px rgba(0,0,0,0.5)', aspectRatio: '16/9' }}>
+                            {!videoPlaying ? (
+                                <>
+                                    <img src={`https://img.youtube.com/vi/${YT_ID}/maxresdefault.jpg`} alt="Video preview" style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
+                                    <div style={{ position: 'absolute', inset: 0, background: 'rgba(2,14,49,0.45)' }} />
+                                    <button onClick={() => setVideoPlaying(true)} style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'none', border: 'none', cursor: 'pointer' }}>
+                                        <div style={{ width: '64px', height: '64px', borderRadius: '50%', background: 'rgba(255,0,0,0.9)', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 8px 32px rgba(255,0,0,0.4)', transition: 'transform 0.2s' }}
+                                            onMouseEnter={e => e.currentTarget.style.transform = 'scale(1.1)'}
+                                            onMouseLeave={e => e.currentTarget.style.transform = 'scale(1)'}
+                                        >
+                                            <Play size={26} color="#fff" fill="#fff" style={{ marginLeft: '4px' }} />
+                                        </div>
+                                    </button>
+                                </>
+                            ) : (
+                                <iframe src={`https://www.youtube.com/embed/${YT_ID}?autoplay=1&rel=0&enablejsapi=1`} title="ITBEES Global Contact" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerPolicy="strict-origin-when-cross-origin" allowFullScreen style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', border: 'none' }} />
+                            )}
+                        </div>
+                    </div>
+                </div>
+            </section> */}
         </>
     );
 }

@@ -1,53 +1,78 @@
-import { NavLink, Outlet, useNavigate } from 'react-router-dom';
-import { Grid, Briefcase, BookOpen, Mail, DollarSign, Activity, ImageIcon } from 'lucide-react';
+import { useState } from 'react';
+import { NavLink, Outlet } from 'react-router-dom';
+import { Grid, Briefcase, BookOpen, Mail, DollarSign, Activity, Menu, X } from 'lucide-react';
 import { CheckCircle } from 'lucide-react';
 
 const navItems = [
-  { to: '/admin', label: 'Overview Stats', icon: <Grid size={16} />, end: true },
-  { to: '/admin/jobs', label: 'Manage Jobs', icon: <Briefcase size={16} /> },
-  { to: '/admin/courses', label: 'Manage Courses', icon: <BookOpen size={16} /> },
-  { to: '/admin/inquiries', label: 'Client Inquiries', icon: <Mail size={16} /> },
+  { to: '/admin', label: 'Overview', icon: <Grid size={16} />, end: true },
+  { to: '/admin/jobs', label: 'Jobs', icon: <Briefcase size={16} /> },
+  { to: '/admin/courses', label: 'Courses', icon: <BookOpen size={16} /> },
+  { to: '/admin/inquiries', label: 'Inquiries', icon: <Mail size={16} /> },
   { to: '/admin/transactions', label: 'Transactions', icon: <DollarSign size={16} /> },
-  { to: '/admin/logs', label: 'System Logs', icon: <Activity size={16} /> },
-  // { to: '/admin/image-url', label: 'Image → URL', icon: <ImageIcon size={16} /> },
+  { to: '/admin/logs', label: 'Logs', icon: <Activity size={16} /> },
+  { to: '/admin/templates', label: 'Templates', icon: <BookOpen size={16} /> },
 ];
 
 export default function AdminLayout({ onLogout, toast, adminLoading }) {
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+  const closeMobile = () => setMobileMenuOpen(false);
+
   return (
     <div className="admin-layout">
-      <aside className="admin-sidebar">
-        <div style={{ color: 'var(--color-white)', fontSize: '13px', fontWeight: 'bold', padding: '0 16px 16px 16px', borderBottom: '1px solid rgba(255,255,255,0.1)', marginBottom: '16px' }}>
-          ADMIN MENU
+      {/* Mobile Hamburger */}
+      <button 
+        className="admin-mobile-toggle" 
+        onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+        aria-label="Toggle admin menu"
+      >
+        {mobileMenuOpen ? <X size={22} /> : <Menu size={22} />}
+      </button>
+
+      {/* Overlay for mobile */}
+      {mobileMenuOpen && (
+        <div className="admin-mobile-overlay" onClick={closeMobile} />
+      )}
+
+      <aside className={`admin-sidebar${mobileMenuOpen ? ' mobile-open' : ''}`}>
+        <div className="admin-sidebar-header">
+              <div className="admin-logo-container">
+                <img src="/src/assets/logo.png" alt="ITBEES" className="admin-logo" />
+                <span className="admin-logo-text">ITBEES</span>
+              </div>
+              <button className="admin-mobile-close" onClick={closeMobile}>
+                <X size={18} />
+              </button>
         </div>
-        {navItems.map(item => (
-          <NavLink
-            key={item.to}
-            to={item.to}
-            end={item.end}
-            className={({ isActive }) => `admin-sidebar-btn${isActive ? ' active' : ''}`}
-            style={{ textDecoration: 'none' }}
-          >
-            {item.icon} {item.label}
-          </NavLink>
-        ))}
-        <div style={{ marginTop: 'auto', padding: '16px' }}>
-          <button className="btn-mini" style={{ color: 'var(--color-ai-lime)', width: '100%' }} onClick={onLogout}>Logout</button>
+        <nav className="admin-sidebar-nav">
+          {navItems.map(item => (
+            <NavLink
+              key={item.to}
+              to={item.to}
+              end={item.end}
+              className={({ isActive }) => `admin-sidebar-btn${isActive ? ' active' : ''}`}
+              onClick={closeMobile}
+            >
+              {item.icon} {item.label}
+            </NavLink>
+          ))}
+        </nav>
+        <div className="admin-sidebar-footer">
+          <button className="admin-logout-btn" onClick={onLogout}>Logout</button>
         </div>
       </aside>
-      <section className="admin-content" style={{ textAlign: 'left' }}>
+      <section className="admin-content">
         {adminLoading ? (
-          <div style={{ minHeight: '300px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--color-muted-text)' }}>
-            <div style={{ textAlign: 'center' }}>
-              <div style={{ fontSize: '20px', marginBottom: '8px' }}>Loading admin data…</div>
-              <div style={{ fontSize: '13px', color: 'rgba(255,255,255,0.45)' }}>Fetching inquiries, applications, transactions and logs.</div>
-            </div>
+          <div className="admin-loading">
+            <div style={{ fontSize: '20px', marginBottom: '8px' }}>Loading admin data…</div>
+            <div style={{ fontSize: '13px', color: 'rgba(255,255,255,0.45)' }}>Fetching inquiries, applications, transactions and logs.</div>
           </div>
         ) : (
           <Outlet />
         )}
       </section>
       {toast && (
-        <div style={{ position: 'fixed', bottom: '30px', left: '30px', backgroundColor: 'var(--color-navy-dark)', borderLeft: '4px solid var(--color-ai-lime)', color: 'var(--color-white)', padding: '16px 24px', borderRadius: '4px', boxShadow: '0 10px 25px rgba(0,0,0,0.3)', zIndex: 9999, display: 'flex', alignItems: 'center', gap: '12px' }}>
+        <div className="admin-toast">
           <CheckCircle size={18} color="var(--color-ai-lime)" />
           <span>{toast}</span>
         </div>

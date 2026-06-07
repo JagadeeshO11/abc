@@ -1,0 +1,11 @@
+.template-checkout-container {
+  min-height: 80vh;
+  padding: 40px 16px;
+  display: flex;
+  justify-content: center;
+}
+
+.template-checkout-card {
+  width: 100%;
+  max-width: 520px;
+}

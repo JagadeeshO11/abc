@@ -87,6 +87,8 @@ export const publicApi = {
   getCourses: () => apiFetch('/public/courses'),
   getJobs: () => apiFetch('/public/jobs'),
   getJobById: (id) => apiFetch(`/public/jobs/${id}`),
+  getTemplates: () => apiFetch('/public/templates'),
+  getTemplateById: (id) => apiFetch(`/public/templates/${id}`),
   getAssessments: () => apiFetch('/public/assessments'),
   getAssessmentDetails: (id) => apiFetch(`/public/assessments/${id}`),
   submitInquiry: (data) => apiFetch('/public/inquiries', { method: 'POST', body: JSON.stringify(data) }),
@@ -94,6 +96,8 @@ export const publicApi = {
   requestPurchaseOtp: (email) => apiFetch('/public/purchase/otp', { method: 'POST', body: JSON.stringify({ email }) }),
   initiatePurchase: (data) => apiFetch('/public/purchase/initiate', { method: 'POST', body: JSON.stringify(data) }),
   verifyPayment: (data) => apiFetch('/public/purchase/verify', { method: 'POST', body: JSON.stringify(data) }),
+  initiateTemplatePurchase: (data) => apiFetch('/public/purchase-template/initiate', { method: 'POST', body: JSON.stringify(data) }),
+  verifyTemplatePayment: (data) => apiFetch('/public/purchase-template/verify', { method: 'POST', body: JSON.stringify(data) }),
   submitAssessment: (data) => apiFetch('/public/assessments/submit', { method: 'POST', body: JSON.stringify(data) }),
 };
 
@@ -107,6 +111,12 @@ export const adminApi = {
   updateCourse: (id, data) => apiFetch(`/admin/courses/${id}`, { method: 'PUT', body: JSON.stringify(data) }),
   archiveCourse: (id) => apiFetch(`/admin/courses/${id}/archive`, { method: 'PATCH' }),
   deleteCourse: (id) => apiFetch(`/admin/courses/${id}`, { method: 'DELETE' }),
+
+  // Templates
+  getTemplates: () => apiFetch('/admin/templates'),
+  createTemplate: (data) => apiFetch('/admin/templates', { method: 'POST', body: JSON.stringify(data) }),
+  updateTemplate: (id, data) => apiFetch(`/admin/templates/${id}`, { method: 'PUT', body: JSON.stringify(data) }),
+  deleteTemplate: (id) => apiFetch(`/admin/templates/${id}`, { method: 'DELETE' }),
 
   // Jobs
   createJob: (data) => apiFetch('/admin/jobs', { method: 'POST', body: JSON.stringify(data) }),

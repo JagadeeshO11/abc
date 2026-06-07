@@ -591,16 +591,12 @@ h3.display-sm {
 }
 /* Transparent text — image shows through the letters (sub-pages only) */
 .page-hero.hero-text-clip h1.display-lg {
-  background-image: inherit;
-  background-size: cover;
-  background-position: center;
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
-  color: transparent;
-  filter: brightness(1.6) contrast(1.1);
-  -webkit-text-stroke: 1.5px rgba(255, 255, 255, 0.55);
-  paint-order: stroke fill;
+  color: var(--color-white);
+  -webkit-text-fill-color: var(--color-white);
+  background-image: none;
+  -webkit-background-clip: unset;
+  background-clip: unset;
+  -webkit-text-stroke: none;
 }
 
 /* Solid white hero title (home page) */

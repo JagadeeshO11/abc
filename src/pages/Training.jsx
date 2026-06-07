@@ -1,20 +1,22 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { BookOpen, X, CheckCircle } from 'lucide-react';
+import { BookOpen, X, CheckCircle, Play } from 'lucide-react';
 import { FaGraduationCap, FaCertificate, FaUsers, FaClock, FaStar, FaPlayCircle, FaChalkboardTeacher, FaLaptopCode, FaAward, FaRocket } from 'react-icons/fa';
 import { MdOutlineQuiz, MdVerified, MdSchool } from 'react-icons/md';
 import { BsGraphUp, BsPeopleFill } from 'react-icons/bs';
+import { FiDownload, FiGrid } from 'react-icons/fi';
 import trainingBg from '../assets/training.png';
 
 import { publicApi } from '../utils/api.js';
 
-// Scroll to course card when navigated via navbar hash link
+// Scroll to course/template card when navigated via navbar hash link
 function useHashScroll() {
     useEffect(() => {
         const hash = window.location.hash;
         if (!hash) return;
+        const targetId = hash.slice(1);
         const tryScroll = (attempts = 0) => {
-            const el = document.getElementById(hash.slice(1));
+            const el = document.getElementById(targetId);
             if (el) {
                 el.scrollIntoView({ behavior: 'smooth', block: 'center' });
                 el.style.outline = '2px solid var(--color-ai-lime)';
@@ -28,9 +30,11 @@ function useHashScroll() {
     }, []);
 }
 
-export default function Training({ courses, setEnrollments, setPayments, triggerToast, addLog }) {
+export default function Training({ courses, templates = [], setEnrollments, setPayments, triggerToast, addLog }) {
     useHashScroll();
     const navigate = useNavigate();
+    const [videoPlaying, setVideoPlaying] = useState(false);
+    const YT_ID = 'XJ5ypnHE2P0';
 
     // Quiz state — kept for future use
     const [quizCourse, setQuizCourse] = useState(null);
@@ -79,6 +83,12 @@ export default function Training({ courses, setEnrollments, setPayments, trigger
         { icon: <FaRocket size={24} />, title: 'Career Support', desc: 'Get placement assistance and resume review from our HR team.' },
     ];
 
+    const templateFeatures = [
+        { icon: <FiDownload size={24} />, title: 'Instant Download', desc: 'Access your purchased templates immediately after payment confirmation.' },
+        { icon: <MdVerified size={24} />, title: 'Premium Quality', desc: 'Professionally designed templates built for enterprise use cases.' },
+        { icon: <FiGrid size={24} />, title: 'Fully Editable', desc: 'All templates come with editable source files and documentation.' },
+    ];
+
     return (
         <>
         {/* Hero */}
@@ -86,7 +96,7 @@ export default function Training({ courses, setEnrollments, setPayments, trigger
             <div className="page-hero-inner">
                 <div className="badge-mint" style={{ marginBottom: '16px' }}>
                     <FaGraduationCap style={{ display: 'inline', marginRight: '6px' }} />
-                    LEARN &amp; SCALE
+                    LEARN & SCALE
                 </div>
                 <h1 className="display-lg">CORPORATE TRAINING PROGRAMS</h1>
                 <p className="page-hero-sub">Enroll teams in database automation, React frontend layouts, or cloud dashboards.</p>
@@ -111,7 +121,7 @@ export default function Training({ courses, setEnrollments, setPayments, trigger
         </section>
 
         {/* Training Image Banner */}
-        <section style={{ padding: '48px 0' }}>
+        <section style={{ padding: '48px 0', borderBottom: '1px solid var(--color-soft-gray)' }}>
             <div className="container">
                 <div style={{ position: 'relative', overflow: 'hidden', height: '280px', borderRadius: 'var(--radius-containers)' }}>
                     <img src={trainingBg} alt="Training Programs" style={{ width: '100%', height: '100%', objectFit: 'cover', filter: 'brightness(0.4)' }} />
@@ -148,7 +158,7 @@ export default function Training({ courses, setEnrollments, setPayments, trigger
             </div>
 
             {/* Course Catalog */}
-            <div style={{ marginBottom: '64px' }}>
+            <div id="courses-section" style={{ marginBottom: '64px' }}>
                 <div className="section-header">
                     <h2 className="display-md">AVAILABLE COURSES</h2>
                     <p className="section-subtitle">Choose from our curated catalog of enterprise-grade training programs.</p>
@@ -183,10 +193,6 @@ export default function Training({ courses, setEnrollments, setPayments, trigger
                                         <button className="btn-primary" style={{ padding: '8px 12px', fontSize: '12px' }} onClick={() => navigate('/training/checkout', { state: { course } })}>
                                             Enroll Now
                                         </button>
-                                        {/* Test Skills button — hidden, to be introduced later */}
-                                        {/* <button className="btn-secondary" style={{ padding: '8px 12px', fontSize: '12px' }} onClick={() => startQuiz(course)}>
-                                            Test Skills
-                                        </button> */}
                                     </div>
                                 </div>
                             </div>
@@ -194,6 +200,77 @@ export default function Training({ courses, setEnrollments, setPayments, trigger
                     ))}
                 </div>
             </div>
+
+            {/* Template Catalog */}
+            {templates.length > 0 && (
+                <div id="templates-section" style={{ marginBottom: '64px' }}>
+                    <div style={{ borderTop: '2px solid var(--color-soft-gray)', paddingTop: '48px', marginBottom: '32px' }}>
+                        <div className="section-header">
+                            <div className="badge-mint" style={{ marginBottom: '12px' }}>
+                                <FiDownload style={{ display: 'inline', marginRight: '6px' }} />
+                                READY-TO-USE ASSETS
+                            </div>
+                            <h2 className="display-md">AVAILABLE TEMPLATES</h2>
+                            <p className="section-subtitle">Premium digital templates for your business — dashboards, reports, ERP sheets, and more.</p>
+                        </div>
+
+                        {/* Template Features */}
+                        <div className="grid-3" style={{ marginBottom: '40px' }}>
+                            {templateFeatures.map((f, i) => (
+                                <div key={i} className="card-neutral" style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                                    <div style={{ color: 'var(--color-evergreen-glow)' }}>{f.icon}</div>
+                                    <h4 className="heading-md" style={{ color: 'var(--color-ink)' }}>{f.title}</h4>
+                                    <p style={{ fontSize: '13px', color: 'var(--color-muted-text)', lineHeight: '1.6' }}>{f.desc}</p>
+                                </div>
+                            ))}
+                        </div>
+
+                        <div className="grid-3">
+                            {templates.map(template => (
+                                <div key={template.id} id={`template-${template.id}`} className="course-card" style={{ scrollMarginTop: '100px' }}>
+                                    <div className="course-card-img-placeholder" style={{ position: 'relative', overflow: 'hidden', backgroundColor: 'var(--color-light-canvas)', borderRadius: '8px 8px 0 0' }}>
+                                        {template.image ? (
+                                            <img src={template.image} alt={template.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                                                onError={e => { e.target.style.display = 'none'; e.target.nextSibling.style.display = 'flex'; }} />
+                                        ) : null}
+                                        <div style={{ display: template.image ? 'none' : 'flex', width: '100%', height: '100%', alignItems: 'center', justifyContent: 'center', position: 'absolute', inset: 0, background: 'var(--gradient-card)' }}>
+                                            <FiDownload size={36} color="rgba(255,255,255,0.5)" />
+                                        </div>
+                                        <div style={{ position: 'absolute', top: '8px', right: '8px', zIndex: 2 }}>
+                                            <MdVerified size={20} color="var(--color-evergreen-glow)" />
+                                        </div>
+                                    </div>
+                                    <div className="course-card-body">
+                                        <span className="badge-blue" style={{ marginBottom: '10px', display: 'inline-block' }}>{template.category || 'General'}</span>
+                                        <h3 className="heading-lg" style={{ color: 'var(--color-ink)', marginBottom: '8px' }}>{template.name}</h3>
+                                        <p style={{ fontSize: '13px', color: 'var(--color-muted-text)', marginBottom: '12px', flex: 1, lineHeight: '1.6' }}>{template.description}</p>
+                                        {template.features && Array.isArray(template.features) && template.features.length > 0 && (
+                                            <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', marginBottom: '12px', fontSize: '12px', color: 'var(--color-muted-text)' }}>
+                                                {template.features.slice(0, 3).map((f, i) => (
+                                                    <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                                                        <MdVerified size={12} color="var(--color-evergreen-glow)" />
+                                                        {f}
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        )}
+                                        <div style={{ display: 'flex', gap: '12px', marginBottom: '16px', fontSize: '12px', color: 'var(--color-muted-text)', flexWrap: 'wrap' }}>
+                                            <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}><FiGrid size={12} /> {template.category || 'Template'}</span>
+                                            <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}><FaStar size={12} color="var(--color-gold)" /> {template.rating || 'New'}</span>
+                                        </div>
+                                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderTop: '1px solid var(--color-soft-gray)', paddingTop: '16px', gap: '8px', flexWrap: 'wrap' }}>
+                                            <div style={{ fontSize: '16px', fontWeight: '700', color: 'var(--color-ink)' }}>₹{template.price.toLocaleString('en-IN')}</div>
+                                            <button className="btn-primary" style={{ padding: '8px 12px', fontSize: '12px' }} onClick={() => navigate('/training/template-checkout', { state: { template } })}>
+                                                Buy Now
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                </div>
+            )}
 
             {/* Learning Paths */}
             <div style={{ marginBottom: '64px' }}>
@@ -277,6 +354,53 @@ export default function Training({ courses, setEnrollments, setPayments, trigger
             </div>
 
         </div>
+
+            {/* YouTube Video — 2 col */}
+            <section style={{ backgroundColor: 'var(--color-navy-dark)', padding: '64px 0', borderBottom: '1px solid rgba(255,255,255,0.08)' }}>
+                <div className="container">
+                    <div className="grid-2" style={{ alignItems: 'center', gap: '48px' }}>
+                        <div>
+                            <div className="badge-mint" style={{ marginBottom: '16px' }}>WATCH US IN ACTION</div>
+                            <h2 className="display-md" style={{ color: 'var(--color-white)', textAlign: 'left', marginBottom: '16px' }}>EXPERIENCE ITBEES TRAINING IN ACTION</h2>
+                            <p style={{ color: 'rgba(255,255,255,0.6)', fontSize: '15px', lineHeight: '1.8', marginBottom: '24px' }}>
+                                Watch how our instructors deliver live Power BI sessions, guide students through real-world datasets, and help teams upskill with enterprise-grade curriculum.
+                            </p>
+                            <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                                {[
+                                    'Live instructor-led sessions with real enterprise data',
+                                    'Hands-on labs with Power BI, Python, Excel & SQL',
+                                    '5,000+ professionals trained with 4.9/5 average rating',
+                                ].map((point, i) => (
+                                    <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '10px', fontSize: '14px', color: 'rgba(255,255,255,0.75)' }}>
+                                        <span style={{ width: '20px', height: '20px', borderRadius: '50%', background: 'rgba(104,239,63,0.15)', border: '1px solid var(--color-ai-lime)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                                            <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: 'var(--color-ai-lime)', display: 'block' }} />
+                                        </span>
+                                        {point}
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                        <div style={{ position: 'relative', borderRadius: '16px', overflow: 'hidden', boxShadow: '0 24px 64px rgba(0,0,0,0.5)', aspectRatio: '16/9' }}>
+                            {!videoPlaying ? (
+                                <>
+                                    <img src={`https://img.youtube.com/vi/${YT_ID}/maxresdefault.jpg`} alt="Video preview" style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
+                                    <div style={{ position: 'absolute', inset: 0, background: 'rgba(2,14,49,0.45)' }} />
+                                    <button onClick={() => setVideoPlaying(true)} style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'none', border: 'none', cursor: 'pointer' }}>
+                                        <div style={{ width: '64px', height: '64px', borderRadius: '50%', background: 'rgba(255,0,0,0.9)', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 8px 32px rgba(255,0,0,0.4)', transition: 'transform 0.2s' }}
+                                            onMouseEnter={e => e.currentTarget.style.transform = 'scale(1.1)'}
+                                            onMouseLeave={e => e.currentTarget.style.transform = 'scale(1)'}
+                                        >
+                                            <Play size={26} color="#fff" fill="#fff" style={{ marginLeft: '4px' }} />
+                                        </div>
+                                    </button>
+                                </>
+                            ) : (
+                                <iframe src={`https://www.youtube.com/embed/${YT_ID}?autoplay=1&rel=0&enablejsapi=1`} title="ITBEES Global Training" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerPolicy="strict-origin-when-cross-origin" allowFullScreen style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', border: 'none' }} />
+                            )}
+                        </div>
+                    </div>
+                </div>
+            </section>
         </>
     );
 }

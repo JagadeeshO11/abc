@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { Menu, X, ChevronDown, BarChart2, GraduationCap, Users, ArrowRight } from 'lucide-react';
+import { Menu, X, ChevronDown, BarChart2, GraduationCap, Users, ArrowRight, Download } from 'lucide-react';
 import logoImg from '../assets/logo.png';
 
 const SERVICE_TABS = [
@@ -10,8 +10,9 @@ const SERVICE_TABS = [
 ];
 
 const PER_COL = 5;
+const TEMPLATE_COL_MAX = 4;
 
-export default function NavBar({ courses = [], authUser, onLogout }) {
+export default function NavBar({ courses = [], templates = [], authUser, onLogout }) {
     const location = useLocation();
     const [menuOpen, setMenuOpen]       = useState(false);
     const [servicesOpen, setServicesOpen] = useState(false);
@@ -21,8 +22,10 @@ export default function NavBar({ courses = [], authUser, onLogout }) {
     const [mobileServicesOpen, setMobileServicesOpen] = useState(false);
     const [mobileTrainingOpen, setMobileTrainingOpen] = useState(false);
     const [mobileShowAllCourses, setMobileShowAllCourses] = useState(false);
+    const [mobileShowAllTemplates, setMobileShowAllTemplates] = useState(false);
 
     const MOBILE_COURSES_LIMIT = 5;
+    const MOBILE_TEMPLATES_LIMIT = 4;
 
     const navRef         = useRef(null);
     const servicesRef    = useRef(null);
@@ -70,6 +73,28 @@ export default function NavBar({ courses = [], authUser, onLogout }) {
         }
     };
 
+    const scrollToTemplate = (templateId) => {
+        setTrainingOpen(false);
+        setMenuOpen(false);
+        if (location.pathname === '/training') {
+            const el = document.getElementById(`template-${templateId}`);
+            if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        } else {
+            navigate(`/training#template-${templateId}`);
+        }
+    };
+
+    const scrollToSection = (sectionId) => {
+        setTrainingOpen(false);
+        setMenuOpen(false);
+        if (location.pathname === '/training') {
+            const el = document.getElementById(sectionId);
+            if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        } else {
+            navigate(`/training#${sectionId}`);
+        }
+    };
+
     const isActive = (path) => location.pathname === path ? 'active' : '';
     const isServicesActive = location.pathname === '/services' ? 'active' : '';
     const isTrainingActive = location.pathname === '/training'  ? 'active' : '';
@@ -79,6 +104,7 @@ export default function NavBar({ courses = [], authUser, onLogout }) {
         setMobileServicesOpen(false);
         setMobileTrainingOpen(false);
         setMobileShowAllCourses(false);
+        setMobileShowAllTemplates(false);
     };
 
     /* keep --navbar-bottom in sync */
@@ -113,7 +139,13 @@ export default function NavBar({ courses = [], authUser, onLogout }) {
     const visibleCourses = courses.slice(0, PER_COL * 2);
     const col1 = visibleCourses.slice(0, PER_COL);
     const col2 = visibleCourses.slice(PER_COL, PER_COL * 2);
-    const hasMore = courses.length > PER_COL * 2;
+    const hasMoreCourses = courses.length > PER_COL * 2;
+
+    /* templates column */
+    const visibleTemplates = templates.slice(0, TEMPLATE_COL_MAX);
+
+    const hasCourses = courses.length > 0;
+    const hasTemplates = templates.length > 0;
 
     return (
         <nav className="header-nav" ref={navRef}>
@@ -122,10 +154,10 @@ export default function NavBar({ courses = [], authUser, onLogout }) {
                     <div className="logo-img-container">
                         <img src={logoImg} alt="ITBEES Global" className="header-logo-img" />
                     </div>
-                    <div className="logo-text-block">
+                    {/* <div className="logo-text-block">
                         <span className="logo-brand">ITBEES <span className="logo-accent">GLOBAL</span></span>
                         <span className="logo-tagline">Smart Cloud · BI Analytics · ERP Solutions</span>
-                    </div>
+                    </div> */}
                 </Link>
 
                 {/* Desktop Links */}
@@ -162,7 +194,7 @@ export default function NavBar({ courses = [], authUser, onLogout }) {
 
                     <li><Link to="/careers" className={`nav-link ${isActive('/careers')}`}>Careers</Link></li>
 
-                    {/* Training dropdown */}
+                    {/* Training dropdown — flat list with courses then templates */}
                     <li className="nav-dropdown-wrap" ref={trainingRef}
                         onMouseEnter={handleTrainingEnter}
                         onMouseLeave={handleTrainingLeave}>
@@ -176,57 +208,93 @@ export default function NavBar({ courses = [], authUser, onLogout }) {
                             <div className="nav-training-dropdown"
                                  onMouseEnter={handleTrainingEnter}
                                  onMouseLeave={handleTrainingLeave}>
-                                {/* header */}
-                                <div className="nav-training-header">
-                                    <span style={{ fontSize: 12, fontWeight: 700, color: 'rgba(255,255,255,0.4)', textTransform: 'uppercase', letterSpacing: '0.08em' }}>
-                                        Available Courses
-                                    </span>
-                                    <span style={{ fontSize: 11, color: 'rgba(255,255,255,0.3)' }}>
-                                        {courses.length} programs
-                                    </span>
-                                </div>
 
-                                {/* columns */}
-                                <div className="nav-training-cols">
-                                    <div className="nav-training-col">
-                                        {col1.map(c => (
-                                            <button key={c.id} className="nav-training-item" style={{ background: 'none', border: 'none', width: '100%', textAlign: 'left', cursor: 'pointer', padding: 0 }}
-                                                onClick={() => scrollToCourse(c.id)}>
-                                                <span className="nav-training-emoji">{c.icon || '📘'}</span>
-                                                <span>
-                                                    <span className="nav-dropdown-label">{c.title}</span>
-                                                    <span className="nav-dropdown-desc">{c.category} · {c.duration}</span>
-                                                </span>
-                                            </button>
-                                        ))}
-                                    </div>
-                                    {col2.length > 0 && (
-                                        <div className="nav-training-col">
-                                            {col2.map(c => (
-                                                <button key={c.id} className="nav-training-item" style={{ background: 'none', border: 'none', width: '100%', textAlign: 'left', cursor: 'pointer', padding: 0 }}
-                                                    onClick={() => scrollToCourse(c.id)}>
-                                                    <span className="nav-training-emoji">{c.icon || '📘'}</span>
-                                                    <span>
-                                                        <span className="nav-dropdown-label">{c.title}</span>
-                                                        <span className="nav-dropdown-desc">{c.category} · {c.duration}</span>
+                                {/* Two-column row: Courses | Templates */}
+                                {(hasCourses || hasTemplates) && (
+                                    <div style={{ display: 'flex', flexDirection: 'row', gap: '24px' }}>
+                                        {/* Courses column */}
+                                        {hasCourses && (
+                                            <div className="nav-training-header-col" style={{ flex: 1, minWidth: 0 }}>
+                                                <div className="nav-training-header">
+                                                    <span style={{ fontSize: 12, fontWeight: 700, color: 'rgba(255,255,255,0.4)', textTransform: 'uppercase', letterSpacing: '0.08em' }}>
+                                                        Available Courses
                                                     </span>
-                                                </button>
-                                            ))}
-                                        </div>
-                                    )}
-                                </div>
+                                                    <span style={{ fontSize: 11, color: 'rgba(255,255,255,0.3)' }}>
+                                                        {courses.length} programs
+                                                    </span>
+                                                </div>
+                                                {col1.map(c => (
+                                                    <button key={c.id} className="nav-training-item" style={{ background: 'none', border: 'none', width: '100%', textAlign: 'left', cursor: 'pointer', padding: 0 }}
+                                                        onClick={() => scrollToCourse(c.id)}>
+                                                        <span className="nav-training-emoji">{c.icon || '📘'}</span>
+                                                        <span>
+                                                            <span className="nav-dropdown-label">{c.title}</span>
+                                                            <span className="nav-dropdown-desc">{c.category} · {c.duration}</span>
+                                                        </span>
+                                                    </button>
+                                                ))}
+                                                {col2.map(c => (
+                                                    <button key={c.id} className="nav-training-item" style={{ background: 'none', border: 'none', width: '100%', textAlign: 'left', cursor: 'pointer', padding: 0 }}
+                                                        onClick={() => scrollToCourse(c.id)}>
+                                                        <span className="nav-training-emoji">{c.icon || '📘'}</span>
+                                                        <span>
+                                                            <span className="nav-dropdown-label">{c.title}</span>
+                                                            <span className="nav-dropdown-desc">{c.category} · {c.duration}</span>
+                                                        </span>
+                                                    </button>
+                                                ))}
+                                                <div className="nav-training-footer">
+                                                    <button className="nav-training-more" style={{ background: 'none', border: 'none', cursor: 'pointer', width: '100%' }}
+                                                        onClick={() => scrollToSection('courses-section')}>
+                                                        View all {courses.length} courses
+                                                        <ArrowRight size={13} />
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        )}
 
-                                {/* footer — show more */}
-                                <div className="nav-training-footer">
-                                    <Link to="/training" className="nav-training-more"
-                                        onClick={() => setTrainingOpen(false)}>
-                                        {hasMore
-                                            ? `View all ${courses.length} courses`
-                                            : 'View full course catalog'
-                                        }
-                                        <ArrowRight size={13} />
-                                    </Link>
-                                </div>
+                                        {/* Templates column */}
+                                        {hasTemplates && (
+                                            <div className="nav-training-header-col" style={{ flex: 1, minWidth: 0 }}>
+                                                <div className="nav-training-header">
+                                                    <span style={{ fontSize: 12, fontWeight: 700, color: 'rgba(255,255,255,0.4)', textTransform: 'uppercase', letterSpacing: '0.08em' }}>
+                                                        Available Templates
+                                                    </span>
+                                                    <span style={{ fontSize: 11, color: 'rgba(255,255,255,0.3)' }}>
+                                                        {templates.length} items
+                                                    </span>
+                                                </div>
+                                                {visibleTemplates.map(t => (
+                                                    <button key={t.id} className="nav-training-item" style={{ background: 'none', border: 'none', width: '100%', textAlign: 'left', cursor: 'pointer', padding: 0 }}
+                                                        onClick={() => scrollToTemplate(t.id)}>
+                                                        <span className="nav-training-emoji"><Download size={14} /></span>
+                                                        <span>
+                                                            <span className="nav-dropdown-label">{t.name}</span>
+                                                            <span className="nav-dropdown-desc">{t.category || 'Template'} · ₹{Number(t.price).toLocaleString('en-IN')}</span>
+                                                        </span>
+                                                    </button>
+                                                ))}
+                                                <div className="nav-training-footer">
+                                                    <button className="nav-training-more" style={{ background: 'none', border: 'none', cursor: 'pointer', width: '100%' }}
+                                                        onClick={() => scrollToSection('templates-section')}>
+                                                        View all {templates.length} templates
+                                                        <ArrowRight size={13} />
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        )}
+                                    </div>
+                                )}
+
+                                {/* Fallback if nothing */}
+                                {!hasCourses && !hasTemplates && (
+                                    <div className="nav-training-header">
+                                        <Link to="/training" className="nav-training-more"
+                                            onClick={() => setTrainingOpen(false)}>
+                                            Go to Training <ArrowRight size={13} />
+                                        </Link>
+                                    </div>
+                                )}
                             </div>
                         )}
                     </li>
@@ -299,13 +367,19 @@ export default function NavBar({ courses = [], authUser, onLogout }) {
                         <li>
                             <button
                                 className="nav-mobile-accordion-btn"
-                                onClick={() => { setMobileTrainingOpen(o => !o); setMobileShowAllCourses(false); }}
+                                onClick={() => { setMobileTrainingOpen(o => !o); setMobileShowAllCourses(false); setMobileShowAllTemplates(false); }}
                             >
                                 <span>Training</span>
                                 <ChevronDown size={14} style={{ transition: 'transform 0.2s', transform: mobileTrainingOpen ? 'rotate(180deg)' : 'rotate(0deg)' }} />
                             </button>
                             {mobileTrainingOpen && (
                                 <ul className="nav-mobile-sub">
+                                    {/* Courses */}
+                                    {hasCourses && (
+                                        <li style={{ padding: '8px 12px', fontSize: '11px', fontWeight: 700, color: 'rgba(255,255,255,0.35)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                                            Courses ({courses.length})
+                                        </li>
+                                    )}
                                     {(mobileShowAllCourses ? courses : courses.slice(0, MOBILE_COURSES_LIMIT)).map(c => (
                                         <li key={c.id}>
                                             <button className="nav-mobile-sub-link" style={{ background: 'none', border: 'none', width: '100%', textAlign: 'left', cursor: 'pointer' }}
@@ -320,21 +394,44 @@ export default function NavBar({ courses = [], authUser, onLogout }) {
                                     ))}
                                     {courses.length > MOBILE_COURSES_LIMIT && !mobileShowAllCourses && (
                                         <li>
-                                            <button
-                                                className="nav-mobile-view-more"
-                                                onClick={() => setMobileShowAllCourses(true)}
-                                            >
+                                            <button className="nav-mobile-view-more" onClick={() => setMobileShowAllCourses(true)}>
                                                 View {courses.length - MOBILE_COURSES_LIMIT} more courses <ArrowRight size={12} />
                                             </button>
                                         </li>
                                     )}
-                                    {mobileShowAllCourses && (
-                                        <li>
-                                            <Link to="/training" className="nav-mobile-view-more" onClick={closeMenu}>
-                                                View full catalog <ArrowRight size={12} />
-                                            </Link>
+
+                                    {/* Templates */}
+                                    {hasTemplates && (
+                                        <li style={{ padding: '8px 12px', fontSize: '11px', fontWeight: 700, color: 'rgba(255,255,255,0.35)', textTransform: 'uppercase', letterSpacing: '0.05em', borderTop: '1px solid rgba(255,255,255,0.08)', marginTop: '8px', paddingTop: '12px' }}>
+                                            Templates ({templates.length})
                                         </li>
                                     )}
+                                    {(mobileShowAllTemplates ? templates : templates.slice(0, MOBILE_TEMPLATES_LIMIT)).map(t => (
+                                        <li key={t.id}>
+                                            <button className="nav-mobile-sub-link" style={{ background: 'none', border: 'none', width: '100%', textAlign: 'left', cursor: 'pointer' }}
+                                                onClick={() => scrollToTemplate(t.id)}>
+                                                <span className="nav-mobile-sub-icon" style={{ fontSize: '14px' }}><Download size={14} /></span>
+                                                <span>
+                                                    <span className="nav-mobile-sub-label">{t.name}</span>
+                                                    <span className="nav-mobile-sub-desc">{t.category || 'Template'} · ₹{Number(t.price).toLocaleString('en-IN')}</span>
+                                                </span>
+                                            </button>
+                                        </li>
+                                    ))}
+                                    {templates.length > MOBILE_TEMPLATES_LIMIT && !mobileShowAllTemplates && (
+                                        <li>
+                                            <button className="nav-mobile-view-more" onClick={() => setMobileShowAllTemplates(true)}>
+                                                View {templates.length - MOBILE_TEMPLATES_LIMIT} more templates <ArrowRight size={12} />
+                                            </button>
+                                        </li>
+                                    )}
+
+                                    {/* View full training page */}
+                                    <li style={{ borderTop: '1px solid rgba(255,255,255,0.08)', marginTop: '8px', paddingTop: '8px' }}>
+                                        <Link to="/training" className="nav-mobile-view-more" onClick={closeMenu}>
+                                            View full catalog <ArrowRight size={12} />
+                                        </Link>
+                                    </li>
                                 </ul>
                             )}
                         </li>
