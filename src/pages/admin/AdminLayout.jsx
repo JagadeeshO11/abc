@@ -39,8 +39,9 @@ export default function AdminLayout({ onLogout, toast, adminLoading }) {
       <aside className={`admin-sidebar${mobileMenuOpen ? ' mobile-open' : ''}`}>
         <div className="admin-sidebar-header">
           <div className="admin-logo-container">
-            <img src={logoImg} alt="ITBEES" className="admin-logo align-items: center;" />
-
+            <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '20px' }}>
+              <img src={logoImg} alt="ITBEES" className="admin-logo" />
+            </div>
           </div>
           <button className="admin-mobile-close" onClick={closeMobile}>
             <X size={18} />
