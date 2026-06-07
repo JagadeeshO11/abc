@@ -46,8 +46,15 @@
 }
 
 @keyframes auth-slide-up {
-  from { opacity: 0; transform: translateY(24px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .auth-logo {
@@ -59,10 +66,10 @@
 
 .auth-logo img {
   height: 64px;
-  width: 64px;
+  /* width: 64px;
   object-fit: cover;
   border-radius: 50%;
-  display: block;
+  display: block; */
 }
 
 .auth-role-badge {
@@ -330,8 +337,15 @@
 }
 
 @keyframes pulse-verify {
-  0%, 100% { box-shadow: 0 0 0 0 rgba(104, 239, 63, 0.4); }
-  50% { box-shadow: 0 0 0 12px rgba(104, 239, 63, 0); }
+
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgba(104, 239, 63, 0.4);
+  }
+
+  50% {
+    box-shadow: 0 0 0 12px rgba(104, 239, 63, 0);
+  }
 }
 
 /* Dummy credentials banner */
@@ -363,7 +377,9 @@
 }
 
 @keyframes spin {
-  to { transform: rotate(360deg); }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 @media (max-width: 520px) {
