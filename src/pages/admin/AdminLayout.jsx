@@ -2,15 +2,17 @@ import { useState } from 'react';
 import { NavLink, Outlet } from 'react-router-dom';
 import { Grid, Briefcase, BookOpen, Mail, DollarSign, Activity, Menu, X } from 'lucide-react';
 import { CheckCircle } from 'lucide-react';
+import logoImg from '../../assets/logo.png';
 
 const navItems = [
   { to: '/admin', label: 'Overview', icon: <Grid size={16} />, end: true },
   { to: '/admin/jobs', label: 'Jobs', icon: <Briefcase size={16} /> },
   { to: '/admin/courses', label: 'Courses', icon: <BookOpen size={16} /> },
+  { to: '/admin/templates', label: 'Templates', icon: <BookOpen size={16} /> },
   { to: '/admin/inquiries', label: 'Inquiries', icon: <Mail size={16} /> },
   { to: '/admin/transactions', label: 'Transactions', icon: <DollarSign size={16} /> },
   { to: '/admin/logs', label: 'Logs', icon: <Activity size={16} /> },
-  { to: '/admin/templates', label: 'Templates', icon: <BookOpen size={16} /> },
+
 ];
 
 export default function AdminLayout({ onLogout, toast, adminLoading }) {
@@ -21,8 +23,8 @@ export default function AdminLayout({ onLogout, toast, adminLoading }) {
   return (
     <div className="admin-layout">
       {/* Mobile Hamburger */}
-      <button 
-        className="admin-mobile-toggle" 
+      <button
+        className="admin-mobile-toggle"
         onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
         aria-label="Toggle admin menu"
       >
@@ -36,13 +38,13 @@ export default function AdminLayout({ onLogout, toast, adminLoading }) {
 
       <aside className={`admin-sidebar${mobileMenuOpen ? ' mobile-open' : ''}`}>
         <div className="admin-sidebar-header">
-              <div className="admin-logo-container">
-                <img src="/src/assets/logo.png" alt="ITBEES" className="admin-logo" />
-                <span className="admin-logo-text">ITBEES</span>
-              </div>
-              <button className="admin-mobile-close" onClick={closeMobile}>
-                <X size={18} />
-              </button>
+          <div className="admin-logo-container">
+            <img src={logoImg} alt="ITBEES" className="admin-logo" />
+
+          </div>
+          <button className="admin-mobile-close" onClick={closeMobile}>
+            <X size={18} />
+          </button>
         </div>
         <nav className="admin-sidebar-nav">
           {navItems.map(item => (
