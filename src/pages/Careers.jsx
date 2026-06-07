@@ -44,6 +44,25 @@ export default function Careers({ jobs }) {
                 </div>
             </section>
 
+            {/* Stats Bar */}
+            <section style={{ backgroundColor: 'var(--color-navy-dark)', padding: '24px 0' }}>
+                <div className="container">
+                    <div className="careers-stats-bar">
+                        {[
+                            { icon: <MdWorkOutline size={18} />, text: `${jobs.length} Open Positions` },
+                            { icon: <FaUsers size={16} />, text: '200+ Team Members' },
+                            { icon: <BsStarFill size={14} />, text: '4.8/5 Glassdoor Rating' },
+                            { icon: <MdVerified size={18} />, text: 'Great Place to Work Certified' },
+                        ].map((item, i) => (
+                            <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '8px', color: 'rgba(255,255,255,0.7)', fontSize: '13px' }}>
+                                <span style={{ color: 'var(--color-ai-lime)' }}>{item.icon}</span>
+                                {item.text}
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            </section>
+
             {/* YouTube Video — 2 col */}
             <section style={{ backgroundColor: 'var(--color-navy-dark)', padding: '64px 0', borderBottom: '1px solid rgba(255,255,255,0.08)' }}>
                 <div className="container">
@@ -91,24 +110,66 @@ export default function Careers({ jobs }) {
                 </div>
             </section>
 
-            {/* Stats Bar */}
-            <section style={{ backgroundColor: 'var(--color-navy-dark)', padding: '24px 0' }}>
-                <div className="container">
-                    <div className="careers-stats-bar">
-                        {[
-                            { icon: <MdWorkOutline size={18} />, text: `${jobs.length} Open Positions` },
-                            { icon: <FaUsers size={16} />, text: '200+ Team Members' },
-                            { icon: <BsStarFill size={14} />, text: '4.8/5 Glassdoor Rating' },
-                            { icon: <MdVerified size={18} />, text: 'Great Place to Work Certified' },
-                        ].map((item, i) => (
-                            <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '8px', color: 'rgba(255,255,255,0.7)', fontSize: '13px' }}>
-                                <span style={{ color: 'var(--color-ai-lime)' }}>{item.icon}</span>
-                                {item.text}
-                            </div>
-                        ))}
+
+
+            {/* Search & Filters */}
+            <div style={{ margin: '32px' }}>
+                <div className="job-search-bar">
+                    <div style={{ flex: 1, position: 'relative' }}>
+                        <input type="text" className="input-field" placeholder="Search jobs by title or keyword..." value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} style={{ paddingLeft: '44px' }} />
+                        <Search size={18} style={{ position: 'absolute', left: '16px', top: '16px', color: 'var(--color-muted-text)' }} />
+                    </div>
+                    <div>
+                        <select className="input-field" value={selectedDept} onChange={(e) => setSelectedDept(e.target.value)} style={{ minWidth: '180px' }}>
+                            <option value="All">All Departments</option>
+                            <option value="Engineering">Engineering</option>
+                            <option value="Analytics">Analytics</option>
+                            <option value="Consulting">Consulting</option>
+                            <option value="HR & Staffing">HR & Staffing</option>
+                        </select>
                     </div>
                 </div>
-            </section>
+            </div>
+
+            {/* Job Grid */}
+            <div className="grid-2" style={{ margin: '32px' }}>
+                {filteredJobs.map(job => (
+                    <div key={job.id} className="card-white job-card" style={{ padding: '32px', textAlign: 'left' }}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '12px' }}>
+                            <div>
+                                <h3 className="heading-lg" style={{ color: 'var(--color-ink)', marginBottom: '4px' }}>{job.title}</h3>
+                                <span className="badge-blue">{job.department}</span>
+                            </div>
+                            <span className="badge-mint">{job.type}</span>
+                        </div>
+                        <div style={{ display: 'flex', gap: '16px', marginBottom: '12px', fontSize: '12px', color: 'var(--color-muted-text)' }}>
+                            <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}><FaMapMarkerAlt size={12} /> {job.location || 'Hyderabad'}</span>
+                            <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}><FaRupeeSign size={12} /> {job.salary}</span>
+                        </div>
+                        <p style={{ color: 'var(--color-ink)', fontSize: '13px', margin: '0 0 20px 0', flex: 1 }}>
+                            {job.description.substring(0, 120)}...
+                        </p>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderTop: '1px solid var(--color-soft-gray)', paddingTop: '16px' }}>
+                            <span style={{ fontSize: '13px', fontWeight: '600', display: 'flex', alignItems: 'center', gap: '4px' }}>
+                                <FaBriefcase size={12} color="var(--color-corporate-blue)" /> {job.type}
+                            </span>
+                            <Link to={`/careers/apply/${job.id}`} className="btn-primary" style={{ padding: '8px 16px', fontSize: '13px', gap: '6px' }}>
+                                Apply Now <FaBriefcase size={12} />
+                            </Link>
+                        </div>
+                    </div>
+                ))}
+            </div>
+
+            {filteredJobs.length === 0 && (
+                <div style={{ padding: '64px', textAlign: 'center', color: 'var(--color-muted-text)' }}>
+                    <MdWorkOutline size={48} style={{ margin: '0 auto 16px auto', display: 'block', opacity: 0.3 }} />
+                    <p>No jobs found matching your criteria. Check back later!</p>
+                </div>
+            )}
+
+
+
 
             {/* Culture Image Banner Card */}
             <section style={{ padding: '40px 0' }}>
@@ -146,62 +207,6 @@ export default function Careers({ jobs }) {
                         ))}
                     </div>
                 </div>
-
-                {/* Search & Filters */}
-                <div style={{ marginBottom: '32px' }}>
-                    <div className="job-search-bar">
-                        <div style={{ flex: 1, position: 'relative' }}>
-                            <input type="text" className="input-field" placeholder="Search jobs by title or keyword..." value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} style={{ paddingLeft: '44px' }} />
-                            <Search size={18} style={{ position: 'absolute', left: '16px', top: '16px', color: 'var(--color-muted-text)' }} />
-                        </div>
-                        <div>
-                            <select className="input-field" value={selectedDept} onChange={(e) => setSelectedDept(e.target.value)} style={{ minWidth: '180px' }}>
-                                <option value="All">All Departments</option>
-                                <option value="Engineering">Engineering</option>
-                                <option value="Analytics">Analytics</option>
-                                <option value="Consulting">Consulting</option>
-                                <option value="HR & Staffing">HR & Staffing</option>
-                            </select>
-                        </div>
-                    </div>
-                </div>
-
-                {/* Job Grid */}
-                <div className="grid-2">
-                    {filteredJobs.map(job => (
-                        <div key={job.id} className="card-white job-card" style={{ padding: '32px', textAlign: 'left' }}>
-                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '12px' }}>
-                                <div>
-                                    <h3 className="heading-lg" style={{ color: 'var(--color-ink)', marginBottom: '4px' }}>{job.title}</h3>
-                                    <span className="badge-blue">{job.department}</span>
-                                </div>
-                                <span className="badge-mint">{job.type}</span>
-                            </div>
-                            <div style={{ display: 'flex', gap: '16px', marginBottom: '12px', fontSize: '12px', color: 'var(--color-muted-text)' }}>
-                                <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}><FaMapMarkerAlt size={12} /> {job.location || 'Hyderabad'}</span>
-                                <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}><FaRupeeSign size={12} /> {job.salary}</span>
-                            </div>
-                            <p style={{ color: 'var(--color-ink)', fontSize: '13px', margin: '0 0 20px 0', flex: 1 }}>
-                                {job.description.substring(0, 120)}...
-                            </p>
-                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderTop: '1px solid var(--color-soft-gray)', paddingTop: '16px' }}>
-                                <span style={{ fontSize: '13px', fontWeight: '600', display: 'flex', alignItems: 'center', gap: '4px' }}>
-                                    <FaBriefcase size={12} color="var(--color-corporate-blue)" /> {job.type}
-                                </span>
-                                <Link to={`/careers/apply/${job.id}`} className="btn-primary" style={{ padding: '8px 16px', fontSize: '13px', gap: '6px' }}>
-                                    Apply Now <FaBriefcase size={12} />
-                                </Link>
-                            </div>
-                        </div>
-                    ))}
-                </div>
-
-                {filteredJobs.length === 0 && (
-                    <div style={{ padding: '64px', textAlign: 'center', color: 'var(--color-muted-text)' }}>
-                        <MdWorkOutline size={48} style={{ margin: '0 auto 16px auto', display: 'block', opacity: 0.3 }} />
-                        <p>No jobs found matching your criteria. Check back later!</p>
-                    </div>
-                )}
 
             </div>
         </>

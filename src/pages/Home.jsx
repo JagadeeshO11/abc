@@ -273,7 +273,7 @@ export default function Home({ setInquiries, triggerToast }) {
             </section>
 
             {/* Direct CTAs */}
-            <section style={{ background: 'var(--color-navy-dark)', padding: 'var(--spacing-48) 0', borderTop: '1px solid rgba(35,149,238,0.12)' }}>
+            <section style={{ background: 'var(--color-light-canvas)', padding: 'var(--spacing-48) 0', borderTop: '1px solid rgba(35,149,238,0.12)' }}>
                 <div className="container">
                     <div className="cta-banner">
                         <div>

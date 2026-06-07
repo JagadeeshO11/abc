@@ -1,8 +1,9 @@
 /* Footer Component Styles */
 
 .footer {
-  background-color: var(--color-navy-dark);
-  color: var(--color-white);
+  background-color: var(--color-navy-dark, #1F2B5E);
+  color: #ffffff;
+  /* Clean white text */
   padding: var(--spacing-80) 0 var(--spacing-40);
   border-top: 1px solid var(--color-soft-border);
 }
@@ -33,7 +34,8 @@
 
 /* Brand Description */
 .footer-brand-desc {
-  color: var(--color-muted-text);
+  color: #ffffff;
+  /* Swapped out muted text for pure white */
   margin-top: var(--spacing-16);
   max-width: 320px;
   font-size: 14px;
@@ -45,7 +47,7 @@
   font-family: var(--font-aeonik);
   font-size: 16px;
   font-weight: 600;
-  color: var(--color-white);
+  color: #ffffff;
   margin-bottom: var(--spacing-24);
   text-transform: uppercase;
   letter-spacing: 0.05em;
@@ -63,22 +65,38 @@
 }
 
 .footer-link {
-  color: var(--color-muted-text);
+  color: #ffffff;
+  /* Swapped out muted text for pure white */
   text-decoration: none;
   font-size: 14px;
-  transition: color 0.2s ease;
+  transition: color 0.2s ease, text-decoration 0.2s ease;
 }
 
 .footer-link:hover {
-  color: var(--color-white);
+  /* Provides a glowing lighter blue contrast on hover over white text */
+  color: var(--color-sky-blue, #7085D9);
+  text-decoration: underline;
 }
 
-/* Contact Details */
+/* Contact Details & Links */
 .footer-contact {
-  color: var(--color-muted-text);
+  color: #ffffff;
+  /* Swapped out muted text for pure white */
   font-size: 14px;
   line-height: 1.6;
   margin-bottom: 12px;
+}
+
+.footer-contact a {
+  color: #ffffff;
+  /* Ensures anchor links are white by default */
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.footer-contact a:hover {
+  color: var(--color-sky-blue, #7085D9);
+  text-decoration: underline;
 }
 
 /* Social Icons */
@@ -90,7 +108,8 @@
 }
 
 .footer-social a {
-  color: var(--color-muted-text);
+  color: #ffffff;
+  /* Keeps fallback icons white before color filters */
   transition: transform 0.2s ease, opacity 0.2s ease;
 }
 
@@ -106,8 +125,14 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  color: var(--color-muted-text);
+  color: #ffffff;
+  /* Swapped out muted text for pure white */
   font-size: 13px;
+}
+
+/* Direct styling clean-up for the span blocks inside footer-bottom */
+.footer-bottom span {
+  color: #ffffff !important;
 }
 
 @media (max-width: 768px) {

@@ -22,19 +22,19 @@ export default function Footer() {
                             alt="ITBEES Global Pvt. Ltd."
                             style={{
                                 height: '64px',
-                                width: '64px',
-                                objectFit: 'cover',
-                                objectPosition: 'center',
-                                borderRadius: '50%',
-                                marginBottom: '16px',
-                                display: 'block'
+                                filter: `
+      drop-shadow(0 0 12px rgba(255,255,255,1))
+      drop-shadow(0 0 24px rgba(255,255,255,0.9))
+      drop-shadow(0 0 40px rgba(255,255,255,0.8))
+      drop-shadow(0 0 60px rgba(255,255,255,0.6))
+      drop-shadow(0 0 80px rgba(255,255,255,0.4))
+    `
                             }}
                             onError={(e) => {
                                 e.target.onerror = null;
                                 e.target.style.display = 'none';
                             }}
                         />
-
                         <p className="footer-brand-desc">
                             Empowering professionals &amp; enterprises with Smart Cloud,
                             BI Analytics, ERP Solutions, and industry-oriented training
@@ -42,11 +42,7 @@ export default function Footer() {
                         </p>
 
                         <p
-                            style={{
-                                fontSize: '12px',
-                                color: 'var(--color-dark-olive)',
-                                marginTop: '12px'
-                            }}
+                            className='footer-contact'
                         >
                             Smart Cloud | BI Analytics | ERP Solutions
                         </p>
@@ -174,11 +170,11 @@ export default function Footer() {
                                 </Link>
                             </li>
 
-                            <li className="footer-link-item">
+                            {/* <li className="footer-link-item">
                                 <Link to="/login" className="footer-link">
                                     Admin Portal
                                 </Link>
-                            </li>
+                            </li> */}
                         </ul>
                     </div>
 
@@ -188,30 +184,35 @@ export default function Footer() {
 
                         <p className="footer-contact">
                             <strong>📞 Call / WhatsApp:</strong><br />
-                            +91 9963186067
+                            <a href="https://wa.me/919963186067" target="_blank" rel="noopener noreferrer" className="contact-link">
+                                +91 9963186067
+                            </a>
                         </p>
 
-                        {/* <p className="footer-contact">
-                            <strong>📧 General:</strong><br />
-                            admin@itbeesglobal.com
-                        </p> */}
+
 
                         <p className="footer-contact">
                             <strong>📊 Data Automation & BI:</strong><br />
-                            corporate@itbeesglobal.com
+                            <a href="mailto:corporate@itbeesglobal.com" className="contact-link">
+                                corporate@itbeesglobal.com
+                            </a>
                         </p>
 
                         <p className="footer-contact">
                             <strong>🎓 Corporate Training:</strong><br />
-                            corporatetrainings@itbeesglobal.com
+                            <a href="mailto:corporatetrainings@itbeesglobal.com" className="contact-link">
+                                corporatetrainings@itbeesglobal.com
+                            </a>
                         </p>
 
                         <p className="footer-contact">
                             <strong>👥 HR Staffing:</strong><br />
-                            hr@itbeesglobal.com
+                            <a href="mailto:hr@itbeesglobal.com" className="contact-link">
+                                hr@itbeesglobal.com
+                            </a>
                         </p>
 
-                        
+
                     </div>
 
                 </div>

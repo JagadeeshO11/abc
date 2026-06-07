@@ -30,7 +30,7 @@ export default function AboutUs() {
         <>
             {/* Hero */}
             <section className="page-hero hero-text-clip" style={{ backgroundImage: `url(${aboutBg})` }}>
-                
+
                 <div className="page-hero-inner" >
                     <div className="badge-mint" style={{ marginBottom: '16px' }}>
                         <HiOfficeBuilding style={{ display: 'inline', marginRight: '6px' }} />
@@ -157,7 +157,7 @@ export default function AboutUs() {
                 </div>
             </div>
 
-            {/* YouTube Video — 2 col */}
+            {/* YouTube Video — 2 col
             <section style={{ backgroundColor: 'var(--color-navy-dark)', padding: '64px 0', borderBottom: '1px solid rgba(255,255,255,0.08)' }}>
                 <div className="container">
                     <div className="grid-2" style={{ alignItems: 'center', gap: '48px' }}>
@@ -202,7 +202,7 @@ export default function AboutUs() {
                         </div>
                     </div>
                 </div>
-            </section>
+            </section> */}
         </>
     );
 }

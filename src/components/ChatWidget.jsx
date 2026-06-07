@@ -2,11 +2,11 @@ import { useState, useEffect, useRef } from 'react';
 import { X, Bot, Send } from 'lucide-react';
 
 const QUICK_REPLIES = [
-    { label: '📊 Data & BI',        prompt: 'data automation and BI services' },
-    { label: '🎓 Training',          prompt: 'corporate training courses' },
-    { label: '👥 HR Staffing',       prompt: 'HR staffing and recruitment' },
-    { label: '💼 Careers',           prompt: 'job openings and careers' },
-    { label: '📞 Contact',           prompt: 'contact and office address' },
+    { label: '📊 Data & BI', prompt: 'data automation and BI services' },
+    { label: '🎓 Training', prompt: 'corporate training courses' },
+    { label: '👥 HR Staffing', prompt: 'HR staffing and recruitment' },
+    { label: '💼 Careers', prompt: 'job openings and careers' },
+    { label: '📞 Contact', prompt: 'contact and office address' },
 ];
 
 const BOT_RESPONSES = [
@@ -97,11 +97,30 @@ export default function ChatWidget() {
                 <div className="chatbot-panel">
                     <div className="chatbot-header">
                         <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                            <div style={{ width: '36px', height: '36px', borderRadius: '50%', background: 'var(--color-corporate-blue)', display: 'flex', alignItems: 'center', justifyContent: 'center', border: '2px solid var(--color-ai-lime)' }}>
-                                <Bot size={16} color="var(--color-ai-lime)" />
+                            <div
+                                style={{
+                                    width: '36px',
+                                    height: '36px',
+                                    borderRadius: '50%',
+                                    overflow: 'hidden',
+                                    border: '2px solid var(--color-ai-lime)',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    justifyContent: 'center'
+                                }}
+                            >
+                                <img
+                                    src="https://res.cloudinary.com/dwmjz9csc/image/upload/v1780724072/ChatGPT_Image_Jun_6_2026_11_04_11_AM_gxcdsy.png"
+                                    alt="ITBEES Chat"
+                                    style={{
+                                        width: '80%',
+                                        height: '80%',
+                                        objectFit: 'cover'
+                                    }}
+                                />
                             </div>
                             <div>
-                                <strong style={{ fontSize: '14px', fontFamily: 'var(--font-aeonik)', display: 'block' }}>ITBEES SUPPORT BOT</strong>
+                                <strong style={{ fontSize: '14px', fontFamily: 'var(--font-aeonik)', display: 'block' }}>ITBEES Global</strong>
                                 <span style={{ fontSize: '11px', color: 'var(--color-ai-lime)', display: 'flex', alignItems: 'center', gap: '4px' }}>
                                     <span style={{ width: '6px', height: '6px', borderRadius: '50%', backgroundColor: 'var(--color-ai-lime)', display: 'inline-block' }} />
                                     Online — typically replies instantly
