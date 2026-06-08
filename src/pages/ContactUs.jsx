@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 import { MapPin, Phone, Mail, CheckCircle, Send, ArrowUpRight, Play } from 'lucide-react';
 import { FaWhatsapp, FaLinkedin, FaTwitter, FaYoutube, FaInstagram, FaFacebook, FaClock, FaHeadset, FaBuilding, FaUserTie, FaChalkboardTeacher } from 'react-icons/fa';
 import { MdVerified, MdSupportAgent, MdBusiness } from 'react-icons/md';
@@ -37,12 +38,30 @@ const ClickCard = ({ href, color, children, style = {} }) => {
 import { publicApi } from '../utils/api.js';
 
 export default function ContactUs({ setInquiries, triggerToast }) {
+    const location = useLocation();
     const [form, setForm] = useState({ name: '', email: '', company: '', phone: '', service: '', message: '' });
     const [videoPlaying, setVideoPlaying] = useState(false);
     const YT_ID = 'gNYtC0swvaw';
     const [submitted, setSubmitted] = useState(false);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const set = k => e => setForm(f => ({ ...f, [k]: e.target.value }));
+
+    /* Scroll to SEND A MESSAGE form when URL has #send-message hash */
+    useEffect(() => {
+        if (location.hash === '#send-message') {
+            const scrollToForm = () => {
+                const el = document.getElementById('send-message');
+                if (el) {
+                    el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            };
+            // Try immediately, then again after a short delay to ensure DOM is ready
+            scrollToForm();
+            const t1 = setTimeout(scrollToForm, 50);
+            const t2 = setTimeout(scrollToForm, 250);
+            return () => { clearTimeout(t1); clearTimeout(t2); };
+        }
+    }, [location]);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -152,7 +171,7 @@ export default function ContactUs({ setInquiries, triggerToast }) {
             <div className="contact-form-layout">
 
                 {/* Form */}
-                <div>
+                <div id="send-message" style={{ scrollMarginTop: '80px' }}>
                     <div className="badge-blue" style={{ marginBottom: 10 }}>SEND A MESSAGE</div>
                     <h2 className="display-md" style={{ textAlign: 'left', marginBottom: 8 }}>LET'S TALK BUSINESS</h2>
                     <p style={{ color: 'var(--color-muted-text)', fontSize: 13, lineHeight: 1.6, marginBottom: 22 }}>Fill in the form and one of our consultants will reach out within 24 hours.</p>

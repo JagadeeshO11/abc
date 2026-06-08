@@ -55,7 +55,8 @@ export default function AuthPage({ setAuthUser }) {
       <div className="auth-card">
 
         <div className="auth-logo">
-          <img src={logoImg} alt="ITBEES Global" />
+          {/* <img src={logoImg} alt="ITBEES Global" /> */}
+          <h1 style={{ fontSize: '24px', fontWeight: 'bold', color: '#333' }}>ITBEES Global</h1>
         </div>
 
         <div className="auth-tabs">

@@ -300,7 +300,7 @@ export default function NavBar({ courses = [], templates = [], authUser, onLogou
                     </li>
 
                     <li><Link to="/about" className={`nav-link ${isActive('/about')}`}>About Us</Link></li>
-                    <li><Link to="/contact" className={`nav-link ${isActive('/contact')}`}>Contact Us</Link></li>
+                    <li><Link to="/contact#send-message" className={`nav-link ${isActive('/contact')}`}>Contact Us</Link></li>
                 </ul>
 
                 {/* Desktop Actions */}
@@ -315,7 +315,7 @@ export default function NavBar({ courses = [], templates = [], authUser, onLogou
                             </button>
                         </>
                     ) : null}
-                    <Link to="/contact" className="btn-primary" style={{ padding: '8px 16px', fontSize: '13px' }}>
+                    <Link to="/contact#send-message" className="btn-primary" style={{ padding: '8px 16px', fontSize: '13px' }}>
                         Book a Demo
                     </Link>
                 </div>
@@ -437,13 +437,13 @@ export default function NavBar({ courses = [], templates = [], authUser, onLogou
                         </li>
 
                         <li><Link to="/about" className={`nav-link ${isActive('/about')}`} onClick={closeMenu}>About Us</Link></li>
-                        <li><Link to="/contact" className={`nav-link ${isActive('/contact')}`} onClick={closeMenu}>Contact Us</Link></li>
+                        <li><Link to="/contact#send-message" className={`nav-link ${isActive('/contact')}`} onClick={closeMenu}>Contact Us</Link></li>
                         {authUser && authUser.role === 'admin' && (
                             <li><button onClick={() => { onLogout(); closeMenu(); }} className="nav-link" style={{ background: 'none', border: 'none', textAlign: 'left', width: '100%', cursor: 'pointer' }}>Logout Admin</button></li>
                         )}
                     </ul>
                     <div className="nav-mobile-actions">
-                        <Link to="/contact" className="btn-primary" onClick={closeMenu}
+                        <Link to="/contact#send-message" className="btn-primary" onClick={closeMenu}
                             style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                             Book a Demo
                         </Link>

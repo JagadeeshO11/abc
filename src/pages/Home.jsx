@@ -61,7 +61,7 @@ export default function Home({ setInquiries, triggerToast }) {
                         Integrate next-gen ERP Solutions, automate critical pipelines, and build visual dashboards with ITBEES Global's smart infrastructure.
                     </p>
                     <div className="hero-btns" style={{ marginTop: 'var(--spacing-40)' }}>
-                        <Link to="/contact" className="btn-primary">📅 Book a Free Demo</Link>
+                        <Link to="/contact#send-message" className="btn-primary">📅 Book a Free Demo</Link>
                         <Link to="/services" className="btn-ghost-dark">Explore Our Services</Link>
                     </div>
                 </div>

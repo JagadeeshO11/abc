@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { NavLink, Outlet } from 'react-router-dom';
 import { Grid, Briefcase, BookOpen, Mail, DollarSign, Activity, Menu, X } from 'lucide-react';
 import { CheckCircle } from 'lucide-react';
-import logoImg from '../../assets/logo.png';
+// import logoImg from '../../assets/logo.png';
 
 const navItems = [
   { to: '/admin', label: 'Overview', icon: <Grid size={16} />, end: true },
@@ -38,12 +38,12 @@ export default function AdminLayout({ onLogout, toast, adminLoading }) {
 
       <aside className={`admin-sidebar${mobileMenuOpen ? ' mobile-open' : ''}`}>
         <div className="admin-sidebar-header">
-          <div className="admin-logo-container">
+          {/* <div className="admin-logo-container">
             <img src={logoImg} alt="ITBEES" className="admin-logo" style={{ width: '50px', height: 'auto' }} />
-            <span style={{ color: '#e4ebefff', fontWeight: '700' }}>
-              ITBEES Global
-            </span>
-          </div>
+            <h1 style={{ fontSize: '20px', color: '#fff' }}>ITBEES Global</h1>
+            
+          </div> */}
+          <h1 style={{ fontSize: '20px', color: '#fff' }}>ITBEES Global</h1>
           <button className="admin-mobile-close" onClick={closeMobile}>
             <X size={18} />
           </button>

@@ -1,3 +1,4 @@
+import { useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import logoImg from '../assets/logo.png';
 import {
@@ -9,7 +10,37 @@ import {
     FaFacebook
 } from 'react-icons/fa';
 
-export default function Footer() {
+export default function Footer({ courses = [] }) {
+    /* Build the list of footer course entries. For each entry, try to find
+       a matching real course by keyword so the link can deep-link to
+       `/training#course-{id}` and scroll to that card. */
+    const footerCourses = useMemo(() => {
+        const desired = [
+            { label: 'Excel Basic & Advanced', keywords: ['excel'] },
+            { label: 'Power Query',            keywords: ['power query'] },
+            { label: 'VBA Automation',         keywords: ['vba'] },
+            { label: 'Python for Analytics',   keywords: ['python'] },
+            { label: 'Power BI',               keywords: ['power bi'] },
+        ];
+
+        const norm = (s) => (s || '').toLowerCase();
+
+        return desired.map((entry) => {
+            const match = courses.find((c) => {
+                const title = norm(c.title);
+                return entry.keywords.some((kw) => title.includes(kw));
+            });
+            return {
+                label: entry.label,
+                id: match ? match.id : null,
+                title: match ? match.title : null,
+            };
+        });
+    }, [courses]);
+
+    const courseLink = (entry) =>
+        entry.id ? `/training#course-${entry.id}` : '/training';
+
     return (
         <footer className="footer">
             <div className="container">
@@ -36,7 +67,7 @@ export default function Footer() {
                             }}
                         />
                         <p className="footer-brand-desc">
-                            Empowering professionals &amp; enterprises with Smart Cloud,
+                            Empowering professionals & enterprises with Smart Cloud,
                             BI Analytics, ERP Solutions, and industry-oriented training
                             programs.
                         </p>
@@ -53,7 +84,7 @@ export default function Footer() {
                                 marginTop: '12px'
                             }}
                         >
-                            Door No.1-60/8/A&amp;B, 3rd Floor, KNR Square,
+                            Door No.1-60/8/A&B, 3rd Floor, KNR Square,
                             <br />
                             Opp. The Platina, Gachibowli,
                             <br />
@@ -109,35 +140,17 @@ export default function Footer() {
                         <h5 className="footer-title">Courses</h5>
 
                         <ul className="footer-links">
-                            <li className="footer-link-item">
-                                <Link to="/training" className="footer-link">
-                                    Excel Basic &amp; Advanced
-                                </Link>
-                            </li>
-
-                            <li className="footer-link-item">
-                                <Link to="/training" className="footer-link">
-                                    Power Query
-                                </Link>
-                            </li>
-
-                            <li className="footer-link-item">
-                                <Link to="/training" className="footer-link">
-                                    VBA Automation
-                                </Link>
-                            </li>
-
-                            <li className="footer-link-item">
-                                <Link to="/training" className="footer-link">
-                                    Python for Analytics
-                                </Link>
-                            </li>
-
-                            <li className="footer-link-item">
-                                <Link to="/training" className="footer-link">
-                                    Power BI
-                                </Link>
-                            </li>
+                            {footerCourses.map((entry, i) => (
+                                <li key={i} className="footer-link-item">
+                                    <Link
+                                        to={courseLink(entry)}
+                                        className="footer-link"
+                                        title={entry.title || entry.label}
+                                    >
+                                        {entry.label}
+                                    </Link>
+                                </li>
+                            ))}
                         </ul>
                     </div>
 
@@ -165,7 +178,7 @@ export default function Footer() {
                             </li>
 
                             <li className="footer-link-item">
-                                <Link to="/contact" className="footer-link">
+                                <Link to="/contact#send-message" className="footer-link">
                                     Contact Us
                                 </Link>
                             </li>

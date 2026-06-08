@@ -23,8 +23,24 @@ import Footer from './components/Footer.jsx';
 import ChatWidget from './components/ChatWidget.jsx';
 
 function ScrollToTop() {
-  const { pathname, search } = useLocation();
-  useEffect(() => { window.scrollTo({ top: 0, behavior: 'smooth' }); }, [pathname, search]);
+  const { pathname, search, hash } = useLocation();
+  useEffect(() => {
+    // If there's a hash, let the page handle scrolling to the anchor
+    if (hash) {
+      const scrollToHash = () => {
+        const el = document.getElementById(hash.slice(1));
+        if (el) {
+          el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      };
+      scrollToHash();
+      const t1 = setTimeout(scrollToHash, 100);
+      const t2 = setTimeout(scrollToHash, 400);
+      return () => { clearTimeout(t1); clearTimeout(t2); };
+    }
+    // No hash → scroll to top
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }, [pathname, search, hash]);
   return null;
 }
 
@@ -91,8 +107,8 @@ function Shell({ children, toast, courses, templates = [], authUser, onLogout })
     <>
       {!isAdmin && <NavBar courses={courses} templates={templates} authUser={authUser} onLogout={onLogout} />}
       <main style={{ flex: 1 }}>{children}</main>
-      {!isAdmin && <Footer />}
-      {!isAdmin && <ChatWidget />}
+      {!isAdmin && <Footer courses={courses} />}
+      {!isAdmin && <ChatWidget courses={courses} templates={templates} />}
       {!isAdmin && toast && (
         <div style={{ position: 'fixed', bottom: '30px', left: '30px', backgroundColor: 'var(--color-navy-dark)', borderLeft: '4px solid var(--color-ai-lime)', color: 'var(--color-white)', padding: '16px 24px', borderRadius: '4px', boxShadow: '0 10px 25px rgba(0,0,0,0.3)', zIndex: 9999, display: 'flex', alignItems: 'center', gap: '12px', fontFamily: 'var(--font-aeonik)' }}>
           <CheckCircle size={18} color="var(--color-ai-lime)" />

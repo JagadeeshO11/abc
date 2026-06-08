@@ -138,7 +138,7 @@ export default function Services() {
                             </div>
                             <h2 style={{ color: 'var(--color-white)', fontFamily: 'var(--font-ozik)', fontSize: '36px', lineHeight: 1.1, marginBottom: '16px' }}>TURN YOUR DATA INTO YOUR BIGGEST COMPETITIVE ADVANTAGE</h2>
                             <p style={{ color: 'rgba(255,255,255,0.75)', fontSize: '15px', lineHeight: '1.7', marginBottom: '24px' }}>We build enterprise-grade automation pipelines and real-time BI dashboards that eliminate manual reporting and give your leadership team instant clarity.</p>
-                            <Link to="/contact" className="btn-primary" style={{ display: 'inline-flex', alignItems: 'center', gap: '8px' }}>
+                            <Link to="/contact#send-message" className="btn-primary" style={{ display: 'inline-flex', alignItems: 'center', gap: '8px' }}>
                                 Get a Free Consultation <BsArrowRight />
                             </Link>
                         </div>
@@ -245,7 +245,7 @@ export default function Services() {
                             </ul>
                         </div>
                         <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
-                            <Link to="/contact" className="btn-primary" style={{ display: 'inline-flex', alignItems: 'center', gap: '8px' }}>
+                            <Link to="/contact#send-message" className="btn-primary" style={{ display: 'inline-flex', alignItems: 'center', gap: '8px' }}>
                                 Book Free Audit <BsArrowRight />
                             </Link>
                             <a href="tel:9963186067" className="btn-ghost-dark" style={{ display: 'inline-flex', alignItems: 'center', gap: '8px' }}>
@@ -353,7 +353,7 @@ export default function Services() {
                                 </ul>
                             </div>
                             <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
-                                <Link to="/contact" className="btn-primary" style={{ display: 'inline-flex', alignItems: 'center', gap: '8px' }}>
+                                <Link to="/contact#send-message" className="btn-primary" style={{ display: 'inline-flex', alignItems: 'center', gap: '8px' }}>
                                     Get a Corporate Quote <BsArrowRight />
                                 </Link>
                                 <Link to="/training" className="btn-ghost-dark" style={{ display: 'inline-flex', alignItems: 'center', gap: '8px' }}>
@@ -379,7 +379,7 @@ export default function Services() {
                                 </div>
                                 <h2 style={{ color: 'var(--color-white)', fontFamily: 'var(--font-ozik)', fontSize: '32px', lineHeight: 1.1, marginBottom: '14px' }}>THE RIGHT TALENT. PLACED FAST. EVERY TIME.</h2>
                                 <p style={{ color: 'rgba(255,255,255,0.72)', fontSize: '14px', lineHeight: '1.7', marginBottom: '24px' }}>We connect elite engineers, data professionals, and system architects to your operations — with pre-screened CVs, skills assessments, and full compliance checks.</p>
-                                <Link to="/contact" className="btn-primary" style={{ display: 'inline-flex', alignItems: 'center', gap: '8px' }}>
+                                <Link to="/contact#send-message" className="btn-primary" style={{ display: 'inline-flex', alignItems: 'center', gap: '8px' }}>
                                     Request Talent Now <BsArrowRight />
                                 </Link>
                             </div>
@@ -460,7 +460,7 @@ export default function Services() {
                                 </ul>
                             </div>
                             <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
-                                <Link to="/contact" className="btn-primary" style={{ display: 'inline-flex', alignItems: 'center', gap: '8px' }}>
+                                <Link to="/contact#send-message" className="btn-primary" style={{ display: 'inline-flex', alignItems: 'center', gap: '8px' }}>
                                     Submit a Hiring Brief <BsArrowRight />
                                 </Link>
                                 <Link to="/careers" className="btn-ghost-dark" style={{ display: 'inline-flex', alignItems: 'center', gap: '8px' }}>

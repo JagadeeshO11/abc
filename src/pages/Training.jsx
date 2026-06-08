@@ -398,7 +398,7 @@ export default function Training({ courses, templates = [], setEnrollments, setP
                         ))}
                     </div>
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-                        <a href="/contact" className="btn-primary" style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', whiteSpace: 'nowrap' }}>
+                        <a href="/contact#send-message" className="btn-primary" style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', whiteSpace: 'nowrap' }}>
                             <FaChalkboardTeacher size={14} /> Request Corporate Quote
                         </a>
                         <a href="tel:9963186067" className="btn-ghost-dark" style={{ display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>Call Us Now</a>
