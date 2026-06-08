@@ -11,30 +11,29 @@ const adminRoutes = require('./routes/adminRoutes');
 
 const app = express();
 
-// Security Middleware
-app.use(helmet());
+/* ============================================================
+ * CORS CONFIGURATION
+ * ============================================================
+ * The browser sends the `Origin` header WITHOUT a trailing slash.
+ * We normalize both sides to prevent footgun mismatches and also
+ * check a regex pattern for known production domains.
+ * ============================================================ */
 
-// Robust CORS configuration
-// The browser sends the Origin header WITHOUT a trailing slash.
-// We normalize both sides to prevent footgun mismatches.
 const normalizeOrigin = (url) => {
     if (!url) return url;
     return String(url).trim().replace(/\/+$/, '').toLowerCase();
 };
 
-// Known production domains (regex patterns)
 const ORIGIN_PATTERNS = [
     /^https?:\/\/(www\.)?itbeesglobal\.com$/i,
     /^https?:\/\/(www\.)?it-bees-global\.com$/i,
     /^https?:\/\/it-bees-be\.vercel\.app$/i,
-    /^https?:\/\/localhost$/i,
 ];
 
 const allowedExactOrigins = [
     process.env.FRONTEND_URL,
     'http://localhost:5173',
     'http://localhost:3000',
-    'http://localhost:5000',
 ]
     .filter(Boolean)
     .map(normalizeOrigin);
@@ -43,11 +42,13 @@ const isOriginAllowed = (rawOrigin) => {
     if (!rawOrigin) return true;
     const origin = normalizeOrigin(rawOrigin);
     if (allowedExactOrigins.includes(origin)) return true;
-    if (ORIGIN_PATTERNS.some((re) => re.test(origin))) return true;
-    return false;
+    return ORIGIN_PATTERNS.some((re) => re.test(origin));
 };
 
-const corsMiddleware = cors({
+// Security Middleware
+app.use(helmet());
+
+app.use(cors({
     origin: (origin, callback) => {
         if (isOriginAllowed(origin)) return callback(null, true);
         console.warn(`[CORS] Blocked request from origin: ${origin}`);
@@ -57,13 +58,7 @@ const corsMiddleware = cors({
     allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
     credentials: true,
     maxAge: 86400,
-});
-
-// Apply CORS globally
-app.use(corsMiddleware);
-
-// Handle preflight for all routes
-app.options('*', corsMiddleware);
+}));
 
 // Rate Limiting
 const limiter = rateLimit({
