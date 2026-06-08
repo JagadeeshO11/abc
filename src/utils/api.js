@@ -12,7 +12,7 @@ const getAuthHeaders = () => {
 // Generic fetch wrapper with automatic token refresh
 export const apiFetch = async (endpoint, options = {}) => {
   const isFormData = options.body instanceof FormData;
-  
+
   const headers = {
     ...getAuthHeaders(),
     ...options.headers,
@@ -42,7 +42,7 @@ export const apiFetch = async (endpoint, options = {}) => {
         const { data } = await refreshRes.json();
         const updatedAuth = { ...JSON.parse(auth), accessToken: data.accessToken };
         localStorage.setItem('itbees_auth', JSON.stringify(updatedAuth));
-        
+
         // Retry the original request
         headers['Authorization'] = `Bearer ${data.accessToken}`;
         response = await fetch(`${API_URL}${endpoint}`, {
@@ -105,7 +105,12 @@ export const publicApi = {
 export const adminApi = {
   login: (data) => apiFetch('/admin/login', { method: 'POST', body: JSON.stringify(data) }),
   logout: (refreshToken) => apiFetch('/admin/logout', { method: 'POST', body: JSON.stringify({ refreshToken }) }),
-  
+
+  // Password reset flow (3 steps: email → OTP → new password)
+  forgotPassword:   (email)         => apiFetch('/admin/forgot-password',  { method: 'POST', body: JSON.stringify({ email }) }),
+  verifyResetOtp:  (email, otp)    => apiFetch('/admin/verify-reset-otp', { method: 'POST', body: JSON.stringify({ email, otp }) }),
+  resetPassword:    (email, otp, newPassword) => apiFetch('/admin/reset-password', { method: 'POST', body: JSON.stringify({ email, otp, newPassword }) }),
+
   // Courses
   createCourse: (data) => apiFetch('/admin/courses', { method: 'POST', body: JSON.stringify(data) }),
   updateCourse: (id, data) => apiFetch(`/admin/courses/${id}`, { method: 'PUT', body: JSON.stringify(data) }),
