@@ -1,4 +1,4 @@
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+﻿const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
 
 const getAuthHeaders = () => {
   const auth = localStorage.getItem('itbees_auth');
@@ -106,7 +106,7 @@ export const adminApi = {
   login: (data) => apiFetch('/admin/login', { method: 'POST', body: JSON.stringify(data) }),
   logout: (refreshToken) => apiFetch('/admin/logout', { method: 'POST', body: JSON.stringify({ refreshToken }) }),
 
-  // Password reset flow (3 steps: email → OTP → new password)
+  // Password reset flow (3 steps: email â†’ OTP â†’ new password)
   forgotPassword:   (email)         => apiFetch('/admin/forgot-password',  { method: 'POST', body: JSON.stringify({ email }) }),
   verifyResetOtp:  (email, otp)    => apiFetch('/admin/verify-reset-otp', { method: 'POST', body: JSON.stringify({ email, otp }) }),
   resetPassword:    (email, otp, newPassword) => apiFetch('/admin/reset-password', { method: 'POST', body: JSON.stringify({ email, otp, newPassword }) }),
@@ -136,7 +136,11 @@ export const adminApi = {
   updateApplicationStatus: (id, status) => apiFetch(`/admin/applications/${id}/status`, { method: 'PATCH', body: JSON.stringify({ status }) }),
   deleteApplication: (id) => apiFetch(`/admin/applications/${id}`, { method: 'DELETE' }),
   getPurchases: () => apiFetch('/admin/purchases'),
+  getTrainees: () => apiFetch('/admin/trainees'),
+  getSentCertificates: () => apiFetch('/admin/certificates'),
+  sendCertificate: (purchaseId) => apiFetch(`/admin/certificates/send/${purchaseId}`, { method: 'POST' }),
   getAuditLogs: () => apiFetch('/admin/audit-logs'),
+
   uploadImage: (formData) => apiFetch('/admin/upload/image', { method: 'POST', body: formData }),
   uploadTemplate: async (formData) => {
     try {

@@ -290,7 +290,7 @@ export default function ContactUs({ setInquiries, triggerToast }) {
             { icon: <FaWhatsapp size={15} />, label: 'WhatsApp Direct', color: '#25D366', href: 'https://wa.me/9963186067' },
             { icon: <FaYoutube size={15} />, label: 'YouTube Channel', color: '#FF0000', href: 'https://youtube.com/@itbeesglobalaidatahub?si=CdA8f2mdb7CY05Mf' },
 
-            // { icon: <FaLinkedin size={15} />, label: 'LinkedIn Page', color: '#0077B5', href: '#' },
+            { icon: <FaLinkedin size={15} />, label: 'LinkedIn Page', color: '#0077B5', href: 'https://www.linkedin.com/company/itbees-global-private-limited/' },
             { icon: <FaInstagram size={15} />, label: 'Instagram', color: '#E4405F', href: 'https://instagram.com/itbeesglobalaidatahub?igshid=ZDdkNTZiNTM=' },
 
             // { icon: <FaTwitter size={15} />, label: 'Twitter / X', color: '#1DA1F2', href: '#' },

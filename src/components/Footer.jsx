@@ -117,9 +117,9 @@ export default function Footer({ courses = [] }) {
                                 <FaYoutube size={22} />
                             </a>
 
-                            {/* <a href="#" target="_blank" rel="noreferrer" style={{ color: '#0077B5' }}>
+                            <a href="https://www.linkedin.com/company/itbees-global-private-limited/" target="_blank" rel="noreferrer" style={{ color: '#0077B5' }}>
                                 <FaLinkedin size={22} />
-                            </a> */}
+                            </a>
 
                             <a href="https://instagram.com/itbeesglobalaidatahub?igshid=ZDdkNTZiNTM=" target="_blank" rel="noreferrer" style={{ color: '#E4405F' }}>
                                 <FaInstagram size={22} />

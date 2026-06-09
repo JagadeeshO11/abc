@@ -212,6 +212,23 @@
   }
 }
 
+/* Core Services Grid */
+.services-grid {
+  grid-template-columns: repeat(3, 1fr);
+}
+
+@media (max-width: 900px) {
+  .services-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 540px) {
+  .services-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
 /* Desktop alignment: Move about banner content closer to the TOP on laptops and desktops */
 @media (min-width: 992px) {
   .about-banner-content {

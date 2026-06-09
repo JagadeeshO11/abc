@@ -25,7 +25,6 @@ import ChatWidget from './components/ChatWidget.jsx';
 function ScrollToTop() {
   const { pathname, search, hash } = useLocation();
   useEffect(() => {
-    // If there's a hash, let the page handle scrolling to the anchor
     if (hash) {
       const scrollToHash = () => {
         const el = document.getElementById(hash.slice(1));
@@ -38,7 +37,6 @@ function ScrollToTop() {
       const t2 = setTimeout(scrollToHash, 400);
       return () => { clearTimeout(t1); clearTimeout(t2); };
     }
-    // No hash → scroll to top
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }, [pathname, search, hash]);
   return null;
@@ -70,8 +68,10 @@ import Inquiries from './pages/admin/Inquiries.jsx';
 import Transactions from './pages/admin/Transactions.jsx';
 import SystemLogs from './pages/admin/SystemLogs.jsx';
 import ImageToUrl from './pages/admin/ImageToUrl.jsx';
+import Certifications from './pages/admin/Certifications.jsx';
 
 // Styles
+
 import './components/NavBar.css';
 import './components/Footer.css';
 import './components/ChatWidget.css';
@@ -159,7 +159,20 @@ export default function App() {
       ]);
       if (inqsRes.status === 'fulfilled') setInquiries(inqsRes.value.data || []);
       if (appsRes.status === 'fulfilled') setApplications(appsRes.value.data || []);
-      if (purchasesRes.status === 'fulfilled') setPayments(purchasesRes.value.data || []);
+      if (purchasesRes.status === 'fulfilled') {
+        const data = purchasesRes.value.data || [];
+        if (Array.isArray(data)) {
+          setPayments(data);
+        } else if (data.coursePurchases || data.templatePurchases) {
+          const flat = [
+            ...(data.coursePurchases || []),
+            ...(data.templatePurchases || [])
+          ].sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+          setPayments(flat);
+        } else {
+          setPayments([]);
+        }
+      }
       if (tmplRes.status === 'fulfilled') setTemplates(tmplRes.value.data || []);
       if (logsRes.status === 'fulfilled' && Array.isArray(logsRes.value?.data)) {
         setLogs(logsRes.value.data.map(l => ({
@@ -219,7 +232,9 @@ export default function App() {
                 <Route path="courses" element={<ManageCourses courses={courses} setCourses={setCourses} payments={payments} triggerToast={triggerToast} />} />
                 <Route path="inquiries" element={<Inquiries inquiries={inquiries} setInquiries={setInquiries} triggerToast={triggerToast} />} />
                 <Route path="transactions" element={<Transactions payments={payments} />} />
+                <Route path="certifications" element={<Certifications />} />
                 <Route path="logs" element={<SystemLogs logs={logs} />} />
+
                 <Route path="templates" element={<ManageTemplates templates={templates} setTemplates={setTemplates} triggerToast={triggerToast} />} />
                 <Route path="image-url" element={<ImageToUrl />} />
               </Route>

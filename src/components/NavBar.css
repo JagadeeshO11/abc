@@ -621,3 +621,10 @@
     display: flex;
   }
 }
+
+.nav-mobile-links .nav-link,
+.nav-mobile-accordion-btn,
+.nav-mobile-sub-link,
+.nav-mobile-view-more {
+    color: #fff !important;
+}

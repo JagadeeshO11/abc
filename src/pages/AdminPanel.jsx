@@ -295,9 +295,9 @@ export default function AdminPanel({
                                 </h3>
                                 <ResponsiveContainer width="100%" height={260}>
                                     <BarChart data={(() => {
-                                        const courseSales = payments.filter(p => p.type === 'COURSE' || !p.type).reduce((s, p) => s + (parseFloat(p.amount) || 0), 0);
+                                        const courseSales = payments.filter(p => p.type === 'COURSE').reduce((s, p) => s + (parseFloat(p.amount) || 0), 0);
                                         const templateSales = payments.filter(p => p.type === 'TEMPLATE').reduce((s, p) => s + (parseFloat(p.amount) || 0), 0);
-                                        const courseCount = payments.filter(p => p.type === 'COURSE' || !p.type).length;
+                                        const courseCount = payments.filter(p => p.type === 'COURSE').length;
                                         const templateCount = payments.filter(p => p.type === 'TEMPLATE').length;
                                         return [
                                             { name: 'Courses', amount: courseSales, count: courseCount },
@@ -327,7 +327,7 @@ export default function AdminPanel({
                                     <PieChart>
                                         <Pie
                                             data={(() => {
-                                                const coursePays = payments.filter(p => p.type === 'COURSE' || !p.type);
+                                                const coursePays = payments.filter(p => p.type === 'COURSE');
                                                 const templatePays = payments.filter(p => p.type === 'TEMPLATE');
                                                 const otherCount = payments.length - coursePays.length - templatePays.length;
                                                 const items = [];
@@ -346,7 +346,7 @@ export default function AdminPanel({
                                         >
                                             {(() => {
                                                 const data = (() => {
-                                                    const coursePays = payments.filter(p => p.type === 'COURSE' || !p.type);
+                                                    const coursePays = payments.filter(p => p.type === 'COURSE');
                                                     const templatePays = payments.filter(p => p.type === 'TEMPLATE');
                                                     const otherCount = payments.length - coursePays.length - templatePays.length;
                                                     const items = [];
@@ -742,7 +742,7 @@ export default function AdminPanel({
                                     <tr key={pay.id}>
                                         <td>{new Date(pay.createdAt).toLocaleDateString()}</td>
                                         <td><strong>{pay.name}</strong><br/>{pay.email}</td>
-                                        <td>{pay.course?.title}</td>
+                                        <td>{pay.course?.title || pay.itemTitle || pay.templateName || pay.template?.name || '—'}</td>
                                         <td>₹{pay.amount}</td>
                                         <td><span className={`status-badge status-${pay.status.toLowerCase()}`}>{pay.status}</span></td>
                                         <td>

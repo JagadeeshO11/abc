@@ -1,4 +1,4 @@
-const express = require('express');
+﻿const express = require('express');
 const router = express.Router();
 const adminController = require('../controllers/adminController');
 const { auth, authorize } = require('../middleware/auth');
@@ -39,13 +39,13 @@ const validate = (schema) => (req, res, next) => {
 };
 
 /* ============================================================
- * Auth (public — no token required)
+ * Auth (public â€” no token required)
  * ============================================================ */
 router.post('/login',            validate(loginSchema),          adminController.login);
 router.post('/logout',                                                adminController.logout);
 router.post('/refresh',                                                adminController.refresh);
 
-// Password reset flow (public — no token required).
+// Password reset flow (public â€” no token required).
 // These endpoints are intentionally placed BEFORE the `router.use(auth)`
 // middleware below, so an admin who has forgotten their password can
 // still reach them without already being logged in.

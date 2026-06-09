@@ -1,6 +1,7 @@
-import { useState } from 'react';
+﻿import { useState } from 'react';
 import { NavLink, Outlet } from 'react-router-dom';
-import { Grid, Briefcase, BookOpen, Mail, DollarSign, Activity, Menu, X } from 'lucide-react';
+import { Grid, Briefcase, BookOpen, Mail, DollarSign, Activity, Menu, X, Award } from 'lucide-react';
+
 import { CheckCircle } from 'lucide-react';
 // import logoImg from '../../assets/logo.png';
 
@@ -11,6 +12,7 @@ const navItems = [
   { to: '/admin/templates', label: 'Templates', icon: <BookOpen size={16} /> },
   { to: '/admin/inquiries', label: 'Inquiries', icon: <Mail size={16} /> },
   { to: '/admin/transactions', label: 'Transactions', icon: <DollarSign size={16} /> },
+  { to: '/admin/certifications', label: 'Certifications', icon: <Award size={16} /> },
   { to: '/admin/logs', label: 'Logs', icon: <Activity size={16} /> },
 
 ];
@@ -38,11 +40,6 @@ export default function AdminLayout({ onLogout, toast, adminLoading }) {
 
       <aside className={`admin-sidebar${mobileMenuOpen ? ' mobile-open' : ''}`}>
         <div className="admin-sidebar-header">
-          {/* <div className="admin-logo-container">
-            <img src={logoImg} alt="ITBEES" className="admin-logo" style={{ width: '50px', height: 'auto' }} />
-            <h1 style={{ fontSize: '20px', color: '#fff' }}>ITBEES Global</h1>
-            
-          </div> */}
           <h1 style={{ fontSize: '20px', color: '#fff' }}>ITBEES Global</h1>
           <button className="admin-mobile-close" onClick={closeMobile}>
             <X size={18} />
@@ -68,7 +65,7 @@ export default function AdminLayout({ onLogout, toast, adminLoading }) {
       <section className="admin-content">
         {adminLoading ? (
           <div className="admin-loading">
-            <div style={{ fontSize: '20px', marginBottom: '8px' }}>Loading admin data…</div>
+            <div style={{ fontSize: '20px', marginBottom: '8px' }}>Loading admin dataâ€¦</div>
             <div style={{ fontSize: '13px', color: 'rgba(255,255,255,0.45)' }}>Fetching inquiries, applications, transactions and logs.</div>
           </div>
         ) : (
@@ -76,7 +73,7 @@ export default function AdminLayout({ onLogout, toast, adminLoading }) {
         )}
       </section>
       {toast && (
-        <div className="admin-toast">
+        <div style={{ position: 'fixed', top: '24px', right: '24px', backgroundColor: '#0a1628', borderLeft: '4px solid var(--color-ai-lime)', color: '#fff', padding: '14px 20px', borderRadius: '8px', boxShadow: '0 10px 30px rgba(0,0,0,0.4)', zIndex: 9999, display: 'flex', alignItems: 'center', gap: '10px', fontSize: '14px', fontFamily: 'var(--font-aeonik)', animation: 'slideInRight 0.3s ease' }}>
           <CheckCircle size={18} color="var(--color-ai-lime)" />
           <span>{toast}</span>
         </div>

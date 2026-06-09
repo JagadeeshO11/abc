@@ -1,4 +1,4 @@
-const prisma = require('../utils/prisma');
+﻿const prisma = require('../utils/prisma');
 const { hashPassword, comparePassword } = require('../utils/password');
 const { generateAccessToken, generateRefreshToken, verifyRefreshToken } = require('../utils/jwt');
 const { logAction } = require('../services/auditService');
@@ -81,17 +81,17 @@ const refresh = async (req, res, next) => {
 /* ============================================================
  * PASSWORD RESET FLOW (admin)
  * ============================================================
- * 1) forgotPassword  — admin enters email
- *      → if the email belongs to a real admin we send a 6-digit OTP
+ * 1) forgotPassword  â€” admin enters email
+ *      â†’ if the email belongs to a real admin we send a 6-digit OTP
  *        to that address and respond with a generic success message
- *      → we ALWAYS return the same success message whether the email
+ *      â†’ we ALWAYS return the same success message whether the email
  *        is registered or not, to avoid leaking which addresses are
  *        admin accounts
  *
- * 2) verifyOtp       — admin submits the 6-digit OTP they received
- *      → we mark the OTP record as verified
+ * 2) verifyOtp       â€” admin submits the 6-digit OTP they received
+ *      â†’ we mark the OTP record as verified
  *
- * 3) resetPassword   — admin submits the new password (plus the OTP
+ * 3) resetPassword   â€” admin submits the new password (plus the OTP
  *      again, to be safe) and we update the Admin row's password hash
  * ============================================================ */
 
@@ -114,7 +114,7 @@ const forgotPassword = async (req, res, next) => {
         logger.error(`[Auth] Failed to send password reset OTP: ${emailErr.message}`);
       }
     } else {
-      // No admin with that email — still pretend we sent something so
+      // No admin with that email â€” still pretend we sent something so
       // an attacker can't enumerate which addresses are admin accounts.
       logger.warn(`[Auth] Password reset requested for unknown / deleted admin: ${normalizedEmail}`);
     }
@@ -145,7 +145,7 @@ const resetPassword = async (req, res, next) => {
     const { email, otp, newPassword } = req.body;
     const normalizedEmail = String(email || '').trim().toLowerCase();
 
-    // Re-verify the OTP (defense in depth — prevents a stale "verified" flag
+    // Re-verify the OTP (defense in depth â€” prevents a stale "verified" flag
     // from being reused by anyone other than the original requester).
     await verifyOtp(normalizedEmail, String(otp || ''), PASSWORD_RESET_TYPE);
 

@@ -1,11 +1,11 @@
-import { useState } from 'react';
+﻿import { useState, useEffect } from 'react';
 import { X, BookOpen, Download, Filter } from 'lucide-react';
 import { adminApi } from '../../utils/api.js';
 
 const BASE_URL = import.meta.env.VITE_API_URL?.replace('/api', '') || 'http://localhost:5000';
 
 export default function ManageCourses({ courses, setCourses, payments = [], triggerToast }) {
-  const [activeTab, setActiveTab] = useState('courses'); // 'courses' or 'trainees'
+  const [activeTab, setActiveTab] = useState('courses');
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [editingId, setEditingId] = useState(null);
   const [title, setTitle] = useState('');
@@ -18,21 +18,47 @@ export default function ManageCourses({ courses, setCourses, payments = [], trig
   const [imageUploading, setImageUploading] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
 
+  // Trainees state - fetched directly from the dedicated /admin/trainees endpoint
+  const [trainees, setTrainees] = useState([]);
+  const [traineesLoading, setTraineesLoading] = useState(false);
+  const [traineesError, setTraineesError] = useState(null);
+
+  const fetchTrainees = async () => {
+    setTraineesLoading(true);
+    setTraineesError(null);
+    try {
+      const res = await adminApi.getTrainees();
+      const list = Array.isArray(res) ? res : (res?.data || []);
+      setTrainees(list);
+    } catch (err) {
+      setTraineesError(err.message || 'Failed to load trainees');
+    } finally {
+      setTraineesLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    if (activeTab === 'trainees') {
+      fetchTrainees();
+    }
+  }, [activeTab]);
+
+  // Build the ITBE-prefixed trainee ID
   const getTraineeId = (pay) => {
-    const dateObj = new Date(pay.createdAt);
+    const dateObj = new Date(pay.createdAt || pay.purchasedAt);
     const yy = String(dateObj.getFullYear()).slice(-2);
     const mm = String(dateObj.getMonth() + 1).padStart(2, '0');
     const dd = String(dateObj.getDate()).padStart(2, '0');
-    
-    const sameDay = payments
+
+    const sameDay = trainees
       .filter(p => {
-        const d = new Date(p.createdAt);
+        const d = new Date(p.createdAt || p.purchasedAt);
         return d.getDate() === dateObj.getDate() &&
                d.getMonth() === dateObj.getMonth() &&
                d.getFullYear() === dateObj.getFullYear();
       })
-      .sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
-      
+      .sort((a, b) => new Date(a.createdAt || a.purchasedAt) - new Date(b.createdAt || b.purchasedAt));
+
     const seq = sameDay.findIndex(p => p.id === pay.id) + 1;
     return `ITBE${yy}${mm}${dd}${String(seq).padStart(2, '0')}`;
   };
@@ -52,7 +78,7 @@ export default function ManageCourses({ courses, setCourses, payments = [], trig
     date: ''
   });
 
-  const filteredPayments = payments.filter(pay => {
+  const filteredTrainees = trainees.filter(pay => {
     if (filterValues.id) {
       const tId = getTraineeId(pay).toLowerCase();
       if (!tId.includes(filterValues.id.toLowerCase())) return false;
@@ -69,13 +95,13 @@ export default function ManageCourses({ courses, setCourses, payments = [], trig
     }
     if (filterValues.course) {
       const val = filterValues.course.toLowerCase();
-      const matchTitle = pay.course?.title?.toLowerCase().includes(val);
-      const matchCategory = pay.course?.category?.toLowerCase().includes(val);
-      if (!matchTitle && !matchCategory) return false;
+      const courseId = pay.courseId?.toLowerCase() || '';
+      const courseName = courses.find(c => c.id === pay.courseId)?.title?.toLowerCase() || '';
+      if (!courseId.includes(val) && !courseName.includes(val)) return false;
     }
     if (filterValues.date) {
       const val = filterValues.date.toLowerCase();
-      const dateStr = new Date(pay.createdAt).toLocaleDateString('en-IN').toLowerCase();
+      const dateStr = new Date(pay.createdAt || pay.purchasedAt).toLocaleDateString('en-IN').toLowerCase();
       if (!dateStr.includes(val)) return false;
     }
     return true;
@@ -201,17 +227,17 @@ export default function ManageCourses({ courses, setCourses, payments = [], trig
     e.preventDefault();
     setIsSaving(true);
 
-      const payload = {
-        title,
-        category,
-        hours: parseInt(hours),
-        duration,
-        price: parseFloat(price),
-        description: desc,
-        image: image || null,
-        rating: 'New',
-        icon: '📚',
-      };
+    const payload = {
+      title,
+      category,
+      hours: parseInt(hours),
+      duration,
+      price: parseFloat(price),
+      description: desc,
+      image: image || null,
+      rating: 'New',
+      icon: 'BOOK',
+    };
     if (editingId) {
       try {
         const { data } = await adminApi.updateCourse(editingId, payload);
@@ -222,7 +248,7 @@ export default function ManageCourses({ courses, setCourses, payments = [], trig
       finally { setIsSaving(false); }
     } else {
       if (courses.find(c => c.title.trim().toLowerCase() === title.trim().toLowerCase())) {
-        triggerToast(`⚠️ Course "${title}" already exists.`); return;
+        triggerToast(`WARNING: Course "${title}" already exists.`); return;
       }
       try {
         const { data } = await adminApi.createCourse(payload);
@@ -257,16 +283,14 @@ export default function ManageCourses({ courses, setCourses, payments = [], trig
         </h2>
       </div>
 
-      {/* Sub-tab toggle */}
       <div style={{ display: 'flex', gap: '4px', marginBottom: '16px', background: 'rgba(255,255,255,0.05)', borderRadius: '8px', padding: '4px', width: 'fit-content' }}>
-        {[['courses', `Course Catalog (${courses.length})`], ['trainees', `Trainees (${payments.length})`]].map(([key, label]) => (
+        {[['courses', `Course Catalog (${courses.length})`], ['trainees', `Trainees (${trainees.length})`]].map(([key, label]) => (
           <button key={key} onClick={() => setActiveTab(key)} style={{ padding: '7px 20px', borderRadius: '6px', border: 'none', cursor: 'pointer', fontSize: '13px', fontWeight: '600', background: activeTab === key ? 'var(--color-corporate-blue)' : 'transparent', color: activeTab === key ? '#fff' : 'rgba(255,255,255,0.45)' }}>
             {label}
           </button>
         ))}
       </div>
 
-      {/* Course Catalog Table */}
       {activeTab === 'courses' && (
         <div className="admin-table-container">
           <table className="admin-table">
@@ -280,11 +304,11 @@ export default function ManageCourses({ courses, setCourses, payments = [], trig
                       : <div style={{ width: '40px', height: '40px', borderRadius: '6px', background: 'rgba(255,255,255,0.05)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><BookOpen size={16} /></div>
                     }
                   </td>
-                  <td><strong>{course.title}</strong><br /><span style={{ fontSize: '10px', color: '#aaa', fontFamily: 'monospace' }}>{course.id.slice(0, 8)}…</span></td>
+                  <td><strong>{course.title}</strong><br /><span style={{ fontSize: '10px', color: '#aaa', fontFamily: 'monospace' }}>{course.id.slice(0, 8)}...</span></td>
                   <td><span className="badge-blue">{course.category}</span></td>
                   <td>{course.duration}</td>
                   <td>{course.hours}h</td>
-                  <td style={{ fontWeight: '700', color: 'var(--color-sky-blue)' }}>₹{Number(course.price).toLocaleString('en-IN')}</td>
+                  <td style={{ fontWeight: '700', color: 'var(--color-sky-blue)' }}>Rs.{Number(course.price).toLocaleString('en-IN')}</td>
                   <td style={{ fontSize: '12px' }}>{new Date(course.createdAt).toLocaleDateString('en-IN')}</td>
                   <td>
                     <div style={{ display: 'flex', gap: '6px' }}>
@@ -300,48 +324,62 @@ export default function ManageCourses({ courses, setCourses, payments = [], trig
         </div>
       )}
 
-      {/* Trainees Table */}
       {activeTab === 'trainees' && (
         <div className="admin-table-container">
-          <table className="admin-table">
-            <thead>
-              <tr>
-                {renderFilterHeader('id', 'ID', 'Filter ID...')}
-                {renderFilterHeader('trainee', 'Trainee', 'Filter Trainee...')}
-                {renderFilterHeader('phone', 'Phone', 'Filter Phone...')}
-                {renderFilterHeader('course', 'Course', 'Filter Course...')}
-                {renderFilterHeader('date', 'Date', 'Filter Date...')}
-              </tr>
-            </thead>
-            <tbody>
-              {filteredPayments.map(pay => (
-                <tr key={pay.id}>
-                  <td style={{ fontFamily: 'monospace', fontWeight: 'bold', color: 'var(--color-sky-blue)' }}>
-                    {getTraineeId(pay)}
-                  </td>
-                  <td>
-                    <strong>{pay.name}</strong><br />
-                    <span style={{ fontSize: '11px', color: '#aaa' }}>{pay.email}</span>
-                  </td>
-                  <td>{pay.phone}</td>
-                  <td>
-                    <strong>{pay.course?.title || 'Unknown Course'}</strong>
-                    {pay.course?.category && (
-                      <><br /><span className="badge-blue" style={{ marginTop: '4px', display: 'inline-block' }}>{pay.course.category}</span></>
-                    )}
-                  </td>
-                  <td style={{ fontSize: '12px' }}>{new Date(pay.createdAt).toLocaleDateString('en-IN')}</td>
-                </tr>
-              ))}
-              {filteredPayments.length === 0 && (
+          {traineesLoading && (
+            <div style={{ textAlign: 'center', padding: '40px', color: 'rgba(255,255,255,0.5)' }}>
+              Loading trainees from course_purchases...
+            </div>
+          )}
+          {traineesError && !traineesLoading && (
+            <div style={{ textAlign: 'center', padding: '40px', color: '#ff6b6b' }}>
+              Failed to load trainees: {traineesError}
+              <div style={{ marginTop: '12px' }}>
+                <button className="btn-mini" style={{ color: 'var(--color-sky-blue)' }} onClick={fetchTrainees}>Retry</button>
+              </div>
+            </div>
+          )}
+          {!traineesLoading && !traineesError && (
+            <table className="admin-table">
+              <thead>
                 <tr>
-                  <td colSpan="5" style={{ textAlign: 'center', padding: '40px', color: 'rgba(255,255,255,0.3)' }}>
-                    No trainees found.
-                  </td>
+                  {renderFilterHeader('id', 'ID', 'Filter ID...')}
+                  {renderFilterHeader('trainee', 'Trainee', 'Filter Trainee...')}
+                  {renderFilterHeader('phone', 'Phone', 'Filter Phone...')}
+                  {renderFilterHeader('course', 'Course', 'Filter Course...')}
+                  {renderFilterHeader('date', 'Date', 'Filter Date...')}
                 </tr>
-              )}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {filteredTrainees.map(pay => (
+                  <tr key={pay.id}>
+                    <td style={{ fontFamily: 'monospace', fontWeight: 'bold', color: 'var(--color-sky-blue)' }}>
+                      {getTraineeId(pay)}
+                    </td>
+                    <td>
+                      <strong>{pay.name}</strong><br />
+                      <span style={{ fontSize: '11px', color: '#aaa' }}>{pay.email}</span>
+                    </td>
+                    <td>{pay.phone}</td>
+                    <td>
+                      <strong>{courses.find(c => c.id === pay.courseId)?.title || 'Unknown Course'}</strong>
+                      {courses.find(c => c.id === pay.courseId)?.category && (
+                        <><br /><span className="badge-blue" style={{ marginTop: '4px', display: 'inline-block' }}>{courses.find(c => c.id === pay.courseId)?.category}</span></>
+                      )}
+                    </td>
+                    <td style={{ fontSize: '12px' }}>{new Date(pay.createdAt || pay.purchasedAt).toLocaleDateString('en-IN')}</td>
+                  </tr>
+                ))}
+                {filteredTrainees.length === 0 && (
+                  <tr>
+                    <td colSpan="5" style={{ textAlign: 'center', padding: '40px', color: 'rgba(255,255,255,0.3)' }}>
+                      No trainees found.
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          )}
         </div>
       )}
 
@@ -351,7 +389,7 @@ export default function ManageCourses({ courses, setCourses, payments = [], trig
           <div style={{ position: 'fixed', top: '50%', left: '50%', transform: 'translate(-50%,-50%)', width: '520px', maxHeight: '90vh', background: '#fff', borderRadius: '12px', boxShadow: '0 20px 60px rgba(0,0,0,0.4)', zIndex: 201, display: 'flex', flexDirection: 'column', animation: 'popIn 0.22s ease' }}>
             <style>{`@keyframes popIn { from { opacity:0; transform:translate(-50%,-48%) scale(0.97); } to { opacity:1; transform:translate(-50%,-50%) scale(1); } }`}</style>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '18px 24px', background: 'var(--color-corporate-blue)', borderRadius: '12px 12px 0 0' }}>
-              <div style={{ color: '#fff', fontWeight: '700', fontSize: '15px' }}>{editingId ? '✏️ Edit Course' : '› Add New Course'}</div>
+              <div style={{ color: '#fff', fontWeight: 700, fontSize: '15px' }}>{editingId ? 'Edit Course' : 'Add New Course'}</div>
               <button onClick={handleClear} style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#fff', display: 'flex' }}><X size={20} /></button>
             </div>
             <div style={{ flex: 1, overflowY: 'auto', padding: '24px', background: 'var(--color-corporate-blue)' }}>
@@ -386,7 +424,6 @@ export default function ManageCourses({ courses, setCourses, payments = [], trig
                   <label className="form-label" style={{ color: 'rgba(255,255,255,0.8)' }}>Description</label>
                   <textarea className="input-field" rows="3" required value={desc} onChange={e => setDesc(e.target.value)} />
                 </div>
-                {/* Image Upload */}
                 <div className="form-group">
                   <label className="form-label" style={{ color: 'rgba(255,255,255,0.8)' }}>Course Image <span style={{ fontSize: '11px', color: 'rgba(255,255,255,0.45)', fontWeight: 400 }}>(optional, max 5MB)</span></label>
                   <input type="file" id="course-image-upload" hidden accept="image/*" onChange={handleImageChange} />
@@ -394,7 +431,7 @@ export default function ManageCourses({ courses, setCourses, payments = [], trig
                     {imageUploading
                       ? <span style={{ fontSize: '13px', color: 'rgba(255,255,255,0.6)' }}>Uploading...</span>
                       : image
-                        ? <><img src={image} alt="Preview" style={{ width: '36px', height: '36px', objectFit: 'cover', borderRadius: '4px' }} /><span style={{ fontSize: '13px', color: 'var(--color-ai-lime)' }}>Image uploaded ✓</span><span style={{ marginLeft: 'auto', fontSize: '11px', color: 'rgba(255,255,255,0.4)' }}>Click to change</span></>
+                        ? <><img src={image} alt="Preview" style={{ width: '36px', height: '36px', objectFit: 'cover', borderRadius: '4px' }} /><span style={{ fontSize: '13px', color: 'var(--color-ai-lime)' }}>Image uploaded</span><span style={{ marginLeft: 'auto', fontSize: '11px', color: 'rgba(255,255,255,0.4)' }}>Click to change</span></>
                         : <span style={{ fontSize: '13px', color: 'rgba(255,255,255,0.6)' }}>Click to upload image</span>
                     }
                   </label>

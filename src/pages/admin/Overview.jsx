@@ -6,7 +6,7 @@ const formatCurrency = (val) => `₹${Number(val || 0).toLocaleString('en-IN')}`
 
 export default function Overview({ inquiries, applications, payments, courses = [], jobs = [], templates = [] }) {
   
-  const coursePayments = useMemo(() => (payments || []).filter(p => p.type === 'COURSE' || !p.type), [payments]);
+  const coursePayments = useMemo(() => (payments || []).filter(p => p.type === 'COURSE'), [payments]);
   const templatePayments = useMemo(() => (payments || []).filter(p => p.type === 'TEMPLATE'), [payments]);
 
   const totalRevenue = useMemo(() => (payments || []).reduce((s, p) => s + (parseFloat(p.amount) || 0), 0), [payments]);

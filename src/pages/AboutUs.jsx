@@ -11,20 +11,44 @@ export default function AboutUs() {
     const [videoPlaying, setVideoPlaying] = useState(false);
     const YT_ID = 'gNYtC0swvaw';
     const team = [
-        { name: 'Suresh Babu', role: 'CEO & Founder', icon: <FaBuilding size={28} />, color: 'var(--color-corporate-blue)' },
-        { name: 'Anitha Reddy', role: 'CTO', icon: <MdSecurity size={28} />, color: 'var(--color-evergreen-glow)' },
-        { name: 'Kiran Rao', role: 'Head of Training', icon: <FaAward size={28} />, color: 'var(--color-gold)' },
-        { name: 'Preethi Nair', role: 'Lead Data Architect', icon: <BsGraphUpArrow size={28} />, color: '#9b59b6' },
+        { name: 'Kalluri Vishnu Priya', role: 'CEO & Founder', icon: <FaBuilding size={28} />, color: 'var(--color-corporate-blue)' },
+        { name: 'M V D N Sarva Lakshmi', role: 'CTO', icon: <MdSecurity size={28} />, color: 'var(--color-evergreen-glow)' },
+        { name: 'M V S G Rama Subrahmanyam', role: 'Head of Training', icon: <FaAward size={28} />, color: 'var(--color-gold)' },
+        { name: 'Sai Teja Kalluri', role: 'Lead Data Architect', icon: <BsGraphUpArrow size={28} />, color: '#9b59b6' },
     ];
 
     const milestones = [
-        { year: '2014', event: 'ITBEES Global founded in Hyderabad', icon: <FaBuilding size={16} /> },
-        { year: '2016', event: 'Launched first ERP integration suite for 10 enterprise clients', icon: <MdTimeline size={16} /> },
-        { year: '2018', event: 'Expanded to BI Analytics & PowerBI consulting', icon: <BsGraphUpArrow size={16} /> },
-        { year: '2020', event: 'Corporate Training division launched with 500+ enrollments', icon: <FaAward size={16} /> },
-        { year: '2022', event: 'Crossed 100+ enterprise clients across India & SEA', icon: <FaGlobe size={16} /> },
-        { year: '2024', event: 'ISO certified & expanded to cloud-native architecture services', icon: <MdVerified size={16} /> },
-    ];
+  {
+    year: '2025',
+    event: 'ITBEES Global incorporated and launched operations',
+    icon: <FaBuilding size={16} />
+  },
+  {
+    year: '2025',
+    event: 'Started Corporate Training & Internship Programs',
+    icon: <FaAward size={16} />
+  },
+  {
+    year: '2025',
+    event: 'Launched ERP, Analytics & Technology Consulting Services',
+    icon: <BsGraphUpArrow size={16} />
+  },
+  {
+    year: '2026',
+    event: 'Expanded online learning platform and digital template marketplace',
+    icon: <MdTimeline size={16} />
+  },
+  {
+    year: '2026',
+    event: 'Delivered training programs across multiple technology domains',
+    icon: <FaGlobe size={16} />
+  },
+  {
+    year: '2026',
+    event: 'Introduced AI-powered learning and certification ecosystem',
+    icon: <MdVerified size={16} />
+  },
+];
 
     return (
         <>
@@ -36,8 +60,9 @@ export default function AboutUs() {
                         <HiOfficeBuilding style={{ display: 'inline', marginRight: '6px' }} />
                         WHO WE ARE
                     </div>
-                    <h1 className="display-lg">ITBEES GLOBAL PVT. LTD.</h1>
-                    <p className="page-hero-sub">Delivering robust ERP solutions, customized business intelligence tools, and training pipelines.</p>
+                    <h1 className="display-lg">ITBEES GLOBAL</h1>
+                    <p className="page-hero-sub">
+                        Transforming Businesses Through Technology, Automation, and Innovation.</p>
                 </div>
             </section>
 
@@ -71,12 +96,15 @@ export default function AboutUs() {
                     </div>
                     <div>
                         <div className="badge-mint" style={{ marginBottom: '16px' }}>COMPANY OVERVIEW</div>
-                        <h2 className="display-md" style={{ marginBottom: '20px', textAlign: 'left' }}>BUILT FOR ENTERPRISE EXCELLENCE</h2>
+                        <h2 className="display-md" style={{ marginBottom: '20px', textAlign: 'left' }}>About ITBEES Global</h2>
                         <p style={{ fontSize: '15px', lineHeight: '1.8', color: 'var(--color-ink)', marginBottom: '20px' }}>
-                            Established in Hyderabad's premier IT hub Gachibowli, ITBEES GLOBAL PVT. LTD. is an enterprise solutions partner designed to solve technical complexity. We specialize in configuring unified databases, deploying scalable smart cloud architectures, and preparing data automation workflows.
+                            ITBEES Global is a technology-driven company specializing in Business Automation, Data Analytics, Software Development, Corporate Training, and HR Consulting Services. We help organizations streamline operations, improve productivity, and make data-driven decisions through innovative technology solutions and industry expertise.
                         </p>
                         <p style={{ fontSize: '15px', lineHeight: '1.8', color: 'var(--color-ink)', marginBottom: '24px' }}>
-                            Whether it is staffing specialized frontend engineering teams, deploying analytics modules, or upgrading student knowledge through corporate training catalogs, ITBEES Global focuses on providing clear results and absolute data security.
+                            Our services include Data Automation, Excel VBA Solutions, Power BI Dashboards, Business Process Automation, Custom Software Development, Recruitment & Payroll Consulting, and Corporate Training Programs. We work with startups, SMEs, and enterprises across various industries, delivering solutions that enhance efficiency and drive business growth.
+                        </p>
+                        <p style={{ fontSize: '15px', lineHeight: '1.8', color: 'var(--color-ink)', marginBottom: '24px' }}>
+                            At ITBEES Global, we believe in combining technology, innovation, and practical business knowledge to solve real-world challenges. Our team is committed to delivering high-quality services, customized solutions, and measurable results that help our clients stay competitive in an evolving digital landscape.
                         </p>
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
                             {['ISO Certified Enterprise Partner', 'GDPR & Data Security Compliant', '24/7 Dedicated Support Teams'].map((item, i) => (
@@ -89,19 +117,74 @@ export default function AboutUs() {
                 </div>
 
                 {/* Vision / Mission / Values */}
-                <div className="grid-3" style={{ marginBottom: '48px' }}>
-                    {[
-                        { icon: <FaLightbulb size={22} />, color: 'var(--color-corporate-blue)', title: 'OUR VISION', text: 'To become the leading global architecture and data systems provider, delivering reliable analytics and ERP tools that help businesses scale effortlessly.' },
-                        { icon: <FaGlobe size={22} />, color: 'var(--color-evergreen-glow)', title: 'OUR MISSION', text: 'To simplify database migration, deliver precise BI visualizations, and establish structured training platforms that cultivate modern coding standards.' },
-                        { icon: <FaHandshake size={22} />, color: 'var(--color-gold)', title: 'CORE VALUES', text: 'Integrity, technical expertise, visual clarity in reports, automated efficiency, and a commitment to helping our engineering talent excel globally.' },
-                    ].map((c, i) => (
-                        <div key={i} className="card-neutral" style={{ padding: '22px', gap: '10px', display: 'flex', flexDirection: 'column' }}>
-                            <div style={{ color: c.color }}>{c.icon}</div>
-                            <h3 style={{ fontFamily: 'var(--font-aeonik)', fontWeight: 700, fontSize: '14px', color: c.color, letterSpacing: '0.04em' }}>{c.title}</h3>
-                            <p style={{ fontSize: '13px', lineHeight: '1.6', color: 'var(--color-ink)' }}>{c.text}</p>
-                        </div>
-                    ))}
-                </div>
+               <div style={{ marginBottom: '48px' }}>
+  {[
+    // { icon: <FaLightbulb size={22} />, color: 'var(--color-corporate-blue)', title: 'OUR VISION', text: '...' },
+    // { icon: <FaGlobe size={22} />, color: 'var(--color-evergreen-glow)', title: 'OUR MISSION', text: '...' },
+    {
+      icon: <FaHandshake size={22} />,
+      color: 'var(--color-gold)',
+      title: 'OUR CORE SERVICES',
+      // Converted raw text block into an array for cleaner data mapping
+      services: [
+        "Automation Services",
+        "Data Analytics & Reporting Solutions",
+        "Business Process Automation",
+        "Excel VBA & Power BI Consulting",
+        "Software Development & IT Solutions",
+        "Corporate Training Programs"
+      ]
+    }
+  ].map((c, i) => (
+    <div key={i} className="card-neutral" style={{ padding: '24px', gap: '16px', display: 'flex', flexDirection: 'column' }}>
+      {/* Header Icon & Title */}
+      <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+        <div style={{ color: c.color, display: 'flex', alignItems: 'center' }}>{c.icon}</div>
+        <h3 style={{ fontFamily: 'var(--font-aeonik)', fontWeight: 700, fontSize: '14px', color: c.color, letterSpacing: '0.04em', margin: 0 }}>
+          {c.title}
+        </h3>
+      </div>
+      
+      {/* Internal Cards Layout Grid */}
+      <div style={{ 
+        display: 'grid', 
+        gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))', 
+        gap: '12px',
+        marginTop: '4px' 
+      }}>
+        {c.services.map((service, idx) => (
+          <div 
+            key={idx} 
+            style={{
+              background: 'rgba(255, 255, 255, 0.04)', // Slight subtle lift against dark background
+              border: '1px solid rgba(255, 255, 255, 0.07)',
+              borderRadius: '8px',
+              padding: '14px 16px',
+              fontSize: '13px',
+              lineHeight: '1.4',
+              color: 'var(--color-ink)',
+              fontWeight: '500',
+              display: 'flex',
+              alignItems: 'center',
+              transition: 'transform 0.2s, border-color 0.2s'
+            }}
+            // Subtle interactive feedback on hover
+            onMouseEnter={(e) => {
+              e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.15)';
+              e.currentTarget.style.transform = 'translateY(-1px)';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.07)';
+              e.currentTarget.style.transform = 'translateY(0)';
+            }}
+          >
+            {service}
+          </div>
+        ))}
+      </div>
+    </div>
+  ))}
+</div>
 
                 {/* Services Image Banner */}
                 <div style={{ position: 'relative', borderRadius: '16px', overflow: 'hidden', marginBottom: '64px', height: '240px' }}>
