@@ -11,10 +11,10 @@ export default function AboutUs() {
     const [videoPlaying, setVideoPlaying] = useState(false);
     const YT_ID = 'gNYtC0swvaw';
     const team = [
-        { name: 'Kalluri Vishnu Priya', role: 'CEO & Founder', icon: <FaBuilding size={28} />, color: 'var(--color-corporate-blue)' },
-        { name: 'M V D N Sarva Lakshmi', role: 'CTO', icon: <MdSecurity size={28} />, color: 'var(--color-evergreen-glow)' },
-        { name: 'M V S G Rama Subrahmanyam', role: 'Head of Training', icon: <FaAward size={28} />, color: 'var(--color-gold)' },
-        { name: 'Sai Teja Kalluri', role: 'Lead Data Architect', icon: <BsGraphUpArrow size={28} />, color: '#9b59b6' },
+        { name: 'Kalluri Vishnu Priya', role: 'CEO & Co-founder', icon: <FaBuilding size={28} />, color: 'var(--color-corporate-blue)' },
+        { name: 'M V D N Sarva Lakshmi', role: 'Head of Operations & Co-founder', icon: <MdSecurity size={28} />, color: 'var(--color-evergreen-glow)' },
+        { name: 'M V S G Rama Subrahmanyam', role: 'Head of Data Analytics & Trainer', icon: <FaAward size={28} />, color: 'var(--color-gold)' },
+        { name: 'Sai Teja Kalluri', role: 'Head of Technology', icon: <BsGraphUpArrow size={28} />, color: '#9b59b6' },
     ];
 
     const milestones = [
