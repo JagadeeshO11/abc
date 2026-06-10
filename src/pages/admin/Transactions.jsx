@@ -20,8 +20,9 @@ export default function Transactions({ payments }) {
   });
   const [activeTab, setActiveTab] = useState('all');
 
-  const coursePurchases = useMemo(() => (payments || []).filter(p => p.type === 'COURSE'), [payments]);
-  const templatePurchases = useMemo(() => (payments || []).filter(p => p.type === 'TEMPLATE'), [payments]);
+  const successPayments = useMemo(() => (payments || []).filter(p => p.status === 'SUCCESS'), [payments]);
+  const coursePurchases = useMemo(() => successPayments.filter(p => p.type === 'COURSE'), [successPayments]);
+  const templatePurchases = useMemo(() => successPayments.filter(p => p.type === 'TEMPLATE'), [successPayments]);
 
   const getFilteredList = (list) => {
     return list.filter(pay => {
@@ -53,7 +54,7 @@ export default function Transactions({ payments }) {
     });
   };
 
-  const filteredAll = getFilteredList(payments || []);
+  const filteredAll = getFilteredList(successPayments);
   const filteredCourse = getFilteredList(coursePurchases);
   const filteredTemplate = getFilteredList(templatePurchases);
 
@@ -175,7 +176,7 @@ export default function Transactions({ payments }) {
       {/* Tabs: All | Course Purchases | Template Purchases */}
       <div style={{ display: 'flex', gap: '4px', marginBottom: '20px', background: 'rgba(255,255,255,0.05)', borderRadius: '8px', padding: '4px', width: 'fit-content' }}>
         <button onClick={() => setActiveTab('all')} style={{ padding: '8px 20px', borderRadius: '6px', border: 'none', cursor: 'pointer', fontSize: '13px', fontWeight: '600', background: activeTab === 'all' ? 'var(--color-corporate-blue)' : 'transparent', color: activeTab === 'all' ? '#fff' : 'rgba(255,255,255,0.6)' }}>
-          All ({payments.length})
+          All ({successPayments.length})
         </button>
         <button onClick={() => setActiveTab('courses')} style={{ padding: '8px 20px', borderRadius: '6px', border: 'none', cursor: 'pointer', fontSize: '13px', fontWeight: '600', background: activeTab === 'courses' ? 'var(--color-corporate-blue)' : 'transparent', color: activeTab === 'courses' ? '#fff' : 'rgba(255,255,255,0.6)' }}>
           <BookOpen size={14} style={{ verticalAlign: 'middle', marginRight: '4px' }} /> Course Purchases ({coursePurchases.length})
@@ -189,7 +190,7 @@ export default function Transactions({ payments }) {
       <div className="analytics-grid" style={{ marginBottom: '24px' }}>
         <div className="stat-card" style={{ borderLeft: '4px solid var(--color-corporate-blue)' }}>
           <div className="stat-label">All Transactions</div>
-          <div className="stat-value">{payments.length}</div>
+          <div className="stat-value">{successPayments.length}</div>
         </div>
         <div className="stat-card" style={{ borderLeft: '4px solid #2395ee' }}>
           <div className="stat-label">Course Purchases</div>
@@ -201,7 +202,7 @@ export default function Transactions({ payments }) {
         </div>
         <div className="stat-card" style={{ borderLeft: '4px solid var(--color-evergreen-glow)' }}>
           <div className="stat-label">Total Revenue</div>
-          <div className="stat-value">₹{payments.reduce((sum, p) => sum + (parseFloat(p.amount) || 0), 0).toLocaleString('en-IN')}</div>
+          <div className="stat-value">₹{successPayments.reduce((sum, p) => sum + (parseFloat(p.amount) || 0), 0).toLocaleString('en-IN')}</div>
         </div>
       </div>
 

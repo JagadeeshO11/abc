@@ -6,10 +6,11 @@ const formatCurrency = (val) => `₹${Number(val || 0).toLocaleString('en-IN')}`
 
 export default function Overview({ inquiries, applications, payments, courses = [], jobs = [], templates = [] }) {
   
-  const coursePayments = useMemo(() => (payments || []).filter(p => p.type === 'COURSE'), [payments]);
-  const templatePayments = useMemo(() => (payments || []).filter(p => p.type === 'TEMPLATE'), [payments]);
+  const successPayments = useMemo(() => (payments || []).filter(p => p.status === 'SUCCESS'), [payments]);
+  const coursePayments = useMemo(() => successPayments.filter(p => p.type === 'COURSE'), [successPayments]);
+  const templatePayments = useMemo(() => successPayments.filter(p => p.type === 'TEMPLATE'), [successPayments]);
 
-  const totalRevenue = useMemo(() => (payments || []).reduce((s, p) => s + (parseFloat(p.amount) || 0), 0), [payments]);
+  const totalRevenue = useMemo(() => successPayments.reduce((s, p) => s + (parseFloat(p.amount) || 0), 0), [successPayments]);
   const courseRevenue = useMemo(() => coursePayments.reduce((s, p) => s + (parseFloat(p.amount) || 0), 0), [coursePayments]);
   const templateRevenue = useMemo(() => templatePayments.reduce((s, p) => s + (parseFloat(p.amount) || 0), 0), [templatePayments]);
 
@@ -40,7 +41,7 @@ export default function Overview({ inquiries, applications, payments, courses = 
   // Monthly transaction trend
   const monthlyTrend = useMemo(() => {
     const months = {};
-    (payments || []).forEach(p => {
+    successPayments.forEach(p => {
       const d = new Date(p.createdAt);
       const key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
       if (!months[key]) months[key] = { month: key, amount: 0, count: 0 };
@@ -48,7 +49,7 @@ export default function Overview({ inquiries, applications, payments, courses = 
       months[key].count += 1;
     });
     return Object.values(months).sort((a, b) => a.month.localeCompare(b.month)).slice(-12);
-  }, [payments]);
+  }, [successPayments]);
 
   const CHART_COLORS = ['#2395ee', '#68ef3f', '#f59e0b', '#9b59b6', '#e05c5c', '#1abc9c', '#3498db', '#e67e22'];
 
@@ -68,7 +69,7 @@ export default function Overview({ inquiries, applications, payments, courses = 
         </div>
         <div className="stat-card" style={{ borderLeft: '4px solid #1abc9c' }}>
           <div className="stat-label">💳 Total Trxns</div>
-          <div className="stat-value">{payments.length}</div>
+          <div className="stat-value">{successPayments.length}</div>
         </div>
         <div className="stat-card" style={{ borderLeft: '4px solid #68ef3f' }}>
           <div className="stat-label">💰 Total Revenue</div>
@@ -88,7 +89,7 @@ export default function Overview({ inquiries, applications, payments, courses = 
         </div>
         <div className="stat-card" style={{ borderLeft: '4px solid #1abc9c' }}>
           <div className="stat-label">📊 Avg Trxn Value</div>
-          <div className="stat-value">{payments.length > 0 ? formatCurrency(Math.round(totalRevenue / payments.length)) : '₹0'}</div>
+          <div className="stat-value">{successPayments.length > 0 ? formatCurrency(Math.round(totalRevenue / successPayments.length)) : '₹0'}</div>
         </div>
       </div>
 
@@ -251,9 +252,9 @@ export default function Overview({ inquiries, applications, payments, courses = 
       {/* Recent Transactions Table */}
       <div style={{ background: '#fff', borderRadius: '12px', padding: '20px', boxShadow: '0 2px 12px rgba(0,0,0,0.06)' }}>
         <h3 style={{ fontSize: '14px', fontWeight: 700, color: '#1a1a2e', marginBottom: '16px' }}>
-          Recent Transactions ({payments.length})
+          Recent Transactions ({successPayments.length})
         </h3>
-        {(payments || []).length > 0 ? (
+        {successPayments.length > 0 ? (
           <div style={{ overflowX: 'auto' }}>
             <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '13px' }}>
               <thead>
@@ -267,7 +268,7 @@ export default function Overview({ inquiries, applications, payments, courses = 
                 </tr>
               </thead>
               <tbody>
-                {(payments || []).slice(0, 10).map((p, i) => (
+                {successPayments.slice(0, 10).map((p, i) => (
                   <tr key={p.id || i} style={{ borderBottom: '1px solid #f5f5f5' }}>
                     <td style={{ padding: '10px 12px', color: '#666', fontSize: '12px' }}>
                       {new Date(p.createdAt).toLocaleDateString('en-IN')}
